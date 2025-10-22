@@ -10,7 +10,7 @@
 build/
 
 # ════════════════════════════════════════════════════════
-# IDE & Editors
+# IDE
 # ════════════════════════════════════════════════════════
 .idea/
 .vscode/
@@ -18,138 +18,56 @@ build/
 *.ipr
 *.iws
 *.swp
-*.swo
-*~
 
 # ════════════════════════════════════════════════════════
-# Android
+# Platform Folders (احتفظ بملفات الإعداد فقط)
 # ════════════════════════════════════════════════════════
-**/android/**/gradle-wrapper.jar
-**/android/.gradle
-**/android/captures/
-**/android/gradlew
-**/android/gradlew.bat
-**/android/local.properties
-**/android/**/GeneratedPluginRegistrant.java
-**/android/key.properties
-**/android/**/*.jks
-**/android/**/*.keystore
+
+# Android - احذف كل شيء ماعدا الإعدادات المهمة
+android/
+!android/app/
+!android/app/build.gradle
+!android/app/src/
+!android/build.gradle
+!android/settings.gradle
+!android/gradle.properties
+
+# iOS - احذف كل شيء ماعدا الإعدادات
+ios/
+!ios/Runner/
+!ios/Runner.xcodeproj/
+!ios/Runner.xcworkspace/
+!ios/Podfile
+
+# Web - احتفظ بالإعدادات فقط
+web/
+!web/index.html
+!web/manifest.json
+
+# Windows - احذف كامل
+windows/
+
+# Linux - احذف كامل  
+linux/
+
+# macOS - احذف كامل
+macos/
 
 # ════════════════════════════════════════════════════════
-# iOS
+# Metadata
 # ════════════════════════════════════════════════════════
-**/ios/**/*.mode1v3
-**/ios/**/*.mode2v3
-**/ios/**/*.moved-aside
-**/ios/**/*.pbxuser
-**/ios/**/*.perspectivev3
-**/ios/**/*sync/
-**/ios/**/.sconsign.dblite
-**/ios/**/.tags*
-**/ios/**/.vagrant/
-**/ios/**/DerivedData/
-**/ios/**/Icon?
-**/ios/**/Pods/
-**/ios/**/.symlinks/
-**/ios/**/profile
-**/ios/**/xcuserdata
-**/ios/.generated/
-**/ios/Flutter/.last_build_id
-**/ios/Flutter/App.framework
-**/ios/Flutter/Flutter.framework
-**/ios/Flutter/Flutter.podspec
-**/ios/Flutter/Generated.xcconfig
-**/ios/Flutter/ephemeral/
-**/ios/Flutter/app.flx
-**/ios/Flutter/app.zip
-**/ios/Flutter/flutter_assets/
-**/ios/Flutter/flutter_export_environment.sh
-**/ios/ServiceDefinitions.json
-**/ios/Runner/GeneratedPluginRegistrant.*
+.metadata
 
 # ════════════════════════════════════════════════════════
-# macOS
-# ════════════════════════════════════════════════════════
-**/macos/Flutter/GeneratedPluginRegistrant.swift
-**/macos/Flutter/ephemeral/
-
-# ════════════════════════════════════════════════════════
-# Linux
-# ════════════════════════════════════════════════════════
-**/linux/flutter/generated_plugin_registrant.cc
-**/linux/flutter/generated_plugin_registrant.h
-**/linux/flutter/generated_plugins.cmake
-
-# ════════════════════════════════════════════════════════
-# Windows
-# ════════════════════════════════════════════════════════
-**/windows/flutter/generated_plugin_registrant.cc
-**/windows/flutter/generated_plugin_registrant.h
-**/windows/flutter/generated_plugins.cmake
-
-# ════════════════════════════════════════════════════════
-# Web
-# ════════════════════════════════════════════════════════
-**/web/.dart_tool/
-
-# ════════════════════════════════════════════════════════
-# Temporary & System Files
-# ════════════════════════════════════════════════════════
-*.log
-*.pyc
-*.swp
-.DS_Store
-.atom/
-.buildlog/
-.history
-.svn/
-migrate_working_dir/
-
-# ════════════════════════════════════════════════════════
-# Archives & Backups
+# Temp & Archives
 # ════════════════════════════════════════════════════════
 *.zip
 *.tar.gz
-*.rar
-*.7z
-*.backup
-
-# ════════════════════════════════════════════════════════
-# Temp Folders (حسب مشروعك)
-# ════════════════════════════════════════════════════════
-temp_cairo/
-temp/
-tmp/
+temp*/
 cache/
 
 # ════════════════════════════════════════════════════════
-# Environment & Secrets
+# Misc
 # ════════════════════════════════════════════════════════
-.env
-.env.local
-.env.*.local
-*.key
-secrets.json
-firebase_options.dart
-
-# ════════════════════════════════════════════════════════
-# Coverage & Testing
-# ════════════════════════════════════════════════════════
-coverage/
-test/.test_coverage.dart
-*.coverage
-
-# ════════════════════════════════════════════════════════
-# Documentation
-# ════════════════════════════════════════════════════════
-doc/api/
-.docusaurus/
-
-# ════════════════════════════════════════════════════════
-# Database
-# ════════════════════════════════════════════════════════
-*.db
-*.sqlite
-*.sqlite3
-*.db-shm
-*.db-wal
+*.log
+.DS_Store
