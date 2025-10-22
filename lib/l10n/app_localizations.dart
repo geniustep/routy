@@ -1,0 +1,838 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl.dart' as intl;
+
+import 'app_localizations_ar.dart';
+import 'app_localizations_en.dart';
+import 'app_localizations_es.dart';
+import 'app_localizations_fr.dart';
+
+// ignore_for_file: type=lint
+
+/// Callers can lookup localized strings with an instance of AppLocalizations
+/// returned by `AppLocalizations.of(context)`.
+///
+/// Applications need to include `AppLocalizations.delegate()` in their app's
+/// `localizationDelegates` list, and the locales they support in the app's
+/// `supportedLocales` list. For example:
+///
+/// ```dart
+/// import 'l10n/app_localizations.dart';
+///
+/// return MaterialApp(
+///   localizationsDelegates: AppLocalizations.localizationsDelegates,
+///   supportedLocales: AppLocalizations.supportedLocales,
+///   home: MyApplicationHome(),
+/// );
+/// ```
+///
+/// ## Update pubspec.yaml
+///
+/// Please make sure to update your pubspec.yaml to include the following
+/// packages:
+///
+/// ```yaml
+/// dependencies:
+///   # Internationalization support.
+///   flutter_localizations:
+///     sdk: flutter
+///   intl: any # Use the pinned version from flutter_localizations
+///
+///   # Rest of dependencies
+/// ```
+///
+/// ## iOS Applications
+///
+/// iOS applications define key application metadata, including supported
+/// locales, in an Info.plist file that is built into the application bundle.
+/// To configure the locales supported by your app, you’ll need to edit this
+/// file.
+///
+/// First, open your project’s ios/Runner.xcworkspace Xcode workspace file.
+/// Then, in the Project Navigator, open the Info.plist file under the Runner
+/// project’s Runner folder.
+///
+/// Next, select the Information Property List item, select Add Item from the
+/// Editor menu, then select Localizations from the pop-up menu.
+///
+/// Select and expand the newly-created Localizations item then, for each
+/// locale your application supports, add a new item and select the locale
+/// you wish to add from the pop-up menu in the Value field. This list should
+/// be consistent with the languages listed in the AppLocalizations.supportedLocales
+/// property.
+abstract class AppLocalizations {
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+
+  final String localeName;
+
+  static AppLocalizations? of(BuildContext context) {
+    return Localizations.of<AppLocalizations>(context, AppLocalizations);
+  }
+
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
+
+  /// A list of this localizations delegate along with the default localizations
+  /// delegates.
+  ///
+  /// Returns a list of localizations delegates containing this delegate along with
+  /// GlobalMaterialLocalizations.delegate, GlobalCupertinoLocalizations.delegate,
+  /// and GlobalWidgetsLocalizations.delegate.
+  ///
+  /// Additional delegates can be added by appending to this list in
+  /// MaterialApp. This list does not have to be used at all if a custom list
+  /// of delegates is preferred or required.
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
+
+  /// A list of this localizations delegate's supported locales.
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('ar'),
+    Locale('en'),
+    Locale('es'),
+    Locale('fr'),
+  ];
+
+  /// No description provided for @appTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Routy'**
+  String get appTitle;
+
+  /// No description provided for @welcome.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bienvenue dans Routy'**
+  String get welcome;
+
+  /// No description provided for @loginTitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Routy'**
+  String get loginTitle;
+
+  /// No description provided for @loginSubtitle.
+  ///
+  /// In fr, this message translates to:
+  /// **'Gestion des Ventes et Livraisons'**
+  String get loginSubtitle;
+
+  /// No description provided for @usernameLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom d\'utilisateur'**
+  String get usernameLabel;
+
+  /// No description provided for @passwordLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe'**
+  String get passwordLabel;
+
+  /// No description provided for @databaseLabel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Base de données'**
+  String get databaseLabel;
+
+  /// No description provided for @loginButton.
+  ///
+  /// In fr, this message translates to:
+  /// **'Se connecter'**
+  String get loginButton;
+
+  /// No description provided for @usernameRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Veuillez saisir votre nom d\'utilisateur'**
+  String get usernameRequired;
+
+  /// No description provided for @passwordRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Veuillez saisir votre mot de passe'**
+  String get passwordRequired;
+
+  /// No description provided for @databaseRequired.
+  ///
+  /// In fr, this message translates to:
+  /// **'Veuillez sélectionner une base de données'**
+  String get databaseRequired;
+
+  /// No description provided for @loginError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur de connexion'**
+  String get loginError;
+
+  /// No description provided for @invalidCredentials.
+  ///
+  /// In fr, this message translates to:
+  /// **'Identifiants invalides'**
+  String get invalidCredentials;
+
+  /// No description provided for @networkError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur réseau'**
+  String get networkError;
+
+  /// No description provided for @pleaseWait.
+  ///
+  /// In fr, this message translates to:
+  /// **'Veuillez patienter'**
+  String get pleaseWait;
+
+  /// No description provided for @enterCredentials.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrez vos identifiants'**
+  String get enterCredentials;
+
+  /// No description provided for @selectDatabase.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sélectionnez la base de données'**
+  String get selectDatabase;
+
+  /// No description provided for @loginSuccess.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connexion réussie'**
+  String get loginSuccess;
+
+  /// No description provided for @loginFailed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Échec de la connexion'**
+  String get loginFailed;
+
+  /// No description provided for @connectionError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur de connexion'**
+  String get connectionError;
+
+  /// No description provided for @serverError.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur du serveur'**
+  String get serverError;
+
+  /// No description provided for @tryAgain.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réessayer'**
+  String get tryAgain;
+
+  /// No description provided for @checkConnection.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vérifiez votre connexion Internet'**
+  String get checkConnection;
+
+  /// No description provided for @dashboard.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tableau de bord'**
+  String get dashboard;
+
+  /// No description provided for @welcome_back.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bon retour'**
+  String get welcome_back;
+
+  /// No description provided for @ready_to_achieve.
+  ///
+  /// In fr, this message translates to:
+  /// **'Prêt à atteindre vos objectifs commerciaux ?'**
+  String get ready_to_achieve;
+
+  /// No description provided for @whats_happening_today.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voici ce qui se passe aujourd\'hui'**
+  String get whats_happening_today;
+
+  /// No description provided for @today_reports.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rapports d\'aujourd\'hui'**
+  String get today_reports;
+
+  /// No description provided for @view_all.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir tout'**
+  String get view_all;
+
+  /// No description provided for @target.
+  ///
+  /// In fr, this message translates to:
+  /// **'Objectif'**
+  String get target;
+
+  /// No description provided for @progress.
+  ///
+  /// In fr, this message translates to:
+  /// **'Progrès'**
+  String get progress;
+
+  /// No description provided for @quick_actions.
+  ///
+  /// In fr, this message translates to:
+  /// **'Actions rapides'**
+  String get quick_actions;
+
+  /// No description provided for @products.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produits'**
+  String get products;
+
+  /// No description provided for @customers.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clients'**
+  String get customers;
+
+  /// No description provided for @sales.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes'**
+  String get sales;
+
+  /// No description provided for @reports.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rapports'**
+  String get reports;
+
+  /// No description provided for @expenses.
+  ///
+  /// In fr, this message translates to:
+  /// **'Dépenses'**
+  String get expenses;
+
+  /// No description provided for @pos.
+  ///
+  /// In fr, this message translates to:
+  /// **'Point de vente'**
+  String get pos;
+
+  /// No description provided for @purchase.
+  ///
+  /// In fr, this message translates to:
+  /// **'Achats'**
+  String get purchase;
+
+  /// No description provided for @warehouse.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrepôt'**
+  String get warehouse;
+
+  /// No description provided for @recent_activity.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activité récente'**
+  String get recent_activity;
+
+  /// No description provided for @new_sale_created.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelle vente créée'**
+  String get new_sale_created;
+
+  /// No description provided for @new_customer_added.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouveau client ajouté'**
+  String get new_customer_added;
+
+  /// No description provided for @product_updated.
+  ///
+  /// In fr, this message translates to:
+  /// **'Produit mis à jour'**
+  String get product_updated;
+
+  /// No description provided for @business_insights.
+  ///
+  /// In fr, this message translates to:
+  /// **'Insights commerciaux'**
+  String get business_insights;
+
+  /// No description provided for @performance_overview.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aperçu des performances'**
+  String get performance_overview;
+
+  /// No description provided for @track_business_growth.
+  ///
+  /// In fr, this message translates to:
+  /// **'Suivez la croissance de votre entreprise avec des analyses avancées et des insights en temps réel'**
+  String get track_business_growth;
+
+  /// No description provided for @monitor_sales_performance.
+  ///
+  /// In fr, this message translates to:
+  /// **'Surveillez les performances de vos ventes et les métriques commerciales'**
+  String get monitor_sales_performance;
+
+  /// No description provided for @view_analytics.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir les analyses'**
+  String get view_analytics;
+
+  /// No description provided for @confirm_exit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Confirmer la sortie'**
+  String get confirm_exit;
+
+  /// No description provided for @exit_confirmation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Êtes-vous sûr de vouloir quitter l\'application ?'**
+  String get exit_confirmation;
+
+  /// No description provided for @cancel.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annuler'**
+  String get cancel;
+
+  /// No description provided for @exit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sortir'**
+  String get exit;
+
+  /// No description provided for @confirm_logout.
+  ///
+  /// In fr, this message translates to:
+  /// **'Confirmer la déconnexion'**
+  String get confirm_logout;
+
+  /// No description provided for @logout_confirmation.
+  ///
+  /// In fr, this message translates to:
+  /// **'Êtes-vous sûr de vouloir vous déconnecter ?'**
+  String get logout_confirmation;
+
+  /// No description provided for @logout.
+  ///
+  /// In fr, this message translates to:
+  /// **'Se déconnecter'**
+  String get logout;
+
+  /// No description provided for @error.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur'**
+  String get error;
+
+  /// No description provided for @logout_error.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une erreur s\'est produite lors de la déconnexion'**
+  String get logout_error;
+
+  /// No description provided for @login.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connexion'**
+  String get login;
+
+  /// No description provided for @username.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nom d\'utilisateur'**
+  String get username;
+
+  /// No description provided for @password.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe'**
+  String get password;
+
+  /// No description provided for @database.
+  ///
+  /// In fr, this message translates to:
+  /// **'Base de données'**
+  String get database;
+
+  /// No description provided for @login_button.
+  ///
+  /// In fr, this message translates to:
+  /// **'Se connecter'**
+  String get login_button;
+
+  /// No description provided for @remember_me.
+  ///
+  /// In fr, this message translates to:
+  /// **'Se souvenir de moi'**
+  String get remember_me;
+
+  /// No description provided for @forgot_password.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mot de passe oublié ?'**
+  String get forgot_password;
+
+  /// No description provided for @login_error.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur de connexion'**
+  String get login_error;
+
+  /// No description provided for @invalid_credentials.
+  ///
+  /// In fr, this message translates to:
+  /// **'Identifiants invalides'**
+  String get invalid_credentials;
+
+  /// No description provided for @network_error.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur réseau'**
+  String get network_error;
+
+  /// No description provided for @loading.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chargement...'**
+  String get loading;
+
+  /// No description provided for @please_wait.
+  ///
+  /// In fr, this message translates to:
+  /// **'Veuillez patienter'**
+  String get please_wait;
+
+  /// No description provided for @enter_credentials.
+  ///
+  /// In fr, this message translates to:
+  /// **'Entrez vos identifiants'**
+  String get enter_credentials;
+
+  /// No description provided for @select_database.
+  ///
+  /// In fr, this message translates to:
+  /// **'Sélectionnez la base de données'**
+  String get select_database;
+
+  /// No description provided for @login_success.
+  ///
+  /// In fr, this message translates to:
+  /// **'Connexion réussie'**
+  String get login_success;
+
+  /// No description provided for @login_failed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Échec de la connexion'**
+  String get login_failed;
+
+  /// No description provided for @connection_error.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur de connexion'**
+  String get connection_error;
+
+  /// No description provided for @server_error.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur du serveur'**
+  String get server_error;
+
+  /// No description provided for @try_again.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réessayer'**
+  String get try_again;
+
+  /// No description provided for @check_connection.
+  ///
+  /// In fr, this message translates to:
+  /// **'Vérifiez votre connexion Internet'**
+  String get check_connection;
+
+  /// No description provided for @settings.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paramètres'**
+  String get settings;
+
+  /// No description provided for @language.
+  ///
+  /// In fr, this message translates to:
+  /// **'Langue'**
+  String get language;
+
+  /// No description provided for @theme.
+  ///
+  /// In fr, this message translates to:
+  /// **'Thème'**
+  String get theme;
+
+  /// No description provided for @notifications.
+  ///
+  /// In fr, this message translates to:
+  /// **'Notifications'**
+  String get notifications;
+
+  /// No description provided for @privacy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Confidentialité'**
+  String get privacy;
+
+  /// No description provided for @about.
+  ///
+  /// In fr, this message translates to:
+  /// **'À propos'**
+  String get about;
+
+  /// No description provided for @account.
+  ///
+  /// In fr, this message translates to:
+  /// **'Compte'**
+  String get account;
+
+  /// No description provided for @preferences.
+  ///
+  /// In fr, this message translates to:
+  /// **'Préférences'**
+  String get preferences;
+
+  /// No description provided for @light_theme.
+  ///
+  /// In fr, this message translates to:
+  /// **'Thème clair'**
+  String get light_theme;
+
+  /// No description provided for @dark_theme.
+  ///
+  /// In fr, this message translates to:
+  /// **'Thème sombre'**
+  String get dark_theme;
+
+  /// No description provided for @system_theme.
+  ///
+  /// In fr, this message translates to:
+  /// **'Thème système'**
+  String get system_theme;
+
+  /// No description provided for @professional_theme.
+  ///
+  /// In fr, this message translates to:
+  /// **'Thème professionnel'**
+  String get professional_theme;
+
+  /// No description provided for @arabic.
+  ///
+  /// In fr, this message translates to:
+  /// **'Arabe'**
+  String get arabic;
+
+  /// No description provided for @french.
+  ///
+  /// In fr, this message translates to:
+  /// **'Français'**
+  String get french;
+
+  /// No description provided for @english.
+  ///
+  /// In fr, this message translates to:
+  /// **'Anglais'**
+  String get english;
+
+  /// No description provided for @spanish.
+  ///
+  /// In fr, this message translates to:
+  /// **'Espagnol'**
+  String get spanish;
+
+  /// No description provided for @enable_notifications.
+  ///
+  /// In fr, this message translates to:
+  /// **'Activer les notifications'**
+  String get enable_notifications;
+
+  /// No description provided for @push_notifications.
+  ///
+  /// In fr, this message translates to:
+  /// **'Notifications push'**
+  String get push_notifications;
+
+  /// No description provided for @email_notifications.
+  ///
+  /// In fr, this message translates to:
+  /// **'Notifications par e-mail'**
+  String get email_notifications;
+
+  /// No description provided for @location_services.
+  ///
+  /// In fr, this message translates to:
+  /// **'Services de localisation'**
+  String get location_services;
+
+  /// No description provided for @auto_sync.
+  ///
+  /// In fr, this message translates to:
+  /// **'Synchronisation automatique'**
+  String get auto_sync;
+
+  /// No description provided for @font_size.
+  ///
+  /// In fr, this message translates to:
+  /// **'Taille de police'**
+  String get font_size;
+
+  /// No description provided for @small.
+  ///
+  /// In fr, this message translates to:
+  /// **'Petit'**
+  String get small;
+
+  /// No description provided for @medium.
+  ///
+  /// In fr, this message translates to:
+  /// **'Moyen'**
+  String get medium;
+
+  /// No description provided for @large.
+  ///
+  /// In fr, this message translates to:
+  /// **'Grand'**
+  String get large;
+
+  /// No description provided for @delete_account.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer le compte'**
+  String get delete_account;
+
+  /// No description provided for @version.
+  ///
+  /// In fr, this message translates to:
+  /// **'Version'**
+  String get version;
+
+  /// No description provided for @build.
+  ///
+  /// In fr, this message translates to:
+  /// **'Build'**
+  String get build;
+
+  /// No description provided for @developer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Développeur'**
+  String get developer;
+
+  /// No description provided for @support.
+  ///
+  /// In fr, this message translates to:
+  /// **'Support'**
+  String get support;
+
+  /// No description provided for @terms.
+  ///
+  /// In fr, this message translates to:
+  /// **'Conditions'**
+  String get terms;
+
+  /// No description provided for @privacy_policy.
+  ///
+  /// In fr, this message translates to:
+  /// **'Politique de confidentialité'**
+  String get privacy_policy;
+
+  /// No description provided for @save.
+  ///
+  /// In fr, this message translates to:
+  /// **'Enregistrer'**
+  String get save;
+
+  /// No description provided for @reset.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réinitialiser'**
+  String get reset;
+
+  /// No description provided for @confirm.
+  ///
+  /// In fr, this message translates to:
+  /// **'Confirmer'**
+  String get confirm;
+
+  /// No description provided for @success.
+  ///
+  /// In fr, this message translates to:
+  /// **'Succès'**
+  String get success;
+
+  /// No description provided for @settings_saved.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paramètres enregistrés'**
+  String get settings_saved;
+
+  /// No description provided for @settings_reset.
+  ///
+  /// In fr, this message translates to:
+  /// **'Paramètres réinitialisés'**
+  String get settings_reset;
+}
+
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
+  const _AppLocalizationsDelegate();
+
+  @override
+  Future<AppLocalizations> load(Locale locale) {
+    return SynchronousFuture<AppLocalizations>(lookupAppLocalizations(locale));
+  }
+
+  @override
+  bool isSupported(Locale locale) =>
+      <String>['ar', 'en', 'es', 'fr'].contains(locale.languageCode);
+
+  @override
+  bool shouldReload(_AppLocalizationsDelegate old) => false;
+}
+
+AppLocalizations lookupAppLocalizations(Locale locale) {
+  // Lookup logic when only language code is specified.
+  switch (locale.languageCode) {
+    case 'ar':
+      return AppLocalizationsAr();
+    case 'en':
+      return AppLocalizationsEn();
+    case 'es':
+      return AppLocalizationsEs();
+    case 'fr':
+      return AppLocalizationsFr();
+  }
+
+  throw FlutterError(
+    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+    'an issue with the localizations generation tool. Please file an issue '
+    'on GitHub with a reproducible sample app and the gen-l10n configuration '
+    'that was used.',
+  );
+}
