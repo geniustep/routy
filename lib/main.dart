@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:routy/utils/app_logger.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:logger/logger.dart';
 import 'services/index.dart';
 import 'app/index.dart';
-import 'utils/index.dart';
 import 'common/api/dio_factory.dart';
 
 void main() async {

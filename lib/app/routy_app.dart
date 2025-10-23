@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:routy/screens/dashboard/dashboard_screen.dart';
 import '../themes/index.dart';
 import '../services/index.dart';
 import '../screens/splash/splash_screen.dart';
 import '../screens/auth/login_screen.dart';
 import '../controllers/index.dart';
+import '../l10n/app_localizations.dart';
 import 'app_router.dart';
 
 class RoutyApp extends StatelessWidget {
@@ -29,6 +31,20 @@ class RoutyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       locale: Get.find<TranslationController>().locale,
       fallbackLocale: const Locale('fr', 'FR'),
+
+      // ✅ إضافة دعم AppLocalizations
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('ar', ''),
+        Locale('en', ''),
+        Locale('fr', ''),
+        Locale('es', ''),
+      ],
     );
   }
 }

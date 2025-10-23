@@ -400,7 +400,7 @@ class DashboardScreen extends StatelessWidget {
         title: TranslationService.instance.translate('sales'),
         icon: Icons.shopping_cart,
         color: Colors.green,
-        route: '/sales',
+        route: AppRouter.salesOrders,
       ),
       _QuickAction(
         title: TranslationService.instance.translate('customers'),

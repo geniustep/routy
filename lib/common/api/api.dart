@@ -200,6 +200,21 @@ class Api {
             response.data["error"]["code"] == 100) {
           appLogger.warning('Session expired');
           await handleSessionExpired();
+        } else if (response.data.containsKey("error")) {
+          // ✅ استخراج رسالة الخطأ من Odoo
+          final errorData = response.data["error"];
+          String errorMessage = 'Server error';
+
+          if (errorData is Map<String, dynamic>) {
+            // محاولة استخراج الرسالة من حقول مختلفة (التفصيلية أولاً)
+            errorMessage =
+                errorData["data"]?["message"] ??
+                errorData["message"] ??
+                'Server error';
+          }
+
+          appLogger.error('Odoo Error: $errorMessage');
+          onError(errorMessage, errorData ?? {});
         } else if (response.data.containsKey("result")) {
           onResponse(response.data["result"]);
         } else {

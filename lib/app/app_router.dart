@@ -3,8 +3,8 @@ import '../screens/splash/splash_screen.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/dashboard/home_screen.dart';
 import '../screens/dashboard/dashboard_screen.dart';
-import '../screens/sales/sales_list_screen.dart';
-import '../screens/sales/sales_create_screen.dart';
+import '../screens/sales/sales_orders_screen.dart';
+import '../screens/sales/sale_order_details_screen.dart';
 import '../screens/delivery/delivery_list_screen.dart';
 import '../screens/delivery/delivery_create_screen.dart';
 import '../screens/customers/customers_list_screen.dart';
@@ -14,11 +14,13 @@ import '../screens/partners/partners_map_screen.dart';
 import '../screens/partners/partner_details_screen.dart';
 import '../models/partners/partner_type.dart';
 import '../models/partners/partners_model.dart';
+import '../models/sales/sale_order_model.dart';
 import '../screens/products/products_list_screen.dart';
 import '../screens/products/products_create_screen.dart';
 import '../screens/reports/reports_screen.dart';
 import '../screens/settings/settings_screen.dart';
 import '../bindings/partner_binding.dart';
+import '../bindings/sales_binding.dart';
 
 /// Application Router using GetX
 class AppRouter {
@@ -26,8 +28,8 @@ class AppRouter {
   static const String login = '/login';
   static const String home = '/home';
   static const String dashboard = '/dashboard';
-  static const String salesList = '/sales';
-  static const String salesCreate = '/sales/create';
+  static const String salesOrders = '/sales/orders';
+  static const String saleOrderDetails = '/sales/order/details';
   static const String deliveryList = '/delivery';
   static const String deliveryCreate = '/delivery/create';
   static const String customersList = '/customers';
@@ -48,8 +50,19 @@ class AppRouter {
     GetPage(name: login, page: () => const LoginScreen()),
     GetPage(name: home, page: () => const HomeScreen()),
     GetPage(name: dashboard, page: () => const DashboardScreen()),
-    GetPage(name: salesList, page: () => const SalesListScreen()),
-    GetPage(name: salesCreate, page: () => const SalesCreateScreen()),
+    GetPage(
+      name: salesOrders,
+      page: () => const SalesOrdersScreen(),
+      binding: SalesBinding(),
+    ),
+    GetPage(
+      name: saleOrderDetails,
+      page: () {
+        final order = Get.arguments as SaleOrderModel;
+        return SaleOrderDetailsScreen(order: order);
+      },
+      binding: SalesBinding(),
+    ),
     GetPage(name: deliveryList, page: () => const DeliveryListScreen()),
     GetPage(name: deliveryCreate, page: () => const DeliveryCreateScreen()),
     GetPage(name: customersList, page: () => const CustomersListScreen()),

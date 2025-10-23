@@ -1,2 +1,3 @@
-export 'sales_list_screen.dart';
-export 'sales_create_screen.dart';
+/// تصدير شاشات المبيعات
+export 'sales_orders_screen.dart';
+export 'sale_order_details_screen.dart';
