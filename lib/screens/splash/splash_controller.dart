@@ -267,7 +267,7 @@ class SplashController extends GetxController {
       // تحديد الشاشة المناسبة
       String route;
       if (userController.isLoggedIn && userController.user != null) {
-        route = AppRouter.dashboard;
+        route = AppRouter.dashboardV2;
         appLogger.navigation(route, from: AppRouter.splash);
       } else {
         route = AppRouter.login;

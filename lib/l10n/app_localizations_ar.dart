@@ -9,172 +9,10 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get app_name => 'روتي';
-
-  @override
   String get appTitle => 'Routy';
 
   @override
-  String get welcome => 'مرحباً';
-
-  @override
-  String get welcome_back => 'مرحباً بعودتك';
-
-  @override
-  String get ready_to_achieve => 'مستعد لتحقيق أهدافك التجارية؟';
-
-  @override
-  String get whats_happening_today => 'إليك ما يحدث اليوم';
-
-  @override
-  String get loading => 'جاري التحميل...';
-
-  @override
-  String get please_wait => 'يرجى الانتظار';
-
-  @override
-  String get pleaseWait => 'يرجى الانتظار';
-
-  @override
-  String get error_occurred => 'حدث خطأ';
-
-  @override
-  String get error => 'خطأ';
-
-  @override
-  String get error_loading_data => 'خطأ في تحميل البيانات';
-
-  @override
-  String get error_loading => 'خطأ في التحميل';
-
-  @override
-  String get retry => 'إعادة المحاولة';
-
-  @override
-  String get try_again => 'حاول مرة أخرى';
-
-  @override
-  String get tryAgain => 'حاول مرة أخرى';
-
-  @override
-  String get refresh => 'تحديث';
-
-  @override
-  String get no_data_found => 'لا توجد بيانات';
-
-  @override
-  String get no_items_found => 'لا توجد عناصر';
-
-  @override
-  String get no_results => 'لا توجد نتائج للبحث';
-
-  @override
-  String get try_different_search => 'جرب البحث بكلمات مختلفة';
-
-  @override
-  String get coming_soon => 'قريباً';
-
-  @override
-  String get view_all => 'عرض الكل';
-
-  @override
-  String get save => 'حفظ';
-
-  @override
-  String get cancel => 'إلغاء';
-
-  @override
-  String get delete => 'حذف';
-
-  @override
-  String get remove => 'إزالة';
-
-  @override
-  String get edit => 'تعديل';
-
-  @override
-  String get update => 'تحديث';
-
-  @override
-  String get view => 'عرض';
-
-  @override
-  String get confirm => 'تأكيد';
-
-  @override
-  String get yes => 'نعم';
-
-  @override
-  String get no => 'لا';
-
-  @override
-  String get ok => 'موافق';
-
-  @override
-  String get close => 'إغلاق';
-
-  @override
-  String get back => 'رجوع';
-
-  @override
-  String get next => 'التالي';
-
-  @override
-  String get previous => 'السابق';
-
-  @override
-  String get select => 'اختيار';
-
-  @override
-  String get select_all => 'اختيار الكل';
-
-  @override
-  String get clear => 'مسح';
-
-  @override
-  String get apply => 'تطبيق';
-
-  @override
-  String get reset => 'إعادة تعيين';
-
-  @override
-  String get add => 'إضافة';
-
-  @override
-  String get share => 'مشاركة';
-
-  @override
-  String get print => 'طباعة';
-
-  @override
-  String get download => 'تحميل';
-
-  @override
-  String get upload => 'رفع';
-
-  @override
-  String get export => 'تصدير';
-
-  @override
-  String get import => 'استيراد';
-
-  @override
-  String get search => 'بحث';
-
-  @override
-  String get filter => 'تصفية';
-
-  @override
-  String get sort => 'ترتيب';
-
-  @override
-  String get actions => 'الإجراءات';
-
-  @override
-  String get quick_actions => 'الإجراءات السريعة';
-
-  @override
-  String get login => 'تسجيل الدخول';
+  String get welcome => 'مرحباً في Routy';
 
   @override
   String get loginTitle => 'Routy';
@@ -183,40 +21,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get loginSubtitle => 'إدارة المبيعات والتسليم';
 
   @override
-  String get logout => 'تسجيل الخروج';
-
-  @override
-  String get username => 'اسم المستخدم';
-
-  @override
   String get usernameLabel => 'اسم المستخدم';
-
-  @override
-  String get password => 'كلمة المرور';
 
   @override
   String get passwordLabel => 'كلمة المرور';
 
   @override
-  String get email => 'البريد الإلكتروني';
-
-  @override
-  String get email_address => 'البريد الإلكتروني';
-
-  @override
-  String get database => 'قاعدة البيانات';
-
-  @override
   String get databaseLabel => 'قاعدة البيانات';
-
-  @override
-  String get forgot_password => 'نسيت كلمة المرور؟';
-
-  @override
-  String get remember_me => 'تذكرني';
-
-  @override
-  String get login_button => 'تسجيل الدخول';
 
   @override
   String get loginButton => 'تسجيل الدخول';
@@ -231,85 +42,91 @@ class AppLocalizationsAr extends AppLocalizations {
   String get databaseRequired => 'يرجى اختيار قاعدة البيانات';
 
   @override
-  String get enter_credentials => 'أدخل بيانات الدخول الخاصة بك';
-
-  @override
-  String get enterCredentials => 'أدخل بيانات الدخول الخاصة بك';
-
-  @override
-  String get select_database => 'اختر قاعدة البيانات';
-
-  @override
-  String get selectDatabase => 'اختر قاعدة البيانات';
-
-  @override
   String get loginError => 'خطأ في تسجيل الدخول';
-
-  @override
-  String get login_error => 'خطأ في تسجيل الدخول';
 
   @override
   String get invalidCredentials => 'بيانات الدخول غير صحيحة';
 
   @override
-  String get invalid_credentials => 'بيانات الدخول غير صحيحة';
-
-  @override
   String get networkError => 'خطأ في الشبكة';
 
   @override
-  String get network_error => 'خطأ في الشبكة';
+  String get pleaseWait => 'يرجى الانتظار';
+
+  @override
+  String get enterCredentials => 'أدخل بيانات الدخول الخاصة بك';
+
+  @override
+  String get selectDatabase => 'اختر قاعدة البيانات';
 
   @override
   String get loginSuccess => 'تم تسجيل الدخول بنجاح';
 
   @override
-  String get login_success => 'تم تسجيل الدخول بنجاح';
-
-  @override
   String get loginFailed => 'فشل تسجيل الدخول';
-
-  @override
-  String get login_failed => 'فشل تسجيل الدخول';
 
   @override
   String get connectionError => 'خطأ في الاتصال';
 
   @override
-  String get connection_error => 'خطأ في الاتصال';
-
-  @override
   String get serverError => 'خطأ في الخادم';
 
   @override
-  String get server_error => 'خطأ في الخادم';
+  String get tryAgain => 'حاول مرة أخرى';
 
   @override
   String get checkConnection => 'تحقق من الاتصال بالإنترنت';
 
   @override
-  String get check_connection => 'تحقق من الاتصال بالإنترنت';
-
-  @override
-  String get confirm_logout => 'تأكيد تسجيل الخروج';
-
-  @override
-  String get logout_confirmation => 'هل أنت متأكد من أنك تريد تسجيل الخروج؟';
-
-  @override
-  String get logout_error => 'حدث خطأ أثناء تسجيل الخروج';
-
-  @override
   String get dashboard => 'لوحة التحكم';
 
   @override
+  String get welcome_back => 'مرحباً بعودتك';
+
+  @override
+  String get ready_to_achieve => 'مستعد لتحقيق أهدافك التجارية؟';
+
+  @override
+  String get whats_happening_today => 'إليك ما يحدث اليوم';
+
+  @override
   String get today_reports => 'تقارير اليوم';
+
+  @override
+  String get view_all => 'عرض الكل';
 
   @override
   String get target => 'الهدف';
 
   @override
   String get progress => 'التقدم';
+
+  @override
+  String get quick_actions => 'الإجراءات السريعة';
+
+  @override
+  String get products => 'المنتوجات';
+
+  @override
+  String get customers => 'العملاء';
+
+  @override
+  String get sales => 'المبيعات';
+
+  @override
+  String get reports => 'التقارير';
+
+  @override
+  String get expenses => 'المصروفات';
+
+  @override
+  String get pos => 'نقطة البيع';
+
+  @override
+  String get purchase => 'المشتريات';
+
+  @override
+  String get warehouse => 'المستودع';
 
   @override
   String get recent_activity => 'النشاط الأخير';
@@ -340,94 +157,205 @@ class AppLocalizationsAr extends AppLocalizations {
   String get view_analytics => 'عرض التحليلات';
 
   @override
-  String get statistics => 'الإحصائيات';
-
-  @override
   String get confirm_exit => 'تأكيد الخروج';
 
   @override
   String get exit_confirmation => 'هل أنت متأكد من أنك تريد الخروج من التطبيق؟';
 
   @override
+  String get cancel => 'إلغاء';
+
+  @override
   String get exit => 'خروج';
 
   @override
-  String get sales => 'المبيعات';
+  String get confirm_logout => 'تأكيد تسجيل الخروج';
 
   @override
-  String get sales_orders => 'أوامر البيع';
+  String get logout_confirmation => 'هل أنت متأكد من أنك تريد تسجيل الخروج؟';
 
   @override
-  String get new_sale => 'طلب جديد';
+  String get logout => 'تسجيل الخروج';
 
   @override
-  String get no_sales_orders => 'لا توجد أوامر بيع';
+  String get error => 'خطأ';
 
   @override
-  String get create_first_sale_order => 'قم بإنشاء أول أمر بيع';
+  String get logout_error => 'حدث خطأ أثناء تسجيل الخروج';
 
   @override
-  String get search_sales_orders => 'البحث في أوامر البيع';
+  String get login => 'تسجيل الدخول';
 
   @override
-  String get total_orders => 'إجمالي الطلبات';
+  String get username => 'اسم المستخدم';
 
   @override
-  String get total_amount => 'المبلغ الإجمالي';
+  String get password => 'كلمة المرور';
 
   @override
-  String get sale_order => 'أمر البيع';
+  String get database => 'قاعدة البيانات';
 
   @override
-  String get order_number => 'رقم الطلب';
+  String get login_button => 'تسجيل الدخول';
 
   @override
-  String get order_date => 'تاريخ الطلب';
+  String get remember_me => 'تذكرني';
 
   @override
-  String get order_info => 'معلومات الطلب';
+  String get forgot_password => 'نسيت كلمة المرور؟';
 
   @override
-  String get sales_person => 'مندوب المبيعات';
+  String get login_error => 'خطأ في تسجيل الدخول';
 
   @override
-  String get customer => 'العميل';
+  String get invalid_credentials => 'بيانات الدخول غير صحيحة';
 
   @override
-  String get customers => 'العملاء';
+  String get network_error => 'خطأ في الشبكة';
 
   @override
-  String get customer_name => 'اسم العميل';
+  String get loading => 'جاري التحميل...';
 
   @override
-  String get customer_info => 'معلومات العميل';
+  String get please_wait => 'يرجى الانتظار';
 
   @override
-  String get phone => 'الهاتف';
+  String get enter_credentials => 'أدخل بيانات الدخول الخاصة بك';
 
   @override
-  String get mobile => 'جوال';
+  String get select_database => 'اختر قاعدة البيانات';
 
   @override
-  String get address => 'العنوان';
+  String get login_success => 'تم تسجيل الدخول بنجاح';
 
   @override
-  String get full_address => 'العنوان الكامل';
+  String get login_failed => 'فشل تسجيل الدخول';
 
   @override
-  String get city => 'مدينة';
+  String get connection_error => 'خطأ في الاتصال';
 
   @override
-  String get country => 'بلد';
+  String get server_error => 'خطأ في الخادم';
 
   @override
-  String get zip => 'رمز بريدي';
+  String get try_again => 'حاول مرة أخرى';
 
   @override
-  String get contact => 'الاتصال';
+  String get check_connection => 'تحقق من الاتصال بالإنترنت';
 
   @override
-  String get call => 'اتصل';
+  String get settings => 'الإعدادات';
+
+  @override
+  String get language => 'اللغة';
+
+  @override
+  String get theme => 'المظهر';
+
+  @override
+  String get notifications => 'الإشعارات';
+
+  @override
+  String get privacy => 'الخصوصية';
+
+  @override
+  String get about => 'حول';
+
+  @override
+  String get account => 'الحساب';
+
+  @override
+  String get preferences => 'التفضيلات';
+
+  @override
+  String get light_theme => 'مظهر فاتح';
+
+  @override
+  String get dark_theme => 'مظهر داكن';
+
+  @override
+  String get system_theme => 'مظهر النظام';
+
+  @override
+  String get professional_theme => 'مظهر احترافي';
+
+  @override
+  String get arabic => 'العربية';
+
+  @override
+  String get french => 'الفرنسية';
+
+  @override
+  String get english => 'الإنجليزية';
+
+  @override
+  String get spanish => 'الإسبانية';
+
+  @override
+  String get enable_notifications => 'تفعيل الإشعارات';
+
+  @override
+  String get push_notifications => 'الإشعارات الفورية';
+
+  @override
+  String get email_notifications => 'إشعارات البريد الإلكتروني';
+
+  @override
+  String get location_services => 'خدمات الموقع';
+
+  @override
+  String get auto_sync => 'المزامنة التلقائية';
+
+  @override
+  String get font_size => 'حجم الخط';
+
+  @override
+  String get small => 'صغير';
+
+  @override
+  String get medium => 'متوسط';
+
+  @override
+  String get large => 'كبير';
+
+  @override
+  String get delete_account => 'حذف الحساب';
+
+  @override
+  String get version => 'الإصدار';
+
+  @override
+  String get build => 'البناء';
+
+  @override
+  String get developer => 'المطور';
+
+  @override
+  String get support => 'الدعم';
+
+  @override
+  String get terms => 'الشروط';
+
+  @override
+  String get privacy_policy => 'سياسة الخصوصية';
+
+  @override
+  String get save => 'حفظ';
+
+  @override
+  String get reset => 'إعادة تعيين';
+
+  @override
+  String get confirm => 'تأكيد';
+
+  @override
+  String get success => 'نجح';
+
+  @override
+  String get settings_saved => 'تم حفظ الإعدادات';
+
+  @override
+  String get settings_reset => 'تم إعادة تعيين الإعدادات';
 
   @override
   String get partners => 'الشركاء';
@@ -466,7 +394,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get no_partners => 'لا يوجد شركاء';
 
   @override
+  String get no_results => 'لا توجد نتائج للبحث';
+
+  @override
+  String get try_different_search => 'جرب كلمات بحث أخرى';
+
+  @override
   String get start_adding => 'ابدأ بإضافة شركاء جدد';
+
+  @override
+  String get customer => 'عميل';
 
   @override
   String get supplier => 'مورد';
@@ -482,6 +419,18 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get import_partners => 'استيراد';
+
+  @override
+  String get coming_soon => 'قريباً...';
+
+  @override
+  String get retry => 'إعادة المحاولة';
+
+  @override
+  String get refresh => 'تحديث';
+
+  @override
+  String get error_loading => 'خطأ في التحميل';
 
   @override
   String get has_debt => 'مديون';
@@ -508,6 +457,33 @@ class AppLocalizationsAr extends AppLocalizations {
   String get navigate => 'التنقل';
 
   @override
+  String get contact => 'الاتصال';
+
+  @override
+  String get phone => 'هاتف';
+
+  @override
+  String get mobile => 'جوال';
+
+  @override
+  String get email => 'بريد إلكتروني';
+
+  @override
+  String get address => 'العنوان';
+
+  @override
+  String get full_address => 'العنوان الكامل';
+
+  @override
+  String get city => 'مدينة';
+
+  @override
+  String get country => 'بلد';
+
+  @override
+  String get zip => 'رمز بريدي';
+
+  @override
   String get financial => 'المالية';
 
   @override
@@ -529,242 +505,44 @@ class AppLocalizationsAr extends AppLocalizations {
   String get active => 'نشط';
 
   @override
-  String get product => 'المنتج';
+  String get yes => 'نعم';
 
   @override
-  String get products => 'المنتوجات';
+  String get no => 'لا';
 
   @override
-  String get item_count => 'عدد العناصر';
+  String get call => 'اتصل';
 
   @override
-  String get items => 'عناصر';
+  String get edit => 'تعديل';
 
   @override
-  String get quantity => 'الكمية';
+  String get sales_trend => 'اتجاه المبيعات';
 
   @override
-  String get price => 'السعر';
+  String get last_7_days => 'آخر 7 أيام';
 
   @override
-  String get unit_price => 'سعر الوحدة';
+  String get no_data_available => 'لا توجد بيانات متاحة';
 
   @override
-  String get total_price => 'السعر الإجمالي';
+  String get today_sales => 'مبيعات اليوم';
 
   @override
-  String get status => 'الحالة';
+  String get week_sales => 'مبيعات الأسبوع';
 
   @override
-  String get draft => 'مسودة';
+  String get month_sales => 'مبيعات الشهر';
 
   @override
-  String get pending => 'قيد المراجعة';
+  String get orders => 'طلبات';
 
   @override
-  String get confirmed => 'مؤكد';
+  String get of_target => 'من الهدف';
 
   @override
-  String get in_progress => 'قيد التنفيذ';
+  String get loading_dashboard => 'جاري تحميل لوحة التحكم...';
 
   @override
-  String get completed => 'مكتمل';
-
-  @override
-  String get delivered => 'تم التسليم';
-
-  @override
-  String get cancelled => 'ملغى';
-
-  @override
-  String get paid => 'مدفوع';
-
-  @override
-  String get unpaid => 'غير مدفوع';
-
-  @override
-  String get sent => 'مرسل';
-
-  @override
-  String get all => 'الكل';
-
-  @override
-  String get sort_by => 'الترتيب حسب';
-
-  @override
-  String get newest_first => 'الأحدث أولاً';
-
-  @override
-  String get oldest_first => 'الأقدم أولاً';
-
-  @override
-  String get highest_amount => 'أعلى مبلغ';
-
-  @override
-  String get lowest_amount => 'أقل مبلغ';
-
-  @override
-  String get alphabetical => 'أبجدياً';
-
-  @override
-  String get date => 'التاريخ';
-
-  @override
-  String get time => 'الوقت';
-
-  @override
-  String get today => 'اليوم';
-
-  @override
-  String get yesterday => 'أمس';
-
-  @override
-  String get this_week => 'هذا الأسبوع';
-
-  @override
-  String get this_month => 'هذا الشهر';
-
-  @override
-  String get this_year => 'هذه السنة';
-
-  @override
-  String get start_date => 'تاريخ البداية';
-
-  @override
-  String get end_date => 'تاريخ النهاية';
-
-  @override
-  String get settings => 'الإعدادات';
-
-  @override
-  String get profile => 'الملف الشخصي';
-
-  @override
-  String get account => 'الحساب';
-
-  @override
-  String get preferences => 'التفضيلات';
-
-  @override
-  String get language => 'اللغة';
-
-  @override
-  String get theme => 'المظهر';
-
-  @override
-  String get light_theme => 'مظهر فاتح';
-
-  @override
-  String get dark_theme => 'مظهر داكن';
-
-  @override
-  String get system_theme => 'مظهر النظام';
-
-  @override
-  String get professional_theme => 'مظهر احترافي';
-
-  @override
-  String get arabic => 'العربية';
-
-  @override
-  String get french => 'الفرنسية';
-
-  @override
-  String get english => 'الإنجليزية';
-
-  @override
-  String get spanish => 'الإسبانية';
-
-  @override
-  String get notifications => 'الإشعارات';
-
-  @override
-  String get enable_notifications => 'تفعيل الإشعارات';
-
-  @override
-  String get push_notifications => 'الإشعارات الفورية';
-
-  @override
-  String get email_notifications => 'إشعارات البريد الإلكتروني';
-
-  @override
-  String get privacy => 'الخصوصية';
-
-  @override
-  String get privacy_policy => 'سياسة الخصوصية';
-
-  @override
-  String get location_services => 'خدمات الموقع';
-
-  @override
-  String get auto_sync => 'المزامنة التلقائية';
-
-  @override
-  String get font_size => 'حجم الخط';
-
-  @override
-  String get small => 'صغير';
-
-  @override
-  String get medium => 'متوسط';
-
-  @override
-  String get large => 'كبير';
-
-  @override
-  String get delete_account => 'حذف الحساب';
-
-  @override
-  String get version => 'الإصدار';
-
-  @override
-  String get build => 'البناء';
-
-  @override
-  String get developer => 'المطور';
-
-  @override
-  String get support => 'الدعم';
-
-  @override
-  String get help => 'المساعدة';
-
-  @override
-  String get about => 'حول';
-
-  @override
-  String get terms => 'الشروط';
-
-  @override
-  String get success => 'نجح';
-
-  @override
-  String get settings_saved => 'تم حفظ الإعدادات';
-
-  @override
-  String get settings_reset => 'تم إعادة تعيين الإعدادات';
-
-  @override
-  String get reports => 'التقارير';
-
-  @override
-  String get expenses => 'المصروفات';
-
-  @override
-  String get pos => 'نقطة البيع';
-
-  @override
-  String get purchase => 'المشتريات';
-
-  @override
-  String get warehouse => 'المستودع';
-
-  @override
-  String get notes => 'ملاحظات';
-
-  @override
-  String get description => 'الوصف';
-
-  @override
-  String get details => 'التفاصيل';
+  String get refresh_dashboard => 'تحديث لوحة التحكم';
 }

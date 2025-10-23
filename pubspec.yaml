@@ -27,7 +27,11 @@ dependencies:
   # UI & Navigation
   go_router: ^14.6.2
   flutter_svg: ^2.0.10+1
-  
+
+  # Charts & Animations
+  fl_chart: ^0.69.0
+  shimmer: ^3.0.0
+
   # Utils
   intl: ^0.20.2
   uuid: ^4.5.1

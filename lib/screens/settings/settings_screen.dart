@@ -291,6 +291,8 @@ class _SettingsScreenState extends State<SettingsScreen>
           const SizedBox(height: 20),
           _buildThemeSection(),
           const SizedBox(height: 20),
+          _buildDashboardSection(themeController),
+          const SizedBox(height: 20),
           _buildNotificationSection(themeController),
           const SizedBox(height: 20),
           _buildLocationSection(themeController),
@@ -348,6 +350,86 @@ class _SettingsScreenState extends State<SettingsScreen>
         ],
       );
     });
+  }
+
+  Widget _buildDashboardSection(ThemeController themeController) {
+    return _buildSectionCard(
+      title: 'Dashboard',
+      icon: Icons.dashboard_customize,
+      themeController: themeController,
+      children: [
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Colors.blue.withValues(alpha: 0.2),
+                Colors.purple.withValues(alpha: 0.2),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: Colors.blue.withValues(alpha: 0.5),
+              width: 1,
+            ),
+          ),
+          child: ListTile(
+            leading: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.blue.withValues(alpha: 0.3),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(
+                Icons.auto_awesome,
+                color: Colors.blue,
+                size: 24,
+              ),
+            ),
+            title: Text(
+              'Enhanced Dashboard V2',
+              style: TextStyle(
+                color: themeController.isDarkMode
+                    ? Colors.white
+                    : Colors.black87,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            subtitle: Text(
+              'Try the new dashboard experience',
+              style: TextStyle(
+                color: themeController.isDarkMode
+                    ? Colors.white.withValues(alpha: 0.7)
+                    : Colors.grey[600],
+                fontSize: 14,
+              ),
+            ),
+            trailing: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: Colors.green,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Text(
+                'NEW',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            onTap: () {
+              HapticFeedback.lightImpact();
+              Get.toNamed(AppRouter.dashboardV2);
+            },
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _buildThemePreview(ThemeController themeController) {

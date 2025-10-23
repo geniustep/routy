@@ -1,5 +1,7 @@
 // Dashboard Models for Routy App
 
+import 'package:flutter/material.dart';
+
 class DashboardSummary {
   final String totalSales;
   final String totalDeliveries;
@@ -267,4 +269,160 @@ class DashboardData {
       'userInfo': userInfo?.toJson(),
     };
   }
+}
+
+// ==================== Enhanced Models ====================
+
+/// 📊 Enhanced Dashboard Stats Model
+class DashboardStatsEnhanced {
+  final double todaySales;
+  final double weekSales;
+  final double monthSales;
+  final int todayOrders;
+  final int weekOrders;
+  final int monthOrders;
+  final int activeCustomers;
+  final int totalCustomers;
+  final double target;
+  final List<ChartDataPoint> salesTrend;
+
+  const DashboardStatsEnhanced({
+    this.todaySales = 0,
+    this.weekSales = 0,
+    this.monthSales = 0,
+    this.todayOrders = 0,
+    this.weekOrders = 0,
+    this.monthOrders = 0,
+    this.activeCustomers = 0,
+    this.totalCustomers = 0,
+    this.target = 1000000,
+    this.salesTrend = const [],
+  });
+
+  double get progressPercentage => target > 0 ? (monthSales / target) : 0;
+
+  DashboardStatsEnhanced copyWith({
+    double? todaySales,
+    double? weekSales,
+    double? monthSales,
+    int? todayOrders,
+    int? weekOrders,
+    int? monthOrders,
+    int? activeCustomers,
+    int? totalCustomers,
+    double? target,
+    List<ChartDataPoint>? salesTrend,
+  }) {
+    return DashboardStatsEnhanced(
+      todaySales: todaySales ?? this.todaySales,
+      weekSales: weekSales ?? this.weekSales,
+      monthSales: monthSales ?? this.monthSales,
+      todayOrders: todayOrders ?? this.todayOrders,
+      weekOrders: weekOrders ?? this.weekOrders,
+      monthOrders: monthOrders ?? this.monthOrders,
+      activeCustomers: activeCustomers ?? this.activeCustomers,
+      totalCustomers: totalCustomers ?? this.totalCustomers,
+      target: target ?? this.target,
+      salesTrend: salesTrend ?? this.salesTrend,
+    );
+  }
+}
+
+/// 📈 Chart Data Point for Sales Trend
+class ChartDataPoint {
+  final DateTime date;
+  final double value;
+  final String label;
+
+  const ChartDataPoint({
+    required this.date,
+    required this.value,
+    required this.label,
+  });
+}
+
+/// 📋 Enhanced Activity Model
+class ActivityModelEnhanced {
+  final String id;
+  final String title;
+  final String subtitle;
+  final DateTime timestamp;
+  final ActivityType type;
+  final Color color;
+  final IconData icon;
+
+  const ActivityModelEnhanced({
+    required this.id,
+    required this.title,
+    required this.subtitle,
+    required this.timestamp,
+    required this.type,
+    required this.color,
+    required this.icon,
+  });
+
+  String get timeAgo {
+    final diff = DateTime.now().difference(timestamp);
+    if (diff.inMinutes < 1) {
+      return 'Just now';
+    } else if (diff.inMinutes < 60) {
+      return '${diff.inMinutes}m ago';
+    } else if (diff.inHours < 24) {
+      return '${diff.inHours}h ago';
+    } else {
+      return '${diff.inDays}d ago';
+    }
+  }
+}
+
+/// Activity Types
+enum ActivityType {
+  sale,
+  customer,
+  product,
+  delivery,
+  payment,
+  other,
+}
+
+/// 🎯 KPI Card Data
+class KpiCardData {
+  final String title;
+  final String value;
+  final String subtitle;
+  final IconData icon;
+  final Color color;
+  final double progress;
+  final String? trend;
+  final bool isPositiveTrend;
+
+  const KpiCardData({
+    required this.title,
+    required this.value,
+    required this.subtitle,
+    required this.icon,
+    required this.color,
+    this.progress = 0.0,
+    this.trend,
+    this.isPositiveTrend = true,
+  });
+}
+
+/// 🎨 Quick Action Data
+class QuickActionData {
+  final String title;
+  final IconData icon;
+  final Color color;
+  final String route;
+  final bool isEnabled;
+  final int? badge;
+
+  const QuickActionData({
+    required this.title,
+    required this.icon,
+    required this.color,
+    required this.route,
+    this.isEnabled = true,
+    this.badge,
+  });
 }
