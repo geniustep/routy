@@ -55,12 +55,12 @@ class SalesOrdersScreen extends StatelessWidget {
       itemBuilder: (context, order, index) {
         return GenericListCard(
           // المحتوى الأساسي
-          title: order.orderName.isNotEmpty
-              ? order.orderName
-              : 'SO-${order.odooId ?? index + 1}',
+          title: order.orderName.isEmpty
+              ? 'SO-${order.odooId ?? index + 1}'
+              : order.orderName,
           subtitle: order.partnerName ?? l10n.customer,
-          secondaryText: order.clientOrderRef != null
-              ? 'Ref: ${order.clientOrderRef}'
+          secondaryText: order.clientOrderRefText != null
+              ? 'Ref: ${order.clientOrderRefText}'
               : null,
 
           // Leading: أيقونة
@@ -68,17 +68,17 @@ class SalesOrdersScreen extends StatelessWidget {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: _getStatusColor(order.state).withOpacity(0.1),
+              color: _getStatusColor(order.stateLabel).withOpacity(0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
               Icons.receipt_long,
-              color: _getStatusColor(order.state),
+              color: _getStatusColor(order.stateLabel),
             ),
           ),
 
           // الحالة
-          status: _getOrderStatus(order.state ?? 'draft'),
+          status: _getOrderStatus(order.stateLabel),
 
           // السعر في الـ trailing
           trailing: Column(

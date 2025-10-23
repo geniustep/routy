@@ -414,6 +414,33 @@ class SaleOrderModel extends BaseModel {
   /// عدد أسطر الطلب
   int get linesCount => orderLineIds.length;
 
+  /// الملاحظات (آمنة من false)
+  String? get noteText {
+    if (note == null || note == false) return null;
+    if (note is String && (note as String).isNotEmpty) {
+      return note as String;
+    }
+    return null;
+  }
+
+  /// مرجع العميل (آمنة من false)
+  String? get clientOrderRefText {
+    if (clientOrderRef == null || clientOrderRef == false) return null;
+    if (clientOrderRef is String && (clientOrderRef as String).isNotEmpty) {
+      return clientOrderRef as String;
+    }
+    return null;
+  }
+
+  /// المرجع (آمنة من false)
+  String? get referenceText {
+    if (reference == null || reference == false) return null;
+    if (reference is String && (reference as String).isNotEmpty) {
+      return reference as String;
+    }
+    return null;
+  }
+
   /// المبلغ الإجمالي منسق
   String get totalAmountFormatted {
     final currency = currencyName ?? '';

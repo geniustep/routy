@@ -17,7 +17,7 @@ class SaleOrderDetailsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          order.orderName.isNotEmpty ? order.orderName : l10n.sale_order,
+          order.orderName.isEmpty ? l10n.sale_order : order.orderName,
         ),
         actions: [
           IconButton(
@@ -52,8 +52,7 @@ class SaleOrderDetailsScreen extends StatelessWidget {
             const SizedBox(height: 16),
 
             // الملاحظات
-            if (order.note != null && order.note!.isNotEmpty)
-              _buildNotesCard(theme, l10n),
+            if (order.noteText != null) _buildNotesCard(theme, l10n),
           ],
         ),
       ),
@@ -81,9 +80,9 @@ class SaleOrderDetailsScreen extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    if (order.clientOrderRef != null)
+                    if (order.clientOrderRefText != null)
                       Text(
-                        'Ref: ${order.clientOrderRef}',
+                        'Ref: ${order.clientOrderRefText}',
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: Colors.grey,
                         ),
@@ -101,7 +100,7 @@ class SaleOrderDetailsScreen extends StatelessWidget {
 
   /// شارة الحالة
   Widget _buildStatusBadge(ThemeData theme) {
-    final statusInfo = _getStatusInfo(order.state ?? 'draft');
+    final statusInfo = _getStatusInfo(order.stateLabel);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -260,7 +259,7 @@ class SaleOrderDetailsScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-            Text(order.note!, style: theme.textTheme.bodyMedium),
+            Text(order.noteText ?? '', style: theme.textTheme.bodyMedium),
           ],
         ),
       ),
