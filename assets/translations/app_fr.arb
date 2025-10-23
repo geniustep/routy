@@ -174,3 +174,14 @@
   "edit": "Modifier",
   "partner_details": "Détails du partenaire"
 }
+  "sales_trend": "Tendance des ventes",
+  "last_7_days": "7 derniers jours",
+  "no_data_available": "Aucune donnée disponible",
+  "today_sales": "Ventes aujourd'hui",
+  "week_sales": "Ventes de la semaine",
+  "month_sales": "Ventes du mois",
+  "orders": "commandes",
+  "of_target": "de l'objectif",
+  "loading_dashboard": "Chargement du tableau de bord...",
+  "refresh_dashboard": "Actualiser le tableau de bord"
+}

@@ -176,4 +176,14 @@
   "call": "اتصل",
   "edit": "تعديل",
   "partner_details": "تفاصيل الشريك"
+}  "sales_trend": "اتجاه المبيعات",
+  "last_7_days": "آخر 7 أيام",
+  "no_data_available": "لا توجد بيانات متاحة",
+  "today_sales": "مبيعات اليوم",
+  "week_sales": "مبيعات الأسبوع",
+  "month_sales": "مبيعات الشهر",
+  "orders": "طلبات",
+  "of_target": "من الهدف",
+  "loading_dashboard": "جاري تحميل لوحة التحكم...",
+  "refresh_dashboard": "تحديث لوحة التحكم"
 }

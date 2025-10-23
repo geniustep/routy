@@ -174,3 +174,14 @@
   "edit": "Edit",
   "partner_details": "Partner details"
 }
+  "sales_trend": "Sales Trend",
+  "last_7_days": "Last 7 Days",
+  "no_data_available": "No data available",
+  "today_sales": "Today Sales",
+  "week_sales": "Week Sales",
+  "month_sales": "Month Sales",
+  "orders": "orders",
+  "of_target": "of target",
+  "loading_dashboard": "Loading dashboard...",
+  "refresh_dashboard": "Refresh Dashboard"
+}
