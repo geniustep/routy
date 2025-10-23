@@ -11,7 +11,7 @@ import 'package:routy/screens/dashboard/widgets/dashboard_widgets.dart';
 import 'package:routy/screens/dashboard/dashboard_models.dart';
 
 /// 🎨 Enhanced Dashboard Screen V2
-/// 
+///
 /// Features:
 /// - ✅ Responsive Design (Mobile, Tablet, Desktop)
 /// - ✅ Real-time Charts (fl_chart)
@@ -35,9 +35,7 @@ class DashboardV2Screen extends StatelessWidget {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           Get.offAllNamed(AppRouter.login);
         });
-        return const Scaffold(
-          body: Center(child: CircularProgressIndicator()),
-        );
+        return const Scaffold(body: Center(child: CircularProgressIndicator()));
       }
 
       return PopScope(
@@ -60,10 +58,7 @@ class DashboardV2Screen extends StatelessWidget {
   }
 
   /// App Bar
-  PreferredSizeWidget _buildAppBar(
-    ThemeController theme,
-    UserController user,
-  ) {
+  PreferredSizeWidget _buildAppBar(ThemeController theme, UserController user) {
     return AppBar(
       elevation: 0,
       backgroundColor: theme.isDarkMode
@@ -71,11 +66,7 @@ class DashboardV2Screen extends StatelessWidget {
           : theme.primaryColor,
       title: Row(
         children: [
-          Icon(
-            Icons.dashboard,
-            color: Colors.white,
-            size: 24,
-          ),
+          Icon(Icons.dashboard, color: Colors.white, size: 24),
           const SizedBox(width: 12),
           Text(
             TranslationService.instance.translate('dashboard'),
@@ -109,7 +100,8 @@ class DashboardV2Screen extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final isDesktop = constraints.maxWidth > 900;
-        final isTablet = constraints.maxWidth > 600 && constraints.maxWidth <= 900;
+        final isTablet =
+            constraints.maxWidth > 600 && constraints.maxWidth <= 900;
 
         return SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
@@ -136,7 +128,11 @@ class DashboardV2Screen extends StatelessWidget {
                   children: [
                     Expanded(
                       flex: 2,
-                      child: _buildQuickActionsSection(context, controller, theme),
+                      child: _buildQuickActionsSection(
+                        context,
+                        controller,
+                        theme,
+                      ),
                     ),
                     const SizedBox(width: 24),
                     Expanded(
@@ -201,14 +197,8 @@ class DashboardV2Screen extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: theme.isDarkMode
-                ? [
-                    const Color(0xFF1F2937),
-                    const Color(0xFF111827),
-                  ]
-                : [
-                    theme.primaryColor,
-                    theme.primaryColor.withOpacity(0.8),
-                  ],
+                ? [const Color(0xFF1F2937), const Color(0xFF111827)]
+                : [theme.primaryColor, theme.primaryColor.withOpacity(0.8)],
           ),
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
@@ -224,11 +214,7 @@ class DashboardV2Screen extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(
-                  Icons.waving_hand,
-                  color: Colors.amber,
-                  size: 28,
-                ),
+                Icon(Icons.waving_hand, color: Colors.amber, size: 28),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
@@ -255,10 +241,7 @@ class DashboardV2Screen extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               TranslationService.instance.translate('ready_to_achieve'),
-              style: const TextStyle(
-                fontSize: 14,
-                color: Colors.white70,
-              ),
+              style: const TextStyle(fontSize: 14, color: Colors.white70),
             ),
           ],
         ),
@@ -313,10 +296,7 @@ class DashboardV2Screen extends StatelessWidget {
                   .toList(),
             ),
             const SizedBox(height: 16),
-            EnhancedKpiCard(
-              data: cards[2],
-              isDarkMode: theme.isDarkMode,
-            ),
+            EnhancedKpiCard(data: cards[2], isDarkMode: theme.isDarkMode),
           ],
         );
       } else {
@@ -346,9 +326,7 @@ class DashboardV2Screen extends StatelessWidget {
       return Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: theme.isDarkMode
-              ? const Color(0xFF161B22)
-              : Colors.white,
+          color: theme.isDarkMode ? const Color(0xFF161B22) : Colors.white,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: theme.isDarkMode
@@ -368,11 +346,7 @@ class DashboardV2Screen extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(
-                  Icons.trending_up,
-                  color: theme.primaryColor,
-                  size: 24,
-                ),
+                Icon(Icons.trending_up, color: theme.primaryColor, size: 24),
                 const SizedBox(width: 12),
                 Text(
                   TranslationService.instance.translate('sales_trend'),
@@ -393,10 +367,7 @@ class DashboardV2Screen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 24),
-            SizedBox(
-              height: 250,
-              child: _buildSalesChart(controller, theme),
-            ),
+            SizedBox(height: 250, child: _buildSalesChart(controller, theme)),
           ],
         ),
       );
@@ -496,25 +467,18 @@ class DashboardV2Screen extends StatelessWidget {
         minX: 0,
         maxX: salesData.length.toDouble() - 1,
         minY: 0,
-        maxY: salesData
-                .map((e) => e.value)
-                .reduce((a, b) => a > b ? a : b) *
-            1.2,
+        maxY:
+            salesData.map((e) => e.value).reduce((a, b) => a > b ? a : b) * 1.2,
         lineBarsData: [
           LineChartBarData(
             spots: salesData
                 .asMap()
                 .entries
-                .map(
-                  (e) => FlSpot(e.key.toDouble(), e.value.value),
-                )
+                .map((e) => FlSpot(e.key.toDouble(), e.value.value))
                 .toList(),
             isCurved: true,
             gradient: LinearGradient(
-              colors: [
-                theme.primaryColor,
-                theme.primaryColor.withOpacity(0.6),
-              ],
+              colors: [theme.primaryColor, theme.primaryColor.withOpacity(0.6)],
             ),
             barWidth: 4,
             isStrokeCapRound: true,
@@ -544,9 +508,8 @@ class DashboardV2Screen extends StatelessWidget {
         ],
         lineTouchData: LineTouchData(
           touchTooltipData: LineTouchTooltipData(
-            tooltipBgColor: theme.isDarkMode
-                ? const Color(0xFF1F2937)
-                : Colors.white,
+            getTooltipColor: (touchedSpot) =>
+                theme.isDarkMode ? const Color(0xFF1F2937) : Colors.white,
             getTooltipItems: (List<LineBarSpot> touchedBarSpots) {
               return touchedBarSpots.map((barSpot) {
                 return LineTooltipItem(
@@ -574,9 +537,7 @@ class DashboardV2Screen extends StatelessWidget {
       return Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: theme.isDarkMode
-              ? const Color(0xFF161B22)
-              : Colors.white,
+          color: theme.isDarkMode ? const Color(0xFF161B22) : Colors.white,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: theme.isDarkMode
@@ -596,11 +557,7 @@ class DashboardV2Screen extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(
-                  Icons.flash_on,
-                  color: theme.primaryColor,
-                  size: 24,
-                ),
+                Icon(Icons.flash_on, color: theme.primaryColor, size: 24),
                 const SizedBox(width: 12),
                 Text(
                   TranslationService.instance.translate('quick_actions'),
@@ -662,9 +619,7 @@ class DashboardV2Screen extends StatelessWidget {
       return Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: theme.isDarkMode
-              ? const Color(0xFF161B22)
-              : Colors.white,
+          color: theme.isDarkMode ? const Color(0xFF161B22) : Colors.white,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: theme.isDarkMode
@@ -687,11 +642,7 @@ class DashboardV2Screen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(
-                      Icons.history,
-                      color: theme.primaryColor,
-                      size: 24,
-                    ),
+                    Icon(Icons.history, color: theme.primaryColor, size: 24),
                     const SizedBox(width: 12),
                     Text(
                       TranslationService.instance.translate('recent_activity'),
@@ -716,7 +667,9 @@ class DashboardV2Screen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 16),
-            ...controller.recentActivities.take(5).map(
+            ...controller.recentActivities
+                .take(5)
+                .map(
                   (activity) => EnhancedActivityItem(
                     activity: activity,
                     isDarkMode: theme.isDarkMode,

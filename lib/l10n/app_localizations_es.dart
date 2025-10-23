@@ -519,4 +519,34 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get edit => 'Editar';
+
+  @override
+  String get sales_trend => 'Tendencia de ventas';
+
+  @override
+  String get last_7_days => 'Últimos 7 días';
+
+  @override
+  String get no_data_available => 'No hay datos disponibles';
+
+  @override
+  String get today_sales => 'Ventas de hoy';
+
+  @override
+  String get week_sales => 'Ventas de la semana';
+
+  @override
+  String get month_sales => 'Ventas del mes';
+
+  @override
+  String get orders => 'pedidos';
+
+  @override
+  String get of_target => 'del objetivo';
+
+  @override
+  String get loading_dashboard => 'Cargando panel de control...';
+
+  @override
+  String get refresh_dashboard => 'Actualizar panel de control';
 }

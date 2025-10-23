@@ -517,4 +517,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get edit => 'Edit';
+
+  @override
+  String get sales_trend => 'Sales Trend';
+
+  @override
+  String get last_7_days => 'Last 7 Days';
+
+  @override
+  String get no_data_available => 'No data available';
+
+  @override
+  String get today_sales => 'Today Sales';
+
+  @override
+  String get week_sales => 'Week Sales';
+
+  @override
+  String get month_sales => 'Month Sales';
+
+  @override
+  String get orders => 'orders';
+
+  @override
+  String get of_target => 'of target';
+
+  @override
+  String get loading_dashboard => 'Loading dashboard...';
+
+  @override
+  String get refresh_dashboard => 'Refresh Dashboard';
 }

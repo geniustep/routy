@@ -515,4 +515,34 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get edit => 'تعديل';
+
+  @override
+  String get sales_trend => 'اتجاه المبيعات';
+
+  @override
+  String get last_7_days => 'آخر 7 أيام';
+
+  @override
+  String get no_data_available => 'لا توجد بيانات متاحة';
+
+  @override
+  String get today_sales => 'مبيعات اليوم';
+
+  @override
+  String get week_sales => 'مبيعات الأسبوع';
+
+  @override
+  String get month_sales => 'مبيعات الشهر';
+
+  @override
+  String get orders => 'طلبات';
+
+  @override
+  String get of_target => 'من الهدف';
+
+  @override
+  String get loading_dashboard => 'جاري تحميل لوحة التحكم...';
+
+  @override
+  String get refresh_dashboard => 'تحديث لوحة التحكم';
 }

@@ -1115,6 +1115,66 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Modifier'**
   String get edit;
+
+  /// No description provided for @sales_trend.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tendance des ventes'**
+  String get sales_trend;
+
+  /// No description provided for @last_7_days.
+  ///
+  /// In fr, this message translates to:
+  /// **'7 derniers jours'**
+  String get last_7_days;
+
+  /// No description provided for @no_data_available.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune donnée disponible'**
+  String get no_data_available;
+
+  /// No description provided for @today_sales.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes aujourd\'hui'**
+  String get today_sales;
+
+  /// No description provided for @week_sales.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes de la semaine'**
+  String get week_sales;
+
+  /// No description provided for @month_sales.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ventes du mois'**
+  String get month_sales;
+
+  /// No description provided for @orders.
+  ///
+  /// In fr, this message translates to:
+  /// **'commandes'**
+  String get orders;
+
+  /// No description provided for @of_target.
+  ///
+  /// In fr, this message translates to:
+  /// **'de l\'objectif'**
+  String get of_target;
+
+  /// No description provided for @loading_dashboard.
+  ///
+  /// In fr, this message translates to:
+  /// **'Chargement du tableau de bord...'**
+  String get loading_dashboard;
+
+  /// No description provided for @refresh_dashboard.
+  ///
+  /// In fr, this message translates to:
+  /// **'Actualiser le tableau de bord'**
+  String get refresh_dashboard;
 }
 
 class _AppLocalizationsDelegate
