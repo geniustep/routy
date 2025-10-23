@@ -6,10 +6,15 @@ import 'dart:io';
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:get/get.dart' hide Response;
+import 'package:routy/common/api/api_response.dart';
 import 'package:routy/common/api/endpoints.dart';
 import 'package:routy/common/api/dio_factory.dart';
 import 'package:routy/common/models/version_info_response.dart';
+import 'package:routy/common/models/databases_response.dart';
 import 'package:routy/common/models/user_model.dart';
+import 'package:routy/services/storage_service.dart';
 import 'package:routy/utils/pref_utils.dart';
 import 'package:routy/utils/app_logger.dart';
 import 'package:uuid/uuid.dart';
@@ -59,7 +64,8 @@ extension HttpMethods on HttpMethod {
 
 class Api {
   Api._();
-
+  static final _dio = DioFactory.dio;
+  static final _storageService = StorageService.instance;
   // ════════════════════════════════════════════════════════════
   // Private Variables
   // ════════════════════════════════════════════════════════════
@@ -152,23 +158,37 @@ class Api {
       Response? response;
       switch (method) {
         case HttpMethod.post:
-          response = await DioFactory.dio!.post(path, data: params);
+          response = await _dio!.post(path, data: params);
           break;
         case HttpMethod.delete:
-          response = await DioFactory.dio!.delete(path, data: params);
+          response = await _dio!.delete(path, data: params);
           break;
         case HttpMethod.get:
-          response = await DioFactory.dio!.get(path);
+          response = await _dio!.get(path);
           break;
         case HttpMethod.patch:
-          response = await DioFactory.dio!.patch(path, data: params);
+          response = await _dio!.patch(path, data: params);
           break;
         case HttpMethod.put:
-          response = await DioFactory.dio!.put(path, data: params);
+          response = await _dio!.put(path, data: params);
           break;
       }
 
       _handleLoading(showGlobalLoading, false);
+
+      // التحقق من نوع الاستجابة
+      if (response.data is String &&
+          response.data.contains('<!doctype html>')) {
+        appLogger.warning('⚠️ Session expired (HTML response)');
+        await handleSessionExpired();
+        return;
+      }
+
+      if (response.data is! Map) {
+        appLogger.error('Invalid response type: ${response.data.runtimeType}');
+        onError('Invalid response format', {});
+        return;
+      }
 
       if (response.data["success"] == 0) {
         final errorMessage = response.data["error"][0] ?? 'Server error';
@@ -297,6 +317,8 @@ class Api {
     );
   }
 
+  /// تسجيل الخروج
+
   static destroy({required OnResponse onResponse, required OnError onError}) {
     request(
       method: HttpMethod.post,
@@ -406,6 +428,7 @@ class Api {
         "context": context ?? {},
       },
     };
+    debugPrint(params.toString());
 
     request(
       method: HttpMethod.post,
@@ -545,14 +568,31 @@ class Api {
     required OnResponse<VersionInfoResponse> onResponse,
     required OnError onError,
   }) {
+    // محاولة من Cache أولاً
+    final cached = _storageService.getCache('version_info');
+    if (cached != null) {
+      appLogger.info('📦 Cache hit: version_info');
+      onResponse(
+        VersionInfoResponse.fromJson(Map<String, dynamic>.from(cached as Map)),
+      );
+      return; // إيقاف التنفيذ - لا داعي للطلب من السيرفر
+    }
+
+    // جلب من السيرفر إذا لم يكن في الكاش
     request(
       method: HttpMethod.post,
       path: ApiEndpoints.getVersionInfo,
       params: createPayload({}),
-      onResponse: (response) {
-        onResponse(VersionInfoResponse.fromJson(response));
+      onResponse: (response) async {
+        if (response != null) {
+          // حفظ في Cache
+          await _storageService.setCache('version_info', response);
+          ApiResponse.success(response);
+          onResponse(VersionInfoResponse.fromJson(response));
+        }
       },
       onError: (error, data) {
+        ApiResponse.error('فشل الحصول على معلومات الإصدار');
         onError(error, {});
       },
     );
@@ -564,7 +604,7 @@ class Api {
 
   static getDatabases({
     required int serverVersionNumber,
-    required OnResponse onResponse,
+    required OnResponse<DatabasesResponse> onResponse,
     required OnError onError,
   }) async {
     var params = {};
@@ -588,7 +628,19 @@ class Api {
       path: endPoint,
       params: createPayload(params),
       onResponse: (response) {
-        onResponse(response);
+        // Convert the list response to DatabasesResponse
+        if (response is List) {
+          final databasesResponse = DatabasesResponse.fromList(
+            response,
+            serverVersion: serverVersionNumber.toString(),
+          );
+          onResponse(databasesResponse);
+        } else {
+          appLogger.error(
+            'Unexpected response type for databases: ${response.runtimeType}',
+          );
+          onError('Invalid response format', {});
+        }
       },
       onError: (error, data) {
         onError(error, {});
@@ -609,8 +661,8 @@ class Api {
     };
   }
 
-  static Map getContext(dynamic addition) {
-    Map map = {
+  static Map<String, dynamic> getContext(dynamic addition) {
+    Map<String, dynamic> map = {
       "lang": "en_US",
       "tz": "Europe/Brussels",
       "uid": const Uuid().v1(),
@@ -628,9 +680,31 @@ class Api {
   // ════════════════════════════════════════════════════════════
 
   static Future<void> handleSessionExpired() async {
-    appLogger.warning('Session expired - clearing user data');
-    await PrefUtils.clearAll();
-    // يمكن إضافة منطق إضافي هنا مثل التنقل إلى صفحة تسجيل الدخول
+    appLogger.warning('⚠️ Session expired - clearing user data');
+
+    try {
+      // مسح جميع البيانات
+      await PrefUtils.clearAll();
+      await StorageService.instance.clearUserData();
+      await _storageService.remove('uid');
+      await _storageService.remove('database');
+      await _storageService.remove('username');
+
+      // إعادة التوجيه للـ login
+      Get.offAllNamed('/login');
+
+      // عرض رسالة للمستخدم
+      Get.snackbar(
+        'انتهت الجلسة',
+        'يرجى تسجيل الدخول مرة أخرى',
+        snackPosition: SnackPosition.BOTTOM,
+        duration: const Duration(seconds: 3),
+      );
+
+      appLogger.info('✅ Redirected to login');
+    } catch (e) {
+      appLogger.error('Error handling session expiry', error: e);
+    }
   }
 }
 

@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:routy/services/translation_service.dart';
+import 'package:routy/utils/app_logger.dart';
 
 /// Error types for API responses
 enum ErrorType { network, authentication, validation, server, timeout, unknown }
@@ -189,14 +189,14 @@ class ErrorHandler {
   static void showError(ApiError error) {
     // This would typically show a snackbar or dialog
     // For now, we'll just print the error
-    debugPrint('API Error: ${error.message}');
+    appLogger.info('API Error: ${error.message}');
   }
 
   /// Log error for debugging
   static void logError(ApiError error) {
-    debugPrint('API Error Log: ${error.toString()}');
-    debugPrint('Error Data: ${error.data}');
-    debugPrint('Error Timestamp: ${error.timestamp}');
+    appLogger.info('API Error Log: ${error.toString()}');
+    appLogger.info('Error Data: ${error.data}');
+    appLogger.info('Error Timestamp: ${error.timestamp}');
   }
 
   /// Get localized error message

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:routy/utils/app_logger.dart';
 import 'storage_service.dart';
 
 /// الثوابت الأساسية للترجمة
@@ -41,7 +42,9 @@ class TranslationService {
         final translations = await _loadLanguageFile(language);
         _translations[language] = translations;
       } catch (e) {
-        if (kDebugMode) print('Error loading translations for $language: $e');
+        if (kDebugMode) {
+          appLogger.info('Error loading translations for $language: $e');
+        }
         // استخدام الترجمات الافتراضية في حالة الخطأ
         _translations[language] = _getDefaultTranslations(language);
       }
@@ -68,12 +71,14 @@ class TranslationService {
           }
         });
       } catch (e) {
-        if (kDebugMode) print('Error loading $file: $e');
+        if (kDebugMode) appLogger.info('Error loading $file: $e');
       }
 
       return allTranslations;
     } catch (e) {
-      if (kDebugMode) print('Error loading translations for $language: $e');
+      if (kDebugMode) {
+        appLogger.info('Error loading translations for $language: $e');
+      }
       return _getDefaultTranslations(language);
     }
   }
@@ -199,14 +204,14 @@ class TranslationService {
   /// الحصول على الترجمة
   String translate(String key, {Map<String, String>? params}) {
     if (!_isInitialized) {
-      if (kDebugMode) print('TranslationService not initialized');
+      if (kDebugMode) appLogger.info('TranslationService not initialized');
       return key;
     }
 
     final languageTranslations = _translations[_currentLanguage];
     if (languageTranslations == null) {
       if (kDebugMode) {
-        print('No translations found for language: $_currentLanguage');
+        appLogger.info('No translations found for language: $_currentLanguage');
       }
       return key;
     }
@@ -226,7 +231,7 @@ class TranslationService {
   /// تغيير اللغة
   Future<void> setLanguage(String language) async {
     if (!_TranslationConstants.supportedLanguages.contains(language)) {
-      if (kDebugMode) print('Unsupported language: $language');
+      if (kDebugMode) appLogger.info('Unsupported language: $language');
       return;
     }
 
@@ -257,7 +262,7 @@ class TranslationService {
         _translations[languageCode] = translations;
       } catch (e) {
         if (kDebugMode) {
-          print('Error loading translations for $languageCode: $e');
+          appLogger.info('Error loading translations for $languageCode: $e');
         }
         _translations[languageCode] = _getDefaultTranslations(languageCode);
       }

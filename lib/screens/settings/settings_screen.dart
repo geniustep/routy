@@ -6,7 +6,6 @@ import '../../common/services/api_service.dart';
 import '../../controllers/index.dart';
 import '../../app/app_router.dart';
 import '../../utils/app_logger.dart';
-import '../../services/translation_service.dart';
 import '../../controllers/partner_controller.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -299,6 +298,8 @@ class _SettingsScreenState extends State<SettingsScreen>
           _buildSyncSection(themeController),
           const SizedBox(height: 20),
           _buildDisplaySection(themeController),
+          const SizedBox(height: 20),
+          _buildStorageSection(themeController),
           const SizedBox(height: 20),
           _buildAboutSection(themeController),
         ]),
@@ -697,14 +698,6 @@ class _SettingsScreenState extends State<SettingsScreen>
               final partnerController = Get.find<PartnerController>();
 
               // تحميل العملاء من التخزين المحلي أولاً
-              await partnerController.loadPartnersFromStorage();
-
-              // جلب العملاء الجدد من الخادم
-              await partnerController.fetchPartners(
-                page: 1,
-                pageSize: 100,
-                showLoading: false,
-              );
 
               // عرض رسالة النجاح
               if (mounted) {
@@ -759,6 +752,133 @@ class _SettingsScreenState extends State<SettingsScreen>
           themeController: themeController,
         ),
       ],
+    );
+  }
+
+  Widget _buildStorageSection(ThemeController themeController) {
+    final dataSize = StorageService.instance.getDataSize();
+    final totalItems = dataSize['total'] ?? 0;
+
+    return _buildSectionCard(
+      title: 'Stockage',
+      icon: Icons.storage,
+      themeController: themeController,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Données stockées localement',
+                style: TextStyle(
+                  color: themeController.isDarkMode
+                      ? Colors.white.withValues(alpha: 0.9)
+                      : Colors.black87,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 8),
+              _buildStorageInfoRow(
+                'Préférences',
+                dataSize['prefs'] ?? 0,
+                themeController,
+              ),
+              _buildStorageInfoRow(
+                'Cache',
+                dataSize['cache'] ?? 0,
+                themeController,
+              ),
+              _buildStorageInfoRow(
+                'File d\'attente',
+                dataSize['queue'] ?? 0,
+                themeController,
+              ),
+              _buildStorageInfoRow(
+                'Session',
+                dataSize['session'] ?? 0,
+                themeController,
+              ),
+              _buildStorageInfoRow(
+                'Paramètres',
+                dataSize['settings'] ?? 0,
+                themeController,
+              ),
+              const Divider(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Total',
+                    style: TextStyle(
+                      color: themeController.isDarkMode
+                          ? Colors.white
+                          : Colors.black87,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    '$totalItems éléments',
+                    style: TextStyle(
+                      color: themeController.isDarkMode
+                          ? Colors.blue[300]
+                          : Colors.blue[600],
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 8),
+        _buildSettingTile(
+          title: 'Effacer toutes les données',
+          subtitle: 'Supprimer le cache et le stockage local',
+          trailing: const Icon(Icons.delete_forever, color: Colors.red),
+          onTap: () {
+            _showClearDataDialog(themeController);
+          },
+          themeController: themeController,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStorageInfoRow(
+    String label,
+    int count,
+    ThemeController themeController,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              color: themeController.isDarkMode
+                  ? Colors.white.withValues(alpha: 0.7)
+                  : Colors.grey[600],
+              fontSize: 13,
+            ),
+          ),
+          Text(
+            '$count',
+            style: TextStyle(
+              color: themeController.isDarkMode
+                  ? Colors.white.withValues(alpha: 0.6)
+                  : Colors.grey[500],
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -1006,6 +1126,127 @@ class _SettingsScreenState extends State<SettingsScreen>
     );
   }
 
+  void _showClearDataDialog(ThemeController themeController) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: themeController.isDarkMode
+            ? Colors.grey[900]
+            : Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Row(
+          children: [
+            Icon(
+              Icons.warning_amber_rounded,
+              color: Colors.orange[700],
+              size: 28,
+            ),
+            const SizedBox(width: 12),
+            Text(
+              'Attention',
+              style: TextStyle(
+                color: themeController.isDarkMode
+                    ? Colors.white
+                    : Colors.black87,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Êtes-vous sûr de vouloir supprimer toutes les données locales ?',
+              style: TextStyle(
+                color: themeController.isDarkMode
+                    ? Colors.white70
+                    : Colors.black87,
+                fontSize: 16,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.red.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Cette action supprimera :',
+                    style: TextStyle(
+                      color: Colors.red[700],
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  _buildWarningItem('• Toutes les préférences'),
+                  _buildWarningItem('• Cache des données'),
+                  _buildWarningItem('• File d\'attente'),
+                  _buildWarningItem('• Session active'),
+                  _buildWarningItem('• Paramètres'),
+                  const SizedBox(height: 8),
+                  Text(
+                    '⚠️ Cette action est irréversible !',
+                    style: TextStyle(
+                      color: Colors.red[900],
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: Text(
+              'Annuler',
+              style: TextStyle(
+                color: themeController.isDarkMode
+                    ? Colors.grey[400]
+                    : Colors.grey[600],
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Get.back();
+              await _handleClearData();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: const Text(
+              'Tout supprimer',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWarningItem(String text) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Text(text, style: TextStyle(color: Colors.red[800], fontSize: 13)),
+    );
+  }
+
   void _showLogoutDialog() {
     showDialog(
       context: context,
@@ -1034,6 +1275,149 @@ class _SettingsScreenState extends State<SettingsScreen>
         ],
       ),
     );
+  }
+
+  Future<void> _handleClearData() async {
+    try {
+      HapticFeedback.heavyImpact();
+
+      // عرض رسالة التحميل
+      Get.dialog(
+        PopScope(
+          canPop: false,
+          child: Center(
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 16),
+                  Text(
+                    'Suppression en cours...',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        barrierDismissible: false,
+      );
+
+      // حذف جميع البيانات
+      final success = await StorageService.instance.clearAllData();
+
+      // إغلاق dialog التحميل
+      Get.back();
+
+      if (success) {
+        // عرض رسالة النجاح
+        HapticFeedback.mediumImpact();
+
+        Get.dialog(
+          AlertDialog(
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.green.withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.check_circle,
+                    color: Colors.green,
+                    size: 60,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'Succès !',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  'Toutes les données locales ont été supprimées.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 16, color: Colors.black54),
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: () {
+                    Get.back();
+                    // التوجيه لصفحة تسجيل الدخول لأن البيانات تم حذفها
+                    appLogger.navigation(
+                      AppRouter.login,
+                      from: AppRouter.settings,
+                    );
+                    Get.offAllNamed(AppRouter.login);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 32,
+                      vertical: 12,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: const Text(
+                    'OK',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+
+        appLogger.info('✅ All local data cleared successfully');
+      } else {
+        // عرض رسالة الخطأ
+        Get.snackbar(
+          'Erreur',
+          'Une erreur s\'est produite lors de la suppression des données',
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM,
+          duration: const Duration(seconds: 3),
+        );
+
+        appLogger.error('❌ Failed to clear local data');
+      }
+    } catch (e, stackTrace) {
+      // إغلاق dialog التحميل في حالة الخطأ
+      if (Get.isDialogOpen == true) {
+        Get.back();
+      }
+
+      appLogger.error('Clear data error', error: e, stackTrace: stackTrace);
+
+      Get.snackbar(
+        'Erreur',
+        'Une erreur inattendue s\'est produite: $e',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM,
+        duration: const Duration(seconds: 4),
+      );
+    }
   }
 
   Future<void> _handleLogout() async {

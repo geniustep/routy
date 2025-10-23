@@ -356,4 +356,163 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get settings_reset => 'تم إعادة تعيين الإعدادات';
+
+  @override
+  String get partners => 'الشركاء';
+
+  @override
+  String get partners_list => 'قائمة الشركاء';
+
+  @override
+  String get add_partner => 'إضافة شريك';
+
+  @override
+  String get search_partner => 'ابحث عن شريك...';
+
+  @override
+  String get all_partners => 'الكل';
+
+  @override
+  String get customers_only => 'العملاء';
+
+  @override
+  String get suppliers_only => 'الموردين';
+
+  @override
+  String get both_types => 'كلاهما';
+
+  @override
+  String get total_partners => 'إجمالي الشركاء';
+
+  @override
+  String get total_customers => 'إجمالي العملاء';
+
+  @override
+  String get total_suppliers => 'إجمالي الموردين';
+
+  @override
+  String get no_partners => 'لا يوجد شركاء';
+
+  @override
+  String get no_results => 'لا توجد نتائج للبحث';
+
+  @override
+  String get try_different_search => 'جرب كلمات بحث أخرى';
+
+  @override
+  String get start_adding => 'ابدأ بإضافة شركاء جدد';
+
+  @override
+  String get customer => 'عميل';
+
+  @override
+  String get supplier => 'مورد';
+
+  @override
+  String get both => 'كلاهما';
+
+  @override
+  String get partner_details => 'تفاصيل الشريك';
+
+  @override
+  String get export_partners => 'تصدير';
+
+  @override
+  String get import_partners => 'استيراد';
+
+  @override
+  String get coming_soon => 'قريباً...';
+
+  @override
+  String get retry => 'إعادة المحاولة';
+
+  @override
+  String get refresh => 'تحديث';
+
+  @override
+  String get error_loading => 'خطأ في التحميل';
+
+  @override
+  String get has_debt => 'مديون';
+
+  @override
+  String get no_debt => 'لا يوجد دين';
+
+  @override
+  String get debt_amount => 'المبلغ المدين';
+
+  @override
+  String get credit_amount => 'الرصيد الدائن';
+
+  @override
+  String get map => 'الخريطة';
+
+  @override
+  String get my_location => 'موقعي';
+
+  @override
+  String get partners_refreshed => 'تم تحديث الشركاء';
+
+  @override
+  String get navigate => 'التنقل';
+
+  @override
+  String get contact => 'الاتصال';
+
+  @override
+  String get phone => 'هاتف';
+
+  @override
+  String get mobile => 'جوال';
+
+  @override
+  String get email => 'بريد إلكتروني';
+
+  @override
+  String get address => 'العنوان';
+
+  @override
+  String get full_address => 'العنوان الكامل';
+
+  @override
+  String get city => 'مدينة';
+
+  @override
+  String get country => 'بلد';
+
+  @override
+  String get zip => 'رمز بريدي';
+
+  @override
+  String get financial => 'المالية';
+
+  @override
+  String get total_balance => 'الرصيد الإجمالي';
+
+  @override
+  String get credit_limit => 'حد الائتمان';
+
+  @override
+  String get usage => 'الاستخدام';
+
+  @override
+  String get additional_info => 'معلومات إضافية';
+
+  @override
+  String get vat => 'الضريبة';
+
+  @override
+  String get active => 'نشط';
+
+  @override
+  String get yes => 'نعم';
+
+  @override
+  String get no => 'لا';
+
+  @override
+  String get call => 'اتصل';
+
+  @override
+  String get edit => 'تعديل';
 }

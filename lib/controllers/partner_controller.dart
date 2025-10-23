@@ -1,372 +1,826 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'dart:async';
-import 'dart:convert';
-import '../models/partners/partners_model.dart';
-import '../common/services/enhanced_data_controller.dart';
-import '../services/storage_service.dart';
-import '../utils/app_logger.dart';
+import 'package:routy/common/api/api.dart';
+import 'package:routy/common/api/api_response.dart';
+import 'package:routy/common/services/api_service.dart';
+import 'package:routy/models/partners/partner_type.dart';
+import 'package:routy/models/partners/partners_model.dart';
+import 'package:routy/services/storage_service.dart';
+import 'package:routy/utils/app_logger.dart';
 
-/// 🎯 PartnerController - إدارة الشركاء مع المزايا المتقدمة
+/// 👥 Partner Controller - إدارة الشركاء (العملاء والموردين)
 ///
-/// يجمع بين:
-/// ✅ GetX للتفاعلية
-/// ✅ Enhanced DataController للأمان
-/// ✅ StorageService للتخزين المحلي
+/// المزايا:
+/// - ✅ CRUD كامل
+/// - ✅ البحث والفلترة
+/// - ✅ Pagination
+/// - ✅ Offline Support
+/// - ✅ Auto Sync
+/// - ✅ Statistics
 class PartnerController extends GetxController {
-  // ==================== Observable Variables ====================
-  final _partners = <PartnerModel>[].obs;
-  final _isLoading = false.obs;
-  final _searchQuery = ''.obs;
-  final _selectedFilter = 'all'.obs;
-  final _currentPage = 1.obs;
-  final _totalPages = 0.obs;
-  final _totalCount = 0.obs;
+  // ==================== Singleton ====================
+  static PartnerController get instance => Get.find<PartnerController>();
+
+  // ==================== Dependencies ====================
+  final _apiService = ApiService.instance;
+  final _storageService = StorageService.instance;
+
+  // ==================== Observable State ====================
+
+  /// قائمة الشركاء
+  final partners = <PartnerModel>[].obs;
+
+  /// الشركاء المفلترة (للعرض)
+  final filteredPartners = <PartnerModel>[].obs;
+
+  /// الشريك المحدد حالياً
+  final Rx<PartnerModel?> selectedPartner = Rx<PartnerModel?>(null);
+
+  /// حالة التحميل
+  final isLoading = false.obs;
+
+  /// حالة التحديث (Pull to Refresh)
+  final isRefreshing = false.obs;
+
+  /// حالة المزامنة
+  final isSyncing = false.obs;
+
+  /// رسالة الخطأ
+  final Rx<String?> errorMessage = Rx<String?>(null);
+
+  /// نص البحث
+  final searchQuery = ''.obs;
+
+  /// نوع الفلتر الحالي
+  final Rx<PartnerType?> currentTypeFilter = Rx<PartnerType?>(null);
+
+  /// حالة الفلتر الحالية
+  final Rx<PartnerStatus?> currentStatusFilter = Rx<PartnerStatus?>(null);
+
+  /// عدد العناصر لكل صفحة
+  final pageSize = 20.obs;
+
+  /// الصفحة الحالية
+  final currentPage = 1.obs;
+
+  /// هل يوجد المزيد من البيانات؟
+  final hasMore = true.obs;
+
+  /// إحصائيات
+  final stats = <String, dynamic>{}.obs;
 
   // ==================== Getters ====================
-  List<PartnerModel> get partners => _partners;
-  bool get isLoading => _isLoading.value;
-  String get searchQuery => _searchQuery.value;
-  String get selectedFilter => _selectedFilter.value;
-  int get currentPage => _currentPage.value;
-  int get totalPages => _totalPages.value;
-  int get totalCount => _totalCount.value;
 
-  // ==================== User Permissions ====================
-  bool get isAdmin => _getUserPermissions();
-  int? get currentUserId => _getCurrentUserId();
+  /// هل المستخدم مسجل الدخول؟
+  bool get isAuthenticated => _apiService.isAuthenticated;
 
-  bool _getUserPermissions() {
-    try {
-      final user = StorageService.instance.getUser();
-      return user?['is_admin'] ?? false;
-    } catch (e) {
-      appLogger.warning('Error getting user permissions: $e');
-      return false;
-    }
-  }
+  /// العملاء فقط
+  List<PartnerModel> get customers =>
+      partners.where((p) => p.isCustomer).toList();
 
-  int? _getCurrentUserId() {
-    try {
-      final user = StorageService.instance.getUser();
-      return user?['uid'];
-    } catch (e) {
-      appLogger.warning('Error getting user ID: $e');
-      return null;
-    }
-  }
+  /// الموردين فقط
+  List<PartnerModel> get suppliers =>
+      partners.where((p) => p.isSupplier).toList();
 
-  // ==================== Partner Management ====================
+  /// VIP فقط
+  List<PartnerModel> get vipPartners => partners.where((p) => p.isVip).toList();
 
-  /// جلب الشركاء مع الصلاحيات المتقدمة
-  Future<void> fetchPartners({
-    int page = 1,
-    int pageSize = 20,
-    String? search,
-    String? filter,
-    bool showLoading = true,
-  }) async {
-    if (showLoading) _isLoading.value = true;
+  /// النشطين فقط
+  List<PartnerModel> get activePartners =>
+      partners.where((p) => p.canTransact).toList();
 
-    try {
-      appLogger.info('🔍 Fetching partners - Page: $page, Size: $pageSize');
+  /// الذين تجاوزوا حد الائتمان
+  List<PartnerModel> get exceededCreditPartners =>
+      partners.where((p) => p.exceededCreditLimit).toList();
 
-      // تحديد الفلاتر
-      List<dynamic> domain = [];
+  /// الشركاء غير المتزامنة
+  List<PartnerModel> get unsyncedPartners =>
+      partners.where((p) => !p.synced).toList();
 
-      if (filter == 'individual') {
-        domain.add(['is_company', '=', false]);
-      } else if (filter == 'company') {
-        domain.add(['is_company', '=', true]);
-      }
+  /// عدد الشركاء
+  int get totalCount => partners.length;
 
-      if (search != null && search.isNotEmpty) {
-        domain.add(['name', 'ilike', search]);
-      }
+  /// عدد العملاء
+  int get customersCount => customers.length;
 
-      // حقول آمنة لجميع المستخدمين
-      final safeFields = [
-        "id",
-        "name",
-        "active",
-        "is_company",
-        "email",
-        "phone",
-        "mobile",
-        "street",
-        "city",
-        "zip",
-        "country_id",
-        "website",
-        "display_name",
-      ];
-
-      // حقول إضافية للمديرين
-      final adminFields = [
-        "user_id",
-        "create_uid",
-        "write_uid",
-        "company_id",
-        "purchase_order_count",
-        "sale_order_count",
-        "total_invoiced",
-        "credit",
-        "customer_rank",
-        "supplier_rank",
-      ];
-
-      // إضافة الحقل image_1920 في وضع الإنتاج فقط
-      if (!kDebugMode) {
-        adminFields.add('image_1920');
-      }
-
-      // جلب البيانات باستخدام Enhanced DataController
-      await EnhancedDataController.getRecordsWithPermissions<PartnerModel>(
-        model: 'res.partner',
-        safeFields: safeFields,
-        adminFields: adminFields,
-        domain: domain,
-        userId: currentUserId,
-        isAdmin: isAdmin,
-        limit: pageSize,
-        offset: (page - 1) * pageSize,
-        fromJson: (json) => PartnerModel.fromJson(json),
-        onResponse: (partners) {
-          _partners.value = partners;
-          _currentPage.value = page;
-          _savePartnersToStorage(partners);
-          appLogger.info('✅ Partners loaded: ${partners.length} items');
-        },
-        showGlobalLoading: showLoading,
-        cacheKey: 'partners_${page}_${search ?? ''}_${filter ?? ''}',
-        cacheTTL: 300, // 5 دقائق
-      );
-
-      // جلب العدد الإجمالي
-      await _updateTotalCount(domain);
-    } catch (e, stackTrace) {
-      appLogger.error(
-        '❌ Error fetching partners',
-        error: e,
-        stackTrace: stackTrace,
-      );
-    } finally {
-      if (showLoading) _isLoading.value = false;
-    }
-  }
-
-  /// تحديث العدد الإجمالي
-  Future<void> _updateTotalCount(List<dynamic> domain) async {
-    try {
-      final count = await EnhancedDataController.getRecordsCountWithPermissions(
-        model: 'res.partner',
-        domain: domain,
-        userId: currentUserId,
-        isAdmin: isAdmin,
-      );
-
-      _totalCount.value = count;
-      _totalPages.value = (count / 20).ceil(); // 20 سجل في الصفحة
-
-      appLogger.info('📊 Total partners: $count, Pages: ${_totalPages.value}');
-    } catch (e) {
-      appLogger.error('Error updating total count', error: e);
-    }
-  }
-
-  /// البحث في الشركاء
-  Future<void> searchPartners(String query) async {
-    _searchQuery.value = query;
-    await fetchPartners(search: query, page: 1, showLoading: true);
-  }
-
-  /// فلترة الشركاء
-  Future<void> filterPartners(String filter) async {
-    _selectedFilter.value = filter;
-    await fetchPartners(filter: filter, page: 1, showLoading: true);
-  }
-
-  /// جلب الصفحة التالية
-  Future<void> loadNextPage() async {
-    if (currentPage < totalPages) {
-      await fetchPartners(
-        page: currentPage + 1,
-        search: searchQuery,
-        filter: selectedFilter,
-        showLoading: false,
-      );
-    }
-  }
-
-  /// جلب الصفحة السابقة
-  Future<void> loadPreviousPage() async {
-    if (currentPage > 1) {
-      await fetchPartners(
-        page: currentPage - 1,
-        search: searchQuery,
-        filter: selectedFilter,
-        showLoading: false,
-      );
-    }
-  }
-
-  // ==================== Storage Management ====================
-
-  /// حفظ الشركاء في التخزين المحلي
-  Future<void> _savePartnersToStorage(List<PartnerModel> partners) async {
-    try {
-      final partnersJson = partners.map((p) => p.toJson()).toList();
-      await StorageService.instance.setString(
-        'cached_partners',
-        jsonEncode(partnersJson),
-      );
-
-      await StorageService.instance.setString(
-        'partners_last_update',
-        DateTime.now().toIso8601String(),
-      );
-
-      appLogger.info('💾 Partners saved to storage: ${partners.length} items');
-    } catch (e) {
-      appLogger.error('Error saving partners to storage', error: e);
-    }
-  }
-
-  /// تحميل الشركاء من التخزين المحلي
-  Future<void> loadPartnersFromStorage() async {
-    try {
-      final partnersJson = StorageService.instance.getString('cached_partners');
-      if (partnersJson != null) {
-        final List<dynamic> jsonList = jsonDecode(partnersJson);
-        final partners = jsonList
-            .map((json) => PartnerModel.fromJson(json))
-            .toList();
-        _partners.value = partners;
-        appLogger.info(
-          '📦 Partners loaded from storage: ${partners.length} items',
-        );
-      }
-    } catch (e) {
-      appLogger.error('Error loading partners from storage', error: e);
-    }
-  }
-
-  /// التحقق من آخر تحديث
-  bool shouldRefreshData() {
-    final lastUpdate = StorageService.instance.getString(
-      'partners_last_update',
-    );
-    if (lastUpdate == null) return true;
-
-    final lastUpdateTime = DateTime.parse(lastUpdate);
-    final now = DateTime.now();
-    final difference = now.difference(lastUpdateTime);
-
-    // تحديث كل 30 دقيقة
-    return difference.inMinutes > 30;
-  }
-
-  // ==================== Partner Operations ====================
-
-  /// جلب شريك واحد
-  Future<PartnerModel?> fetchPartner(int id) async {
-    try {
-      final partner =
-          await EnhancedDataController.fetchRecordWithPermissions<PartnerModel>(
-            model: 'res.partner',
-            id: id,
-            userId: currentUserId,
-            isAdmin: isAdmin,
-            fromJson: (json) => PartnerModel.fromJson(json),
-          );
-
-      return partner;
-    } catch (e) {
-      appLogger.error('Error fetching partner', error: e);
-      return null;
-    }
-  }
-
-  /// إنشاء شريك جديد
-  Future<bool> createPartner(Map<String, dynamic> partnerData) async {
-    try {
-      _isLoading.value = true;
-
-      // استخدام API مباشرة لإنشاء شريك
-      final completer = Completer<bool>();
-
-      // هنا يمكن إضافة منطق إنشاء الشريك
-      // باستخدام Api.create أو DataController
-
-      completer.complete(true);
-      return completer.future;
-    } catch (e) {
-      appLogger.error('Error creating partner', error: e);
-      return false;
-    } finally {
-      _isLoading.value = false;
-    }
-  }
-
-  /// تحديث شريك موجود
-  Future<bool> updatePartner(int id, Map<String, dynamic> updateData) async {
-    try {
-      _isLoading.value = true;
-
-      // منطق تحديث الشريك
-      // يمكن استخدام Api.update أو DataController
-
-      // إعادة تحميل البيانات بعد التحديث
-      await fetchPartners(page: currentPage);
-
-      return true;
-    } catch (e) {
-      appLogger.error('Error updating partner', error: e);
-      return false;
-    } finally {
-      _isLoading.value = false;
-    }
-  }
-
-  /// حذف شريك
-  Future<bool> deletePartner(int id) async {
-    try {
-      _isLoading.value = true;
-
-      // منطق حذف الشريك
-      // يمكن استخدام Api.delete أو DataController
-
-      // إعادة تحميل البيانات بعد الحذف
-      await fetchPartners(page: currentPage);
-
-      return true;
-    } catch (e) {
-      appLogger.error('Error deleting partner', error: e);
-      return false;
-    } finally {
-      _isLoading.value = false;
-    }
-  }
+  /// عدد الموردين
+  int get suppliersCount => suppliers.length;
 
   // ==================== Lifecycle ====================
 
   @override
   void onInit() {
     super.onInit();
-    appLogger.info('🎮 PartnerController initialized');
+    _initializeController();
+  }
 
-    // تحميل البيانات من التخزين المحلي
-    loadPartnersFromStorage();
+  Future<void> _initializeController() async {
+    try {
+      appLogger.info('🚀 Initializing PartnerController...');
 
-    // جلب البيانات الجديدة إذا لزم الأمر
-    if (shouldRefreshData()) {
-      fetchPartners();
+      // التحقق من تسجيل الدخول أولاً
+      if (!_apiService.isAuthenticated) {
+        appLogger.warning(
+          'User not authenticated, skipping partner initialization',
+        );
+        return;
+      }
+
+      // تحميل من Database المحلي
+      await loadFromLocal();
+
+      // جلب من API إذا كان فارغاً
+      if (partners.isEmpty) {
+        await fetchPartners();
+      }
+
+      // تحديث الإحصائيات
+      _updateStats();
+
+      appLogger.info('✅ PartnerController initialized');
+    } catch (e) {
+      appLogger.error('Failed to initialize PartnerController', error: e);
     }
   }
 
   @override
   void onClose() {
-    appLogger.info('🎮 PartnerController disposed');
+    appLogger.info('🔴 Closing PartnerController');
     super.onClose();
+  }
+
+  // ==================== Data Loading ====================
+
+  /// جلب الشركاء من Odoo
+  Future<void> fetchPartners({
+    bool showLoading = true,
+    bool refresh = false,
+  }) async {
+    try {
+      // التحقق من تسجيل الدخول أولاً
+      if (!_apiService.isAuthenticated) {
+        errorMessage.value = 'غير مسجل الدخول';
+        appLogger.error('User not authenticated');
+        return;
+      }
+
+      if (showLoading) isLoading.value = true;
+      if (refresh) {
+        isRefreshing.value = true;
+        currentPage.value = 1;
+        hasMore.value = true;
+      }
+
+      errorMessage.value = null;
+
+      // فحص الكاش أولاً
+      final cacheKey = 'partners_page_${currentPage.value}';
+      final cached = _storageService.getCache(cacheKey);
+      if (cached != null && cached is List && !refresh) {
+        appLogger.info('📦 Cache hit: $cacheKey');
+        final cachedPartners = cached
+            .map(
+              (json) =>
+                  PartnerModel.fromJson(Map<String, dynamic>.from(json as Map)),
+            )
+            .toList();
+
+        if (refresh) {
+          partners.value = cachedPartners;
+        } else {
+          partners.addAll(cachedPartners);
+        }
+
+        _applyFilters();
+        _updateStats();
+
+        appLogger.info('✅ Loaded ${cachedPartners.length} partners from cache');
+        return;
+      }
+
+      appLogger.info('📡 Fetching partners from Odoo...');
+
+      List<dynamic> domain = [
+        '|',
+        ['customer_rank', '>', 0],
+        ['supplier_rank', '>', 0],
+      ];
+
+      List<String> fields = [
+        'name',
+        'display_name',
+        'email',
+        'phone',
+        'mobile',
+        'street',
+        'street2',
+        'city',
+        'zip',
+        'country_id',
+        'vat',
+        'active',
+        'is_company',
+        'customer_rank',
+        'supplier_rank',
+        'credit_limit',
+        'credit',
+        'partner_latitude',
+        'partner_longitude',
+        'ref',
+        'barcode',
+      ];
+      if (!kDebugMode) {
+        fields.addAll(['image_1920', 'image_512']);
+      }
+      final completer = Completer<ApiResponse<List<PartnerModel>>>();
+      Api.searchRead(
+        model: 'res.partner',
+        domain: domain,
+        fields: fields,
+        limit: pageSize.value,
+        offset: (currentPage.value - 1) * pageSize.value,
+        order: 'name ASC',
+        context: Api.getContext({
+          'tz': 'Africa/Casablanca',
+          'uid': _apiService.uid ?? 1,
+          'db': _apiService.database ?? 'done2026',
+        }),
+        onResponse: (response) {
+          try {
+            if (response is List) {
+              final partners = response
+                  .map(
+                    (json) => PartnerModel.fromJson(
+                      Map<String, dynamic>.from(json as Map),
+                    ),
+                  )
+                  .toList();
+              completer.complete(ApiResponse.success(partners));
+            } else {
+              completer.completeError('Invalid response format');
+            }
+          } catch (e) {
+            completer.completeError('Error parsing response: $e');
+          }
+        },
+        onError: (error, data) => completer.completeError(error),
+      );
+
+      try {
+        final result = await completer.future;
+
+        if (result.success && result.data != null) {
+          final newPartners = result.data!;
+
+          if (refresh) {
+            partners.value = newPartners;
+          } else {
+            partners.addAll(newPartners);
+          }
+
+          // حفظ في Database المحلي
+          await _saveToLocal(newPartners);
+
+          // حفظ في الكاش
+          final cacheKey = 'partners_page_${currentPage.value}';
+          final partnersJson = newPartners.map((p) => p.toJson()).toList();
+          await _storageService.setCache(cacheKey, partnersJson);
+          appLogger.info('💾 Saved ${newPartners.length} partners to cache');
+
+          // تحديث hasMore
+          hasMore.value = newPartners.length >= pageSize.value;
+
+          // تطبيق الفلاتر
+          _applyFilters();
+
+          // تحديث الإحصائيات
+          _updateStats();
+
+          appLogger.info('✅ Fetched ${newPartners.length} partners');
+        } else {
+          errorMessage.value = result.error ?? 'فشل تحميل الشركاء';
+          appLogger.error('Failed to fetch partners: ${result.error}');
+        }
+      } catch (completerError) {
+        errorMessage.value = 'فشل تحميل الشركاء: $completerError';
+        appLogger.error('API call failed', error: completerError);
+      }
+    } catch (e, stackTrace) {
+      errorMessage.value = 'خطأ في تحميل الشركاء';
+      appLogger.error(
+        'Error fetching partners',
+        error: e,
+        stackTrace: stackTrace,
+      );
+    } finally {
+      isLoading.value = false;
+      isRefreshing.value = false;
+    }
+  }
+
+  /// تحميل الصفحة التالية
+  Future<void> loadMore() async {
+    if (!hasMore.value || isLoading.value) return;
+
+    currentPage.value++;
+    await fetchPartners(showLoading: false);
+  }
+
+  /// تحديث البيانات (Pull to Refresh)
+  @override
+  Future<void> refresh() async {
+    await fetchPartners(refresh: true);
+  }
+
+  /// تحميل من Database المحلي
+  Future<void> loadFromLocal() async {
+    try {
+      appLogger.info('📦 Loading partners from local database...');
+
+      // final localPartners = await _databaseService.getPartners();
+      // partners.value = localPartners;
+
+      // مؤقتاً: جلب من Cache
+      final cached = _storageService.getCache('partners_all');
+      if (cached != null && cached is List) {
+        partners.value = cached
+            .map(
+              (json) =>
+                  PartnerModel.fromJson(Map<String, dynamic>.from(json as Map)),
+            )
+            .toList();
+
+        _applyFilters();
+        _updateStats();
+
+        appLogger.info('✅ Loaded ${partners.length} partners from local');
+      }
+    } catch (e) {
+      appLogger.error('Error loading from local', error: e);
+    }
+  }
+
+  /// حفظ في Database المحلي
+  Future<void> _saveToLocal(List<PartnerModel> newPartners) async {
+    try {
+      // await _databaseService.savePartners(newPartners);
+
+      // مؤقتاً: حفظ في Cache
+      final allPartnersJson = partners.map((p) => p.toJson()).toList();
+      await _storageService.setCache('partners_all', allPartnersJson);
+
+      appLogger.info('💾 Saved ${newPartners.length} partners to local');
+    } catch (e) {
+      appLogger.error('Error saving to local', error: e);
+    }
+  }
+
+  // ==================== CRUD Operations ====================
+
+  /// إنشاء شريك جديد
+  Future<bool> createPartner(PartnerModel partner) async {
+    try {
+      isLoading.value = true;
+      errorMessage.value = null;
+
+      appLogger.info('➕ Creating partner: ${partner.name}');
+
+      await Api.create(
+        model: 'res.partner',
+        values: partner.toOdoo(),
+        onResponse: (response) async {
+          if (response.success) {
+            final odooId = response.data!;
+            final syncedPartner = partner.markAsSynced(odooId);
+            partners.insert(0, syncedPartner);
+            _applyFilters();
+            _updateStats();
+
+            await _saveToLocal([syncedPartner]);
+
+            appLogger.info('✅ Partner created with ID: $odooId');
+
+            Get.snackbar(
+              'نجح',
+              'تم إنشاء الشريك بنجاح',
+              snackPosition: SnackPosition.BOTTOM,
+            );
+          }
+        },
+        onError: (error, data) {
+          errorMessage.value = error;
+          appLogger.error('Error creating partner', error: error);
+        },
+      );
+
+      return errorMessage.value == null;
+    } catch (e) {
+      errorMessage.value = 'خطأ في إنشاء الشريك';
+      appLogger.error('Error creating partner', error: e);
+
+      Get.snackbar(
+        'خطأ',
+        errorMessage.value!,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+
+      return false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  /// تحديث شريك
+  Future<bool> updatePartner(PartnerModel partner) async {
+    try {
+      if (partner.odooId == null) {
+        errorMessage.value = 'لا يوجد Odoo ID';
+        return false;
+      }
+
+      isLoading.value = true;
+      errorMessage.value = null;
+
+      appLogger.info('✏️ Updating partner: ${partner.name}');
+
+      await Api.write(
+        model: 'res.partner',
+        ids: [partner.odooId!],
+        values: partner.toOdoo(),
+        onResponse: (response) async {
+          if (response.success) {
+            final index = partners.indexWhere((p) => p.id == partner.id);
+            if (index != -1) {
+              partners[index] = partner.copyWith(updatedAt: DateTime.now());
+            }
+
+            _applyFilters();
+            _updateStats();
+
+            await _saveToLocal([partner]);
+
+            appLogger.info('✅ Partner updated');
+
+            Get.snackbar(
+              'نجح',
+              'تم تحديث الشريك بنجاح',
+              snackPosition: SnackPosition.BOTTOM,
+            );
+          }
+        },
+        onError: (error, data) {
+          errorMessage.value = error;
+          appLogger.error('Error updating partner', error: error);
+        },
+      );
+
+      return errorMessage.value == null;
+    } catch (e) {
+      errorMessage.value = 'خطأ في تحديث الشريك';
+      appLogger.error('Error updating partner', error: e);
+
+      Get.snackbar(
+        'خطأ',
+        errorMessage.value!,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+
+      return false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  /// حذف شريك
+  Future<bool> deletePartner(int id) async {
+    try {
+      final partner = partners.firstWhereOrNull((p) => p.id == id);
+      if (partner == null) {
+        errorMessage.value = 'الشريك غير موجود';
+        return false;
+      }
+
+      if (partner.odooId == null) {
+        errorMessage.value = 'لا يوجد Odoo ID';
+        return false;
+      }
+
+      isLoading.value = true;
+      errorMessage.value = null;
+
+      appLogger.info('🗑️ Deleting partner: ${partner.name}');
+
+      await Api.unlink(
+        model: 'res.partner',
+        ids: [partner.odooId!],
+        onResponse: (response) {
+          if (response.success) {
+            partners.removeWhere((p) => p.id == id);
+            partners.removeWhere((p) => p.id == id);
+            _applyFilters();
+            _updateStats();
+
+            appLogger.info('✅ Partner deleted');
+
+            Get.snackbar(
+              'نجح',
+              'تم حذف الشريك بنجاح',
+              snackPosition: SnackPosition.BOTTOM,
+            );
+          }
+        },
+        onError: (error, data) {
+          errorMessage.value = error;
+          appLogger.error('Error deleting partner', error: error);
+        },
+      );
+
+      return errorMessage.value == null;
+    } catch (e) {
+      errorMessage.value = 'خطأ في حذف الشريك';
+      appLogger.error('Error deleting partner', error: e);
+
+      Get.snackbar(
+        'خطأ',
+        errorMessage.value!,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+
+      return false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // ==================== Search & Filter ====================
+
+  /// بحث في الشركاء
+  void searchPartners(String query) {
+    searchQuery.value = query.trim();
+    _applyFilters();
+  }
+
+  /// فلترة حسب النوع
+  void filterByType(PartnerType? type) {
+    currentTypeFilter.value = type;
+    _applyFilters();
+  }
+
+  /// فلترة حسب الحالة
+  void filterByStatus(PartnerStatus? status) {
+    currentStatusFilter.value = status;
+    _applyFilters();
+  }
+
+  /// مسح الفلاتر
+  void clearFilters() {
+    searchQuery.value = '';
+    currentTypeFilter.value = null;
+    currentStatusFilter.value = null;
+    _applyFilters();
+  }
+
+  /// تطبيق الفلاتر
+  void _applyFilters() {
+    var result = partners.toList();
+
+    // فلتر البحث
+    if (searchQuery.value.isNotEmpty) {
+      final query = searchQuery.value.toLowerCase();
+      result = result.where((p) {
+        // اسم الشريك
+        final nameStr = (p.name is String)
+            ? (p.name as String).toLowerCase()
+            : '';
+
+        // البريد الإلكتروني
+        final emailStr = (p.email is String && p.email != false)
+            ? (p.email as String).toLowerCase()
+            : '';
+
+        // الهاتف
+        final phoneStr = (p.phone is String && p.phone != false)
+            ? p.phone as String
+            : '';
+
+        // الجوال
+        final mobileStr = (p.mobile is String && p.mobile != false)
+            ? p.mobile as String
+            : '';
+
+        return nameStr.contains(query) ||
+            emailStr.contains(query) ||
+            phoneStr.contains(query) ||
+            mobileStr.contains(query);
+      }).toList();
+    }
+
+    // فلتر النوع
+    if (currentTypeFilter.value != null) {
+      result = result.where((p) {
+        switch (currentTypeFilter.value!) {
+          case PartnerType.customer:
+            return p.isCustomer;
+          case PartnerType.supplier:
+            return p.isSupplier;
+          case PartnerType.both:
+            return p.isCustomer && p.isSupplier;
+        }
+      }).toList();
+    }
+
+    // فلتر الحالة
+    if (currentStatusFilter.value != null) {
+      result = result
+          .where((p) => p.status == currentStatusFilter.value)
+          .toList();
+    }
+
+    filteredPartners.value = result;
+  }
+
+  // ==================== Selection ====================
+
+  /// تحديد شريك
+  void selectPartner(PartnerModel partner) {
+    selectedPartner.value = partner;
+  }
+
+  /// مسح التحديد
+  void clearSelection() {
+    selectedPartner.value = null;
+  }
+
+  /// جلب شريك بالـ ID
+  PartnerModel? getPartnerById(int id) {
+    return partners.firstWhereOrNull((p) => p.id == id);
+  }
+
+  /// جلب شريك بالـ Odoo ID
+  PartnerModel? getPartnerByOdooId(int odooId) {
+    return partners.firstWhereOrNull((p) => p.odooId == odooId);
+  }
+
+  // ==================== Sync ====================
+
+  /// مزامنة مع Odoo
+  Future<void> syncWithOdoo() async {
+    try {
+      isSyncing.value = true;
+      errorMessage.value = null;
+
+      appLogger.info('🔄 Syncing partners with Odoo...');
+
+      // مزامنة الشركاء غير المتزامنة
+      final unsynced = unsyncedPartners;
+
+      if (unsynced.isEmpty) {
+        appLogger.info('✅ All partners already synced');
+        Get.snackbar(
+          'معلومة',
+          'جميع الشركاء متزامنون بالفعل',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+        return;
+      }
+
+      int successCount = 0;
+      int failCount = 0;
+
+      for (final partner in unsynced) {
+        if (partner.id == null) {
+          // إنشاء جديد
+          final success = await createPartner(partner);
+          if (success) {
+            successCount++;
+          } else {
+            failCount++;
+          }
+        } else {
+          // تحديث موجود
+          final success = await updatePartner(partner);
+          if (success) {
+            successCount++;
+          } else {
+            failCount++;
+          }
+        }
+      }
+
+      appLogger.info(
+        '✅ Sync completed: $successCount success, $failCount failed',
+      );
+
+      Get.snackbar(
+        'اكتمل',
+        'تمت المزامنة: $successCount نجح، $failCount فشل',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } catch (e) {
+      errorMessage.value = 'خطأ في المزامنة';
+      appLogger.error('Error syncing', error: e);
+
+      Get.snackbar(
+        'خطأ',
+        errorMessage.value!,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } finally {
+      isSyncing.value = false;
+    }
+  }
+
+  // ==================== Statistics ====================
+
+  /// تحديث الإحصائيات
+  void _updateStats() {
+    stats.value = {
+      'total': totalCount,
+      'customers': customersCount,
+      'suppliers': suppliersCount,
+      'vip': vipPartners.length,
+      'active': activePartners.length,
+      'exceeded_credit': exceededCreditPartners.length,
+      'unsynced': unsyncedPartners.length,
+    };
+  }
+
+  /// الحصول على إحصائية
+  dynamic getStat(String key) => stats[key];
+
+  // ==================== Utility Methods ====================
+
+  /// مسح الخطأ
+  void clearError() {
+    errorMessage.value = null;
+  }
+
+  /// مسح البيانات
+  Future<void> clearData() async {
+    partners.clear();
+    filteredPartners.clear();
+    selectedPartner.value = null;
+    searchQuery.value = '';
+    currentTypeFilter.value = null;
+    currentStatusFilter.value = null;
+    currentPage.value = 1;
+    hasMore.value = true;
+    errorMessage.value = null;
+    _updateStats();
+
+    // مسح جميع كاشات الشركاء
+    await _storageService.deleteCache('partners_all');
+    for (int i = 1; i <= 10; i++) {
+      // مسح أول 10 صفحات
+      await _storageService.deleteCache('partners_page_$i');
+    }
+    appLogger.info('🗑️ Partner data and cache cleared');
+  }
+
+  /// مسح الكاش فقط
+  Future<void> clearCache() async {
+    await _storageService.deleteCache('partners_all');
+    for (int i = 1; i <= 10; i++) {
+      await _storageService.deleteCache('partners_page_$i');
+    }
+    appLogger.info('🗑️ Partner cache cleared');
+  }
+
+  /// التحقق من إمكانية جلب الشركاء
+  bool canFetchPartners() {
+    if (!isAuthenticated) {
+      appLogger.warning('Cannot fetch partners: User not authenticated');
+      return false;
+    }
+    return true;
+  }
+
+  /// جلب الشركاء من التخزين المحلي (للمستخدمين غير المسجلين)
+  Future<void> loadPartnersFromStorage() async {
+    try {
+      appLogger.info('📦 Loading partners from storage...');
+
+      // جلب من الكاش العام
+      final cached = _storageService.getCache('partners_all');
+      if (cached != null && cached is List) {
+        partners.value = cached
+            .map(
+              (json) =>
+                  PartnerModel.fromJson(Map<String, dynamic>.from(json as Map)),
+            )
+            .toList();
+
+        _applyFilters();
+        _updateStats();
+
+        appLogger.info('✅ Loaded ${partners.length} partners from storage');
+      } else {
+        appLogger.info('📭 No partners found in storage');
+      }
+    } catch (e) {
+      appLogger.error('Error loading partners from storage', error: e);
+    }
   }
 }

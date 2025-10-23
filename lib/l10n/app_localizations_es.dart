@@ -360,4 +360,163 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get settings_reset => 'Configuración restablecida';
+
+  @override
+  String get partners => 'Socios';
+
+  @override
+  String get partners_list => 'Lista de socios';
+
+  @override
+  String get add_partner => 'Agregar socio';
+
+  @override
+  String get search_partner => 'Buscar socio...';
+
+  @override
+  String get all_partners => 'Todos';
+
+  @override
+  String get customers_only => 'Clientes';
+
+  @override
+  String get suppliers_only => 'Proveedores';
+
+  @override
+  String get both_types => 'Ambos';
+
+  @override
+  String get total_partners => 'Total socios';
+
+  @override
+  String get total_customers => 'Total clientes';
+
+  @override
+  String get total_suppliers => 'Total proveedores';
+
+  @override
+  String get no_partners => 'Sin socios';
+
+  @override
+  String get no_results => 'No se encontraron resultados';
+
+  @override
+  String get try_different_search => 'Prueba otras palabras clave';
+
+  @override
+  String get start_adding => 'Comienza a agregar socios';
+
+  @override
+  String get customer => 'Cliente';
+
+  @override
+  String get supplier => 'Proveedor';
+
+  @override
+  String get both => 'Ambos';
+
+  @override
+  String get partner_details => 'Detalles del socio';
+
+  @override
+  String get export_partners => 'Exportar';
+
+  @override
+  String get import_partners => 'Importar';
+
+  @override
+  String get coming_soon => 'Próximamente...';
+
+  @override
+  String get retry => 'Reintentar';
+
+  @override
+  String get refresh => 'Actualizar';
+
+  @override
+  String get error_loading => 'Error al cargar';
+
+  @override
+  String get has_debt => 'Tiene deuda';
+
+  @override
+  String get no_debt => 'Sin deuda';
+
+  @override
+  String get debt_amount => 'Monto de la deuda';
+
+  @override
+  String get credit_amount => 'Saldo acreedor';
+
+  @override
+  String get map => 'Mapa';
+
+  @override
+  String get my_location => 'Mi ubicación';
+
+  @override
+  String get partners_refreshed => 'Socios actualizados';
+
+  @override
+  String get navigate => 'Navegar';
+
+  @override
+  String get contact => 'Contacto';
+
+  @override
+  String get phone => 'Teléfono';
+
+  @override
+  String get mobile => 'Móvil';
+
+  @override
+  String get email => 'Correo electrónico';
+
+  @override
+  String get address => 'Dirección';
+
+  @override
+  String get full_address => 'Dirección completa';
+
+  @override
+  String get city => 'Ciudad';
+
+  @override
+  String get country => 'País';
+
+  @override
+  String get zip => 'Código postal';
+
+  @override
+  String get financial => 'Financiero';
+
+  @override
+  String get total_balance => 'Saldo total';
+
+  @override
+  String get credit_limit => 'Límite de crédito';
+
+  @override
+  String get usage => 'Uso';
+
+  @override
+  String get additional_info => 'Información adicional';
+
+  @override
+  String get vat => 'IVA';
+
+  @override
+  String get active => 'Activo';
+
+  @override
+  String get yes => 'Sí';
+
+  @override
+  String get no => 'No';
+
+  @override
+  String get call => 'Llamar';
+
+  @override
+  String get edit => 'Editar';
 }

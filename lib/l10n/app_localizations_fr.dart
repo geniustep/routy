@@ -360,4 +360,163 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get settings_reset => 'Paramètres réinitialisés';
+
+  @override
+  String get partners => 'Partenaires';
+
+  @override
+  String get partners_list => 'Liste des partenaires';
+
+  @override
+  String get add_partner => 'Ajouter un partenaire';
+
+  @override
+  String get search_partner => 'Rechercher un partenaire...';
+
+  @override
+  String get all_partners => 'Tous';
+
+  @override
+  String get customers_only => 'Clients';
+
+  @override
+  String get suppliers_only => 'Fournisseurs';
+
+  @override
+  String get both_types => 'Les deux';
+
+  @override
+  String get total_partners => 'Total partenaires';
+
+  @override
+  String get total_customers => 'Total clients';
+
+  @override
+  String get total_suppliers => 'Total fournisseurs';
+
+  @override
+  String get no_partners => 'Aucun partenaire';
+
+  @override
+  String get no_results => 'Aucun résultat trouvé';
+
+  @override
+  String get try_different_search => 'Essayez d\'autres mots-clés';
+
+  @override
+  String get start_adding => 'Commencez à ajouter des partenaires';
+
+  @override
+  String get customer => 'Client';
+
+  @override
+  String get supplier => 'Fournisseur';
+
+  @override
+  String get both => 'Les deux';
+
+  @override
+  String get partner_details => 'Détails du partenaire';
+
+  @override
+  String get export_partners => 'Exporter';
+
+  @override
+  String get import_partners => 'Importer';
+
+  @override
+  String get coming_soon => 'Bientôt disponible...';
+
+  @override
+  String get retry => 'Réessayer';
+
+  @override
+  String get refresh => 'Actualiser';
+
+  @override
+  String get error_loading => 'Erreur de chargement';
+
+  @override
+  String get has_debt => 'Crédit impayé';
+
+  @override
+  String get no_debt => 'Aucune dette';
+
+  @override
+  String get debt_amount => 'Montant de la dette';
+
+  @override
+  String get credit_amount => 'Solde créditeur';
+
+  @override
+  String get map => 'Carte';
+
+  @override
+  String get my_location => 'Ma position';
+
+  @override
+  String get partners_refreshed => 'Partenaires actualisés';
+
+  @override
+  String get navigate => 'Naviguer';
+
+  @override
+  String get contact => 'Contact';
+
+  @override
+  String get phone => 'Téléphone';
+
+  @override
+  String get mobile => 'Mobile';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get address => 'Adresse';
+
+  @override
+  String get full_address => 'Adresse complète';
+
+  @override
+  String get city => 'Ville';
+
+  @override
+  String get country => 'Pays';
+
+  @override
+  String get zip => 'Code postal';
+
+  @override
+  String get financial => 'Financier';
+
+  @override
+  String get total_balance => 'Solde total';
+
+  @override
+  String get credit_limit => 'Limite de crédit';
+
+  @override
+  String get usage => 'Utilisation';
+
+  @override
+  String get additional_info => 'Informations supplémentaires';
+
+  @override
+  String get vat => 'TVA';
+
+  @override
+  String get active => 'Actif';
+
+  @override
+  String get yes => 'Oui';
+
+  @override
+  String get no => 'Non';
+
+  @override
+  String get call => 'Appeler';
+
+  @override
+  String get edit => 'Modifier';
 }

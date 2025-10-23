@@ -797,6 +797,324 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Paramètres réinitialisés'**
   String get settings_reset;
+
+  /// No description provided for @partners.
+  ///
+  /// In fr, this message translates to:
+  /// **'Partenaires'**
+  String get partners;
+
+  /// No description provided for @partners_list.
+  ///
+  /// In fr, this message translates to:
+  /// **'Liste des partenaires'**
+  String get partners_list;
+
+  /// No description provided for @add_partner.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter un partenaire'**
+  String get add_partner;
+
+  /// No description provided for @search_partner.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher un partenaire...'**
+  String get search_partner;
+
+  /// No description provided for @all_partners.
+  ///
+  /// In fr, this message translates to:
+  /// **'Tous'**
+  String get all_partners;
+
+  /// No description provided for @customers_only.
+  ///
+  /// In fr, this message translates to:
+  /// **'Clients'**
+  String get customers_only;
+
+  /// No description provided for @suppliers_only.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fournisseurs'**
+  String get suppliers_only;
+
+  /// No description provided for @both_types.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les deux'**
+  String get both_types;
+
+  /// No description provided for @total_partners.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total partenaires'**
+  String get total_partners;
+
+  /// No description provided for @total_customers.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total clients'**
+  String get total_customers;
+
+  /// No description provided for @total_suppliers.
+  ///
+  /// In fr, this message translates to:
+  /// **'Total fournisseurs'**
+  String get total_suppliers;
+
+  /// No description provided for @no_partners.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun partenaire'**
+  String get no_partners;
+
+  /// No description provided for @no_results.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun résultat trouvé'**
+  String get no_results;
+
+  /// No description provided for @try_different_search.
+  ///
+  /// In fr, this message translates to:
+  /// **'Essayez d\'autres mots-clés'**
+  String get try_different_search;
+
+  /// No description provided for @start_adding.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commencez à ajouter des partenaires'**
+  String get start_adding;
+
+  /// No description provided for @customer.
+  ///
+  /// In fr, this message translates to:
+  /// **'Client'**
+  String get customer;
+
+  /// No description provided for @supplier.
+  ///
+  /// In fr, this message translates to:
+  /// **'Fournisseur'**
+  String get supplier;
+
+  /// No description provided for @both.
+  ///
+  /// In fr, this message translates to:
+  /// **'Les deux'**
+  String get both;
+
+  /// No description provided for @partner_details.
+  ///
+  /// In fr, this message translates to:
+  /// **'Détails du partenaire'**
+  String get partner_details;
+
+  /// No description provided for @export_partners.
+  ///
+  /// In fr, this message translates to:
+  /// **'Exporter'**
+  String get export_partners;
+
+  /// No description provided for @import_partners.
+  ///
+  /// In fr, this message translates to:
+  /// **'Importer'**
+  String get import_partners;
+
+  /// No description provided for @coming_soon.
+  ///
+  /// In fr, this message translates to:
+  /// **'Bientôt disponible...'**
+  String get coming_soon;
+
+  /// No description provided for @retry.
+  ///
+  /// In fr, this message translates to:
+  /// **'Réessayer'**
+  String get retry;
+
+  /// No description provided for @refresh.
+  ///
+  /// In fr, this message translates to:
+  /// **'Actualiser'**
+  String get refresh;
+
+  /// No description provided for @error_loading.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur de chargement'**
+  String get error_loading;
+
+  /// No description provided for @has_debt.
+  ///
+  /// In fr, this message translates to:
+  /// **'Crédit impayé'**
+  String get has_debt;
+
+  /// No description provided for @no_debt.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune dette'**
+  String get no_debt;
+
+  /// No description provided for @debt_amount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant de la dette'**
+  String get debt_amount;
+
+  /// No description provided for @credit_amount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Solde créditeur'**
+  String get credit_amount;
+
+  /// No description provided for @map.
+  ///
+  /// In fr, this message translates to:
+  /// **'Carte'**
+  String get map;
+
+  /// No description provided for @my_location.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ma position'**
+  String get my_location;
+
+  /// No description provided for @partners_refreshed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Partenaires actualisés'**
+  String get partners_refreshed;
+
+  /// No description provided for @navigate.
+  ///
+  /// In fr, this message translates to:
+  /// **'Naviguer'**
+  String get navigate;
+
+  /// No description provided for @contact.
+  ///
+  /// In fr, this message translates to:
+  /// **'Contact'**
+  String get contact;
+
+  /// No description provided for @phone.
+  ///
+  /// In fr, this message translates to:
+  /// **'Téléphone'**
+  String get phone;
+
+  /// No description provided for @mobile.
+  ///
+  /// In fr, this message translates to:
+  /// **'Mobile'**
+  String get mobile;
+
+  /// No description provided for @email.
+  ///
+  /// In fr, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// No description provided for @address.
+  ///
+  /// In fr, this message translates to:
+  /// **'Adresse'**
+  String get address;
+
+  /// No description provided for @full_address.
+  ///
+  /// In fr, this message translates to:
+  /// **'Adresse complète'**
+  String get full_address;
+
+  /// No description provided for @city.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ville'**
+  String get city;
+
+  /// No description provided for @country.
+  ///
+  /// In fr, this message translates to:
+  /// **'Pays'**
+  String get country;
+
+  /// No description provided for @zip.
+  ///
+  /// In fr, this message translates to:
+  /// **'Code postal'**
+  String get zip;
+
+  /// No description provided for @financial.
+  ///
+  /// In fr, this message translates to:
+  /// **'Financier'**
+  String get financial;
+
+  /// No description provided for @total_balance.
+  ///
+  /// In fr, this message translates to:
+  /// **'Solde total'**
+  String get total_balance;
+
+  /// No description provided for @credit_limit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Limite de crédit'**
+  String get credit_limit;
+
+  /// No description provided for @usage.
+  ///
+  /// In fr, this message translates to:
+  /// **'Utilisation'**
+  String get usage;
+
+  /// No description provided for @additional_info.
+  ///
+  /// In fr, this message translates to:
+  /// **'Informations supplémentaires'**
+  String get additional_info;
+
+  /// No description provided for @vat.
+  ///
+  /// In fr, this message translates to:
+  /// **'TVA'**
+  String get vat;
+
+  /// No description provided for @active.
+  ///
+  /// In fr, this message translates to:
+  /// **'Actif'**
+  String get active;
+
+  /// No description provided for @yes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Oui'**
+  String get yes;
+
+  /// No description provided for @no.
+  ///
+  /// In fr, this message translates to:
+  /// **'Non'**
+  String get no;
+
+  /// No description provided for @call.
+  ///
+  /// In fr, this message translates to:
+  /// **'Appeler'**
+  String get call;
+
+  /// No description provided for @edit.
+  ///
+  /// In fr, this message translates to:
+  /// **'Modifier'**
+  String get edit;
 }
 
 class _AppLocalizationsDelegate

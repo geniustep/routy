@@ -358,4 +358,163 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settings_reset => 'Settings reset';
+
+  @override
+  String get partners => 'Partners';
+
+  @override
+  String get partners_list => 'Partners List';
+
+  @override
+  String get add_partner => 'Add Partner';
+
+  @override
+  String get search_partner => 'Search partner...';
+
+  @override
+  String get all_partners => 'All';
+
+  @override
+  String get customers_only => 'Customers';
+
+  @override
+  String get suppliers_only => 'Suppliers';
+
+  @override
+  String get both_types => 'Both';
+
+  @override
+  String get total_partners => 'Total partners';
+
+  @override
+  String get total_customers => 'Total customers';
+
+  @override
+  String get total_suppliers => 'Total suppliers';
+
+  @override
+  String get no_partners => 'No partners';
+
+  @override
+  String get no_results => 'No results found';
+
+  @override
+  String get try_different_search => 'Try different keywords';
+
+  @override
+  String get start_adding => 'Start adding partners';
+
+  @override
+  String get customer => 'Customer';
+
+  @override
+  String get supplier => 'Supplier';
+
+  @override
+  String get both => 'Both';
+
+  @override
+  String get partner_details => 'Partner details';
+
+  @override
+  String get export_partners => 'Export';
+
+  @override
+  String get import_partners => 'Import';
+
+  @override
+  String get coming_soon => 'Coming soon...';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get refresh => 'Refresh';
+
+  @override
+  String get error_loading => 'Error loading';
+
+  @override
+  String get has_debt => 'Has debt';
+
+  @override
+  String get no_debt => 'No debt';
+
+  @override
+  String get debt_amount => 'Debt Amount';
+
+  @override
+  String get credit_amount => 'Credit Balance';
+
+  @override
+  String get map => 'Map';
+
+  @override
+  String get my_location => 'My location';
+
+  @override
+  String get partners_refreshed => 'Partners refreshed';
+
+  @override
+  String get navigate => 'Navigate';
+
+  @override
+  String get contact => 'Contact';
+
+  @override
+  String get phone => 'Phone';
+
+  @override
+  String get mobile => 'Mobile';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get address => 'Address';
+
+  @override
+  String get full_address => 'Full address';
+
+  @override
+  String get city => 'City';
+
+  @override
+  String get country => 'Country';
+
+  @override
+  String get zip => 'Zip code';
+
+  @override
+  String get financial => 'Financial';
+
+  @override
+  String get total_balance => 'Total balance';
+
+  @override
+  String get credit_limit => 'Credit limit';
+
+  @override
+  String get usage => 'Usage';
+
+  @override
+  String get additional_info => 'Additional information';
+
+  @override
+  String get vat => 'VAT';
+
+  @override
+  String get active => 'Active';
+
+  @override
+  String get yes => 'Yes';
+
+  @override
+  String get no => 'No';
+
+  @override
+  String get call => 'Call';
+
+  @override
+  String get edit => 'Edit';
 }

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:routy/app/index.dart';
+import 'package:routy/common/api/api.dart';
 import 'package:routy/common/services/api_service.dart';
 import 'package:routy/config/core/app_config.dart';
 import 'package:routy/config/core/design_tokens.dart';
@@ -13,6 +14,7 @@ import 'package:routy/services/translation_service.dart';
 import 'package:routy/utils/app_logger.dart';
 import 'package:routy/controllers/theme_controller.dart';
 import 'package:routy/controllers/translation_controller.dart';
+import 'package:routy/controllers/user_controller.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -52,8 +54,7 @@ class _LoginScreenState extends State<LoginScreen>
     _passwordController.text = ',,07Genius';
     _databaseController.text = 'done2026';
     _setupAnimations();
-    _loadVersionInfo();
-    _loadAvailableDatabases();
+    _loadVersionInfo(); // سيستدعي _loadAvailableDatabases تلقائياً
   }
 
   void _setupAnimations() {
@@ -127,43 +128,85 @@ class _LoginScreenState extends State<LoginScreen>
 
   Future<void> _loadVersionInfo() async {
     try {
-      final response = await ApiService.instance.getVersionInfo();
-      if (response.success) {
-        if (kDebugMode) {
-          debugPrint('Version Info: ${response.data}');
-        }
-      }
+      await Api.getVersionInfo(
+        onResponse: (response) async {
+          if (response.serverVersion != null && mounted) {
+            if (kDebugMode) {
+              appLogger.info('Version Info: ${response.serverVersion}');
+            }
+            await _loadAvailableDatabases(
+              serverVersionNumber: response.serverVersionInfo?[0],
+            );
+          }
+        },
+        onError: (error, data) {
+          if (kDebugMode) {
+            appLogger.info('Error loading version info: $error');
+          }
+        },
+      );
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('Error loading version info: $e');
+        appLogger.info('Error loading version info: $e');
       }
     }
   }
 
-  Future<void> _loadAvailableDatabases() async {
+  Future<void> _loadAvailableDatabases({int? serverVersionNumber}) async {
     try {
-      final response = await ApiService.instance.getDatabases();
-
-      if (response.success && response.data != null) {
-        if (kDebugMode) {
-          debugPrint('Available Databases: ${response.data}');
+      // فحص إذا كانت البيانات محفوظة مسبقاً
+      final savedDatabases = StorageService.instance.getString(
+        'available_databases',
+      );
+      if (savedDatabases != null && savedDatabases.isNotEmpty) {
+        try {
+          final databases = List<String>.from(jsonDecode(savedDatabases));
+          if (mounted) {
+            setState(() {
+              _availableDatabases = databases;
+            });
+          }
+          appLogger.info(
+            '📦 Using cached databases: ${databases.length} items → ${databases.join(", ")}',
+          );
+          return;
+        } catch (e) {
+          appLogger.warning('Error parsing cached databases: $e');
         }
-
-        if (mounted) {
-          setState(() {
-            _availableDatabases = response.data!;
-          });
-        }
-
-        // حفظ قواعد البيانات المتوفرة
-        await StorageService.instance.setString(
-          'available_databases',
-          jsonEncode(response.data!),
-        );
       }
+
+      // جلب من الخادم إذا لم تكن في الكاش
+
+      await Api.getDatabases(
+        serverVersionNumber: serverVersionNumber ?? 18,
+        onResponse: (response) async {
+          if (response.serverVersion != null && mounted) {
+            if (kDebugMode) {
+              appLogger.info('Version Info: ${response.serverVersion}');
+            }
+            if (mounted) {
+              setState(() {
+                _availableDatabases = response.data ?? [];
+              });
+            }
+            appLogger.info(
+              '🌐 Fetched databases: ${response.data?.length ?? 0} items → ${response.data?.join(", ") ?? ""}',
+            );
+            await StorageService.instance.setString(
+              'available_databases',
+              jsonEncode(response.data!),
+            );
+          }
+        },
+        onError: (error, data) {
+          if (kDebugMode) {
+            appLogger.info('Error loading version info: $error');
+          }
+        },
+      );
     } catch (e) {
       if (kDebugMode) {
-        debugPrint('Error loading databases: $e');
+        appLogger.info('Error loading databases: $e');
       }
     }
   }
@@ -186,39 +229,46 @@ class _LoginScreenState extends State<LoginScreen>
         },
       );
 
-      final response = await ApiService.instance.authenticate(
+      await ApiService.instance.login(
         username: _emailController.text.trim(),
         password: _passwordController.text,
         database: _databaseController.text.trim(),
+        onResponse: (response) async {
+          if (kDebugMode) {
+            appLogger.info('Login response: ${response.db}');
+          }
+          appLogger.info('✅ Login successful');
+          appLogger.userAction(
+            'Login',
+            details: {
+              'username': _emailController.text.trim(),
+              'database': _databaseController.text.trim(),
+            },
+          );
+          appLogger.debug(
+            '📥 Login response: success=${response.db}, data=${response.name}',
+          );
+
+          // تحديث UserController
+          final userController = Get.find<UserController>();
+          await userController.setUser(response);
+          appLogger.info('✅ UserController updated');
+
+          if (mounted) {
+            HapticFeedback.lightImpact();
+            appLogger.navigation(AppRouter.dashboard, from: AppRouter.login);
+            Get.offAllNamed(AppRouter.dashboard);
+          }
+        },
+        onError: (error, data) {
+          if (kDebugMode) {
+            appLogger.info('Error logging in: $error');
+          }
+        },
       );
-
-      appLogger.debug(
-        '📥 Login response: success=${response.success}, data=${response.data}',
-      );
-
-      if (response.success && response.data != null) {
-        // البيانات محفوظة بالفعل في ApiService.authenticate
-        appLogger.info('✅ Login successful');
-        appLogger.userAction(
-          'Login',
-          details: {
-            'username': _emailController.text.trim(),
-            'database': _databaseController.text.trim(),
-          },
-        );
-
-        if (mounted) {
-          HapticFeedback.lightImpact();
-          appLogger.navigation(AppRouter.dashboard, from: AppRouter.login);
-          Get.offAllNamed(AppRouter.dashboard);
-        }
-      } else {
-        appLogger.warning('⚠️ Login failed: ${response.error}');
-        _showError(
-          response.error ?? TranslationService.instance.translate('loginError'),
-        );
-      }
     } catch (e) {
+      appLogger.warning('⚠️ Login failed');
+      _showError(TranslationService.instance.translate('loginError'));
       _showError('Erreur: $e');
     } finally {
       if (mounted) {

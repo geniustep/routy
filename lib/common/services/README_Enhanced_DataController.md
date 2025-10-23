@@ -31,7 +31,7 @@ await EnhancedDataController.getRecordsWithPermissions<PartnerModel>(
   limit: 20,
   fromJson: (json) => PartnerModel.fromJson(json),
   onResponse: (partners) {
-    print('تم جلب ${partners.length} شريك');
+          appLogger.info('تم جلب ${partners.length} شريك');
   },
 );
 ```
@@ -47,7 +47,7 @@ await EnhancedDataController.getRecordsWithPermissions<PartnerModel>(
   isAdmin: true, // محاولة مع الحقول الكاملة
   enableFallback: true, // تفعيل Fallback
   onResponse: (partners) {
-    print('تم جلب ${partners.length} شريك');
+          appLogger.info('تم جلب ${partners.length} شريك');
   },
 );
 ```
@@ -59,7 +59,7 @@ await EnhancedDataController.getRecordsWithPermissions<PartnerModel>(
   cacheKey: 'partners_page_1',
   cacheTTL: 300, // 5 دقائق
   onResponse: (partners) {
-    print('تم جلب ${partners.length} شريك من التخزين المؤقت');
+          appLogger.info('تم جلب ${partners.length} شريك من التخزين المؤقت');
   },
 );
 ```
@@ -227,7 +227,7 @@ try {
   await partnerController.fetchPartners();
 } catch (e) {
   // معالجة الخطأ
-  print('خطأ في جلب الشركاء: $e');
+        appLogger.info('خطأ في جلب الشركاء: $e');
 }
 ```
 

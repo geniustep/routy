@@ -9,10 +9,16 @@ import '../screens/delivery/delivery_list_screen.dart';
 import '../screens/delivery/delivery_create_screen.dart';
 import '../screens/customers/customers_list_screen.dart';
 import '../screens/customers/customers_create_screen.dart';
+import '../screens/partners/partners_screen.dart';
+import '../screens/partners/partners_map_screen.dart';
+import '../screens/partners/partner_details_screen.dart';
+import '../models/partners/partner_type.dart';
+import '../models/partners/partners_model.dart';
 import '../screens/products/products_list_screen.dart';
 import '../screens/products/products_create_screen.dart';
 import '../screens/reports/reports_screen.dart';
 import '../screens/settings/settings_screen.dart';
+import '../bindings/partner_binding.dart';
 
 /// Application Router using GetX
 class AppRouter {
@@ -26,6 +32,11 @@ class AppRouter {
   static const String deliveryCreate = '/delivery/create';
   static const String customersList = '/customers';
   static const String customersCreate = '/customers/create';
+  static const String partnersList = '/partners';
+  static const String partnersCustomers = '/partners/customers';
+  static const String partnersSuppliers = '/partners/suppliers';
+  static const String partnersMap = '/partners/map';
+  static const String partnerDetails = '/partners/details';
   static const String productsList = '/products';
   static const String productsCreate = '/products/create';
   static const String reports = '/reports';
@@ -43,6 +54,34 @@ class AppRouter {
     GetPage(name: deliveryCreate, page: () => const DeliveryCreateScreen()),
     GetPage(name: customersList, page: () => const CustomersListScreen()),
     GetPage(name: customersCreate, page: () => const CustomersCreateScreen()),
+    GetPage(
+      name: partnersList,
+      page: () => const PartnersScreen(),
+      binding: PartnerBinding(),
+    ),
+    GetPage(
+      name: partnersCustomers,
+      page: () => const PartnersScreen(initialFilter: PartnerType.customer),
+      binding: PartnerBinding(),
+    ),
+    GetPage(
+      name: partnersSuppliers,
+      page: () => const PartnersScreen(initialFilter: PartnerType.supplier),
+      binding: PartnerBinding(),
+    ),
+    GetPage(
+      name: partnersMap,
+      page: () => const PartnersMapScreen(),
+      binding: PartnerBinding(),
+    ),
+    GetPage(
+      name: partnerDetails,
+      page: () {
+        final partner = Get.arguments as PartnerModel;
+        return PartnerDetailsScreen(partner: partner);
+      },
+      binding: PartnerBinding(),
+    ),
     GetPage(name: productsList, page: () => const ProductsListScreen()),
     GetPage(name: productsCreate, page: () => const ProductsCreateScreen()),
     GetPage(name: reports, page: () => const ReportsScreen()),

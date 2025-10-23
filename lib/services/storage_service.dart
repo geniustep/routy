@@ -716,6 +716,52 @@ class StorageService {
     printStats();
   }
 
+  // ==================== Complete Data Clearing ====================
+
+  /// مسح جميع البيانات المخزنة (Cache + Storage)
+  /// ⚠️ هذه العملية لا يمكن التراجع عنها!
+  Future<bool> clearAllData() async {
+    try {
+      appLogger.warning('🗑️ Starting complete data clearing...');
+
+      // 1. مسح SharedPreferences
+      await clearAll();
+
+      // 2. مسح جميع Hive boxes
+      await clearCache();
+      await clearQueue();
+      await clearSession();
+      await clearSettings();
+
+      appLogger.info('✅ All local data cleared successfully');
+      return true;
+    } catch (e, stackTrace) {
+      appLogger.error(
+        'Error clearing all data',
+        error: e,
+        stackTrace: stackTrace,
+      );
+      return false;
+    }
+  }
+
+  /// الحصول على حجم البيانات المخزنة (تقريبي)
+  Map<String, int> getDataSize() {
+    return {
+      'prefs': _prefs.getKeys().length,
+      'cache': _cacheBox.length,
+      'queue': _queueBox.length,
+      'session': _sessionBox.length,
+      'settings': _settingsBox.length,
+      'total':
+          _prefs.getKeys().length +
+          _cacheBox.length +
+          _queueBox.length +
+          _sessionBox.length +
+          _settingsBox.length,
+    };
+  }
+
   // ==================== Disposal ====================
 
   /// إغلاق جميع الاتصالات

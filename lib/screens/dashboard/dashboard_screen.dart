@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:routy/controllers/index.dart';
+import 'package:routy/controllers/partner_controller.dart';
 import 'package:routy/app/app_router.dart';
+import 'package:routy/utils/app_logger.dart';
 import 'package:routy/utils/pref_utils.dart';
 import 'package:routy/config/responsive/responsive_design.dart';
 import 'package:routy/config/responsive/responsive_components.dart';
@@ -404,12 +406,30 @@ class DashboardScreen extends StatelessWidget {
         title: TranslationService.instance.translate('customers'),
         icon: Icons.people,
         color: Colors.blue,
-        route: '/customers',
+        route: AppRouter.partnersCustomers,
+      ),
+      _QuickAction(
+        title: TranslationService.instance.translate('suppliers_only'),
+        icon: Icons.store,
+        color: Colors.orange,
+        route: AppRouter.partnersSuppliers,
+      ),
+      _QuickAction(
+        title: TranslationService.instance.translate('partners'),
+        icon: Icons.business_center,
+        color: Colors.indigo,
+        route: AppRouter.partnersList,
+      ),
+      _QuickAction(
+        title: TranslationService.instance.translate('map'),
+        icon: Icons.map,
+        color: Colors.teal,
+        route: AppRouter.partnersMap,
       ),
       _QuickAction(
         title: TranslationService.instance.translate('reports'),
         icon: Icons.analytics,
-        color: Colors.orange,
+        color: Colors.deepPurple,
         route: '/reports',
       ),
       _QuickAction(
@@ -435,6 +455,12 @@ class DashboardScreen extends StatelessWidget {
         icon: Icons.warehouse,
         color: Colors.teal,
         route: '/warehouse',
+      ),
+      _QuickAction(
+        title: 'اختبار العملاء',
+        icon: Icons.sync,
+        color: Colors.indigo,
+        route: '/test_partners',
       ),
     ];
 
@@ -508,7 +534,11 @@ class DashboardScreen extends StatelessWidget {
     return Obx(() {
       return GestureDetector(
         onTap: () {
-          Get.toNamed(action.route);
+          if (action.route == '/test_partners') {
+            _testPartnersLoading();
+          } else {
+            Get.toNamed(action.route);
+          }
         },
         child: Container(
           padding: const EdgeInsets.all(12), // ✅ تقليل من 16 إلى 12
@@ -926,6 +956,68 @@ class DashboardScreen extends StatelessWidget {
           colorText: Colors.white,
         );
       }
+    }
+  }
+
+  /// اختبار تحميل العملاء
+  Future<void> _testPartnersLoading() async {
+    try {
+      // عرض Loading Dialog
+      Get.dialog(
+        const Center(child: CircularProgressIndicator()),
+        barrierDismissible: false,
+      );
+
+      // تهيئة PartnerController
+      if (!Get.isRegistered<PartnerController>()) {
+        Get.put(PartnerController());
+      }
+
+      final partnerController = Get.find<PartnerController>();
+
+      // تحميل من التخزين المحلي أولاً
+      await partnerController.loadFromLocal();
+
+      // جلب من الخادم
+      await partnerController.fetchPartners(showLoading: false, refresh: true);
+
+      // إغلاق Loading Dialog
+      Get.back();
+
+      // عرض النتائج
+      Get.snackbar(
+        '✅ نجح اختبار العملاء',
+        'تم تحميل ${partnerController.totalCount} عميل بنجاح',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 3),
+      );
+
+      // طباعة التفاصيل في Console
+      appLogger.info('📊 نتائج اختبار العملاء:');
+      appLogger.info('   - إجمالي العملاء: ${partnerController.totalCount}');
+      appLogger.info('   - العملاء: ${partnerController.customersCount}');
+      appLogger.info('   - الموردين: ${partnerController.suppliersCount}');
+      appLogger.info('   - VIP: ${partnerController.vipPartners.length}');
+      appLogger.info(
+        '   - النشطين: ${partnerController.activePartners.length}',
+      );
+    } catch (e) {
+      // إغلاق Loading Dialog
+      Get.back();
+
+      // عرض خطأ
+      Get.snackbar(
+        '❌ فشل اختبار العملاء',
+        'خطأ: $e',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 5),
+      );
+
+      appLogger.info('❌ خطأ في اختبار العملاء: $e');
     }
   }
 }
