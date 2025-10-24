@@ -879,7 +879,7 @@ abstract class AppLocalizations {
   /// No description provided for @try_different_search.
   ///
   /// In fr, this message translates to:
-  /// **'Essayez d\'autres mots-clés'**
+  /// **'Essayez une recherche différente'**
   String get try_different_search;
 
   /// No description provided for @start_adding.
@@ -1175,6 +1175,186 @@ abstract class AppLocalizations {
   /// In fr, this message translates to:
   /// **'Actualiser le tableau de bord'**
   String get refresh_dashboard;
+
+  /// No description provided for @filter.
+  ///
+  /// In fr, this message translates to:
+  /// **'Filtrer'**
+  String get filter;
+
+  /// No description provided for @apply.
+  ///
+  /// In fr, this message translates to:
+  /// **'Appliquer'**
+  String get apply;
+
+  /// No description provided for @sort_by.
+  ///
+  /// In fr, this message translates to:
+  /// **'Trier par'**
+  String get sort_by;
+
+  /// No description provided for @error_occurred.
+  ///
+  /// In fr, this message translates to:
+  /// **'Une erreur s\'est produite'**
+  String get error_occurred;
+
+  /// No description provided for @error_loading_data.
+  ///
+  /// In fr, this message translates to:
+  /// **'Erreur lors du chargement des données'**
+  String get error_loading_data;
+
+  /// No description provided for @no_data_found.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucune donnée trouvée'**
+  String get no_data_found;
+
+  /// No description provided for @no_items_found.
+  ///
+  /// In fr, this message translates to:
+  /// **'Aucun élément trouvé'**
+  String get no_items_found;
+
+  /// No description provided for @search.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher'**
+  String get search;
+
+  /// No description provided for @draft.
+  ///
+  /// In fr, this message translates to:
+  /// **'Brouillon'**
+  String get draft;
+
+  /// No description provided for @pending.
+  ///
+  /// In fr, this message translates to:
+  /// **'En attente'**
+  String get pending;
+
+  /// No description provided for @confirmed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Confirmé'**
+  String get confirmed;
+
+  /// No description provided for @in_progress.
+  ///
+  /// In fr, this message translates to:
+  /// **'En cours'**
+  String get in_progress;
+
+  /// No description provided for @completed.
+  ///
+  /// In fr, this message translates to:
+  /// **'Terminé'**
+  String get completed;
+
+  /// No description provided for @delivered.
+  ///
+  /// In fr, this message translates to:
+  /// **'Livré'**
+  String get delivered;
+
+  /// No description provided for @cancelled.
+  ///
+  /// In fr, this message translates to:
+  /// **'Annulé'**
+  String get cancelled;
+
+  /// No description provided for @paid.
+  ///
+  /// In fr, this message translates to:
+  /// **'Payé'**
+  String get paid;
+
+  /// No description provided for @unpaid.
+  ///
+  /// In fr, this message translates to:
+  /// **'Impayé'**
+  String get unpaid;
+
+  /// No description provided for @add.
+  ///
+  /// In fr, this message translates to:
+  /// **'Ajouter'**
+  String get add;
+
+  /// No description provided for @delete.
+  ///
+  /// In fr, this message translates to:
+  /// **'Supprimer'**
+  String get delete;
+
+  /// No description provided for @sales_orders.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commandes de vente'**
+  String get sales_orders;
+
+  /// No description provided for @search_sales_orders.
+  ///
+  /// In fr, this message translates to:
+  /// **'Rechercher les commandes'**
+  String get search_sales_orders;
+
+  /// No description provided for @status.
+  ///
+  /// In fr, this message translates to:
+  /// **'Statut'**
+  String get status;
+
+  /// No description provided for @new_sale.
+  ///
+  /// In fr, this message translates to:
+  /// **'Nouvelle vente'**
+  String get new_sale;
+
+  /// No description provided for @items.
+  ///
+  /// In fr, this message translates to:
+  /// **'Articles'**
+  String get items;
+
+  /// No description provided for @view.
+  ///
+  /// In fr, this message translates to:
+  /// **'Voir'**
+  String get view;
+
+  /// No description provided for @sale_order.
+  ///
+  /// In fr, this message translates to:
+  /// **'Commande de vente'**
+  String get sale_order;
+
+  /// No description provided for @order_info.
+  ///
+  /// In fr, this message translates to:
+  /// **'Informations de commande'**
+  String get order_info;
+
+  /// No description provided for @total_amount.
+  ///
+  /// In fr, this message translates to:
+  /// **'Montant total'**
+  String get total_amount;
+
+  /// No description provided for @notes.
+  ///
+  /// In fr, this message translates to:
+  /// **'Notes'**
+  String get notes;
+
+  /// No description provided for @print.
+  ///
+  /// In fr, this message translates to:
+  /// **'Imprimer'**
+  String get print;
 }
 
 class _AppLocalizationsDelegate

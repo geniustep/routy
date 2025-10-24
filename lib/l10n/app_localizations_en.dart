@@ -399,7 +399,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get no_results => 'No results found';
 
   @override
-  String get try_different_search => 'Try different keywords';
+  String get try_different_search => 'Try a different search';
 
   @override
   String get start_adding => 'Start adding partners';
@@ -547,4 +547,94 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get refresh_dashboard => 'Refresh Dashboard';
+
+  @override
+  String get filter => 'Filter';
+
+  @override
+  String get apply => 'Apply';
+
+  @override
+  String get sort_by => 'Sort By';
+
+  @override
+  String get error_occurred => 'An error occurred';
+
+  @override
+  String get error_loading_data => 'Error loading data';
+
+  @override
+  String get no_data_found => 'No data found';
+
+  @override
+  String get no_items_found => 'No items found';
+
+  @override
+  String get search => 'Search';
+
+  @override
+  String get draft => 'Draft';
+
+  @override
+  String get pending => 'Pending';
+
+  @override
+  String get confirmed => 'Confirmed';
+
+  @override
+  String get in_progress => 'In Progress';
+
+  @override
+  String get completed => 'Completed';
+
+  @override
+  String get delivered => 'Delivered';
+
+  @override
+  String get cancelled => 'Cancelled';
+
+  @override
+  String get paid => 'Paid';
+
+  @override
+  String get unpaid => 'Unpaid';
+
+  @override
+  String get add => 'Add';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get sales_orders => 'Sales Orders';
+
+  @override
+  String get search_sales_orders => 'Search Sales Orders';
+
+  @override
+  String get status => 'Status';
+
+  @override
+  String get new_sale => 'New Sale';
+
+  @override
+  String get items => 'Items';
+
+  @override
+  String get view => 'View';
+
+  @override
+  String get sale_order => 'Sale Order';
+
+  @override
+  String get order_info => 'Order Information';
+
+  @override
+  String get total_amount => 'Total Amount';
+
+  @override
+  String get notes => 'Notes';
+
+  @override
+  String get print => 'Print';
 }

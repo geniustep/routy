@@ -7,6 +7,7 @@ import '../../controllers/index.dart';
 import '../../app/app_router.dart';
 import '../../utils/app_logger.dart';
 import '../../controllers/partner_controller.dart';
+import '../../screens/splash/splash_controller.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -26,6 +27,7 @@ class _SettingsScreenState extends State<SettingsScreen>
   bool _locationEnabled = true;
   bool _autoSync = true;
   double _fontSize = 16.0;
+  String _selectedDashboard = 'classic'; // 'classic' or 'v2'
 
   final List<Map<String, dynamic>> _languages = [
     {'code': 'fr', 'name': 'Français', 'flag': '🇫🇷'},
@@ -71,8 +73,11 @@ class _SettingsScreenState extends State<SettingsScreen>
   void _loadSettings() {
     // تحميل الإعدادات المحفوظة
     final currentLanguage = TranslationService.instance.getCurrentLanguage();
+    final savedDashboard =
+        StorageService.instance.getString('selected_dashboard') ?? 'v2';
     setState(() {
       _selectedLanguage = currentLanguage;
+      _selectedDashboard = savedDashboard;
     });
   }
 
@@ -87,6 +92,14 @@ class _SettingsScreenState extends State<SettingsScreen>
   void _saveThemeType(CustomThemeType type) {
     final themeController = Get.find<ThemeController>();
     themeController.setThemeType(type);
+    HapticFeedback.lightImpact();
+  }
+
+  void _saveDashboardPreference(String dashboard) async {
+    setState(() {
+      _selectedDashboard = dashboard;
+    });
+    await StorageService.instance.setString('selected_dashboard', dashboard);
     HapticFeedback.lightImpact();
   }
 
@@ -353,82 +366,377 @@ class _SettingsScreenState extends State<SettingsScreen>
   }
 
   Widget _buildDashboardSection(ThemeController themeController) {
+    // تحديد Dashboard الحالي من الـ route
+    final currentRoute = Get.currentRoute;
+    final isOnV2 = currentRoute == AppRouter.dashboardV2;
+    final isOnClassic = currentRoute == AppRouter.dashboard;
+
     return _buildSectionCard(
       title: 'Dashboard',
       icon: Icons.dashboard_customize,
       themeController: themeController,
       children: [
-        Container(
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Colors.blue.withValues(alpha: 0.2),
-                Colors.purple.withValues(alpha: 0.2),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+        // عرض Dashboard الحالي
+        if (isOnV2 || isOnClassic)
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: themeController.primaryColor.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: themeController.primaryColor.withValues(alpha: 0.3),
+                width: 1,
+              ),
             ),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: Colors.blue.withValues(alpha: 0.5),
-              width: 1,
+            child: Row(
+              children: [
+                Icon(
+                  Icons.info_outline,
+                  color: themeController.primaryColor,
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Currently viewing: ${isOnV2 ? "Enhanced V2" : "Classic"}',
+                    style: TextStyle(
+                      color: themeController.isDarkMode
+                          ? Colors.white
+                          : Colors.black87,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          child: ListTile(
-            leading: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.blue.withValues(alpha: 0.3),
-                borderRadius: BorderRadius.circular(8),
+        _buildSettingTile(
+          title: 'Default Dashboard',
+          subtitle: _selectedDashboard == 'v2' ? 'Enhanced V2' : 'Classic',
+          trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+          onTap: () => _showDashboardDialog(themeController),
+          themeController: themeController,
+        ),
+        const SizedBox(height: 8),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            children: [
+              _buildDashboardOption(
+                'Classic Dashboard',
+                'classic',
+                Icons.dashboard,
+                'Traditional dashboard layout',
+                themeController,
+                isCurrentlyViewing: isOnClassic,
               ),
-              child: const Icon(
+              const SizedBox(height: 12),
+              _buildDashboardOption(
+                'Enhanced V2',
+                'v2',
                 Icons.auto_awesome,
-                color: Colors.blue,
-                size: 24,
+                'Modern design with charts & animations',
+                themeController,
+                isNew: true,
+                isCurrentlyViewing: isOnV2,
               ),
-            ),
-            title: Text(
-              'Enhanced Dashboard V2',
-              style: TextStyle(
-                color: themeController.isDarkMode
-                    ? Colors.white
-                    : Colors.black87,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            subtitle: Text(
-              'Try the new dashboard experience',
-              style: TextStyle(
-                color: themeController.isDarkMode
-                    ? Colors.white.withValues(alpha: 0.7)
-                    : Colors.grey[600],
-                fontSize: 14,
-              ),
-            ),
-            trailing: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.green,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Text(
-                'NEW',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            onTap: () {
-              HapticFeedback.lightImpact();
-              Get.toNamed(AppRouter.dashboardV2);
-            },
+            ],
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildDashboardOption(
+    String title,
+    String value,
+    IconData icon,
+    String description,
+    ThemeController themeController, {
+    bool isNew = false,
+    bool isCurrentlyViewing = false,
+  }) {
+    final isSelected = _selectedDashboard == value;
+
+    return GestureDetector(
+      onTap: () {
+        _saveDashboardPreference(value);
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          gradient: isSelected
+              ? LinearGradient(
+                  colors: [
+                    themeController.primaryColor.withValues(alpha: 0.2),
+                    themeController.primaryColor.withValues(alpha: 0.1),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : null,
+          color: isSelected
+              ? null
+              : themeController.isDarkMode
+              ? Colors.grey.withValues(alpha: 0.1)
+              : Colors.grey.withValues(alpha: 0.05),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected
+                ? themeController.primaryColor
+                : themeController.isDarkMode
+                ? Colors.grey.withValues(alpha: 0.3)
+                : Colors.grey.withValues(alpha: 0.2),
+            width: isSelected ? 2 : 1,
+          ),
+        ),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? themeController.primaryColor.withValues(alpha: 0.2)
+                        : themeController.isDarkMode
+                        ? Colors.grey.withValues(alpha: 0.2)
+                        : Colors.grey.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(
+                    icon,
+                    color: isSelected
+                        ? themeController.primaryColor
+                        : themeController.isDarkMode
+                        ? Colors.white70
+                        : Colors.grey[700],
+                    size: 24,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            title,
+                            style: TextStyle(
+                              color: isSelected
+                                  ? themeController.primaryColor
+                                  : themeController.isDarkMode
+                                  ? Colors.white
+                                  : Colors.black87,
+                              fontSize: 16,
+                              fontWeight: isSelected
+                                  ? FontWeight.bold
+                                  : FontWeight.w600,
+                            ),
+                          ),
+                          if (isNew) ...[
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.green,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Text(
+                                'NEW',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                          if (isCurrentlyViewing) ...[
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.orange,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Text(
+                                'VIEWING',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        description,
+                        style: TextStyle(
+                          color: themeController.isDarkMode
+                              ? Colors.white.withValues(alpha: 0.6)
+                              : Colors.grey[600],
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (isSelected)
+                  Icon(
+                    Icons.check_circle,
+                    color: themeController.primaryColor,
+                    size: 24,
+                  ),
+              ],
+            ),
+            // زر التبديل إذا لم يكن Dashboard الحالي
+            if (!isCurrentlyViewing)
+              Padding(
+                padding: const EdgeInsets.only(top: 12),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      HapticFeedback.lightImpact();
+                      // إعادة تشغيل التطبيق مع التفضيل الجديد
+                      Get.delete<SplashController>();
+                      Get.offAllNamed(AppRouter.splash);
+                    },
+                    icon: const Icon(Icons.visibility, size: 18),
+                    label: const Text('View Now'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: themeController.primaryColor.withValues(
+                        alpha: 0.1,
+                      ),
+                      foregroundColor: themeController.primaryColor,
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        side: BorderSide(
+                          color: themeController.primaryColor.withValues(
+                            alpha: 0.3,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showDashboardDialog(ThemeController themeController) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.grey[900],
+        title: const Text(
+          'Choose Dashboard',
+          style: TextStyle(color: Colors.white),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildDashboardDialogOption(
+              'Classic Dashboard',
+              'classic',
+              Icons.dashboard,
+              themeController,
+            ),
+            const SizedBox(height: 12),
+            _buildDashboardDialogOption(
+              'Enhanced V2',
+              'v2',
+              Icons.auto_awesome,
+              themeController,
+              isNew: true,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Get.back(), child: const Text('Close')),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDashboardDialogOption(
+    String title,
+    String value,
+    IconData icon,
+    ThemeController themeController, {
+    bool isNew = false,
+  }) {
+    final isSelected = _selectedDashboard == value;
+
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      decoration: BoxDecoration(
+        color: isSelected
+            ? Colors.blue.withValues(alpha: 0.2)
+            : Colors.transparent,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: isSelected ? Colors.blue : Colors.grey.withValues(alpha: 0.3),
+          width: 1,
+        ),
+      ),
+      child: ListTile(
+        leading: Icon(icon, color: isSelected ? Colors.blue : Colors.white),
+        title: Row(
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                color: isSelected ? Colors.blue : Colors.white,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              ),
+            ),
+            if (isNew) ...[
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.green,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Text(
+                  'NEW',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 9,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+        trailing: isSelected
+            ? const Icon(Icons.check, color: Colors.blue)
+            : null,
+        onTap: () {
+          _saveDashboardPreference(value);
+          Get.back();
+        },
+      ),
     );
   }
 

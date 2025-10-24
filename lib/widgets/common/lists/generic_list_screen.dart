@@ -301,7 +301,9 @@ class _GenericListScreenState<T> extends State<GenericListScreen<T>> {
       child: TextField(
         controller: _searchController,
         decoration: InputDecoration(
-          hintText: widget.searchHintKey ?? l10n.search,
+          hintText:
+              widget.searchHintKey ??
+              TranslationHelper.getCommonTranslation(l10n, 'search'),
           prefixIcon: const Icon(Icons.search),
           suffixIcon: IconButton(
             icon: const Icon(Icons.clear),
@@ -423,7 +425,7 @@ class _GenericListScreenState<T> extends State<GenericListScreen<T>> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    l10n.filter,
+                    TranslationHelper.getCommonTranslation(l10n, 'filter'),
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -475,7 +477,9 @@ class _GenericListScreenState<T> extends State<GenericListScreen<T>> {
                 style: FilledButton.styleFrom(
                   minimumSize: const Size(double.infinity, 50),
                 ),
-                child: Text(l10n.apply),
+                child: Text(
+                  TranslationHelper.getCommonTranslation(l10n, 'apply'),
+                ),
               ),
             ),
           ],
@@ -556,7 +560,7 @@ class _GenericListScreenState<T> extends State<GenericListScreen<T>> {
               child: Row(
                 children: [
                   Text(
-                    l10n.sort_by,
+                    TranslationHelper.getCommonTranslation(l10n, 'sort_by'),
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),

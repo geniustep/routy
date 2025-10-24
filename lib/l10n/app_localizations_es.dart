@@ -401,7 +401,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get no_results => 'No se encontraron resultados';
 
   @override
-  String get try_different_search => 'Prueba otras palabras clave';
+  String get try_different_search => 'Intenta una búsqueda diferente';
 
   @override
   String get start_adding => 'Comienza a agregar socios';
@@ -549,4 +549,94 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get refresh_dashboard => 'Actualizar panel de control';
+
+  @override
+  String get filter => 'Filtrar';
+
+  @override
+  String get apply => 'Aplicar';
+
+  @override
+  String get sort_by => 'Ordenar por';
+
+  @override
+  String get error_occurred => 'Ocurrió un error';
+
+  @override
+  String get error_loading_data => 'Error al cargar los datos';
+
+  @override
+  String get no_data_found => 'No se encontraron datos';
+
+  @override
+  String get no_items_found => 'No se encontraron elementos';
+
+  @override
+  String get search => 'Buscar';
+
+  @override
+  String get draft => 'Borrador';
+
+  @override
+  String get pending => 'Pendiente';
+
+  @override
+  String get confirmed => 'Confirmado';
+
+  @override
+  String get in_progress => 'En progreso';
+
+  @override
+  String get completed => 'Completado';
+
+  @override
+  String get delivered => 'Entregado';
+
+  @override
+  String get cancelled => 'Cancelado';
+
+  @override
+  String get paid => 'Pagado';
+
+  @override
+  String get unpaid => 'No pagado';
+
+  @override
+  String get add => 'Agregar';
+
+  @override
+  String get delete => 'Eliminar';
+
+  @override
+  String get sales_orders => 'Órdenes de venta';
+
+  @override
+  String get search_sales_orders => 'Buscar órdenes de venta';
+
+  @override
+  String get status => 'Estado';
+
+  @override
+  String get new_sale => 'Nueva venta';
+
+  @override
+  String get items => 'Artículos';
+
+  @override
+  String get view => 'Ver';
+
+  @override
+  String get sale_order => 'Orden de venta';
+
+  @override
+  String get order_info => 'Información del pedido';
+
+  @override
+  String get total_amount => 'Monto total';
+
+  @override
+  String get notes => 'Notas';
+
+  @override
+  String get print => 'Imprimir';
 }

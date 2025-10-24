@@ -22,6 +22,12 @@ class TranslationHelper {
         return l10n.retry;
       case 'search':
         return l10n.search;
+      case 'filter':
+        return l10n.filter;
+      case 'apply':
+        return l10n.apply;
+      case 'sort_by':
+        return l10n.sort_by;
 
       // Status
       case 'draft':
@@ -56,6 +62,28 @@ class TranslationHelper {
         return l10n.cancel;
       case 'confirm':
         return l10n.confirm;
+
+      // Sales
+      case 'sales_orders':
+        return l10n.sales_orders;
+      case 'search_sales_orders':
+        return l10n.search_sales_orders;
+      case 'new_sale':
+        return l10n.new_sale;
+      case 'sale_order':
+        return l10n.sale_order;
+      case 'order_info':
+        return l10n.order_info;
+      case 'total_amount':
+        return l10n.total_amount;
+      case 'notes':
+        return l10n.notes;
+      case 'print':
+        return l10n.print;
+      case 'items':
+        return l10n.items;
+      case 'view':
+        return l10n.view;
 
       default:
         return key;

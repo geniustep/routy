@@ -72,7 +72,31 @@ class SplashController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    // إعادة تعيين الحالة
+    _resetState();
     _initialize();
+  }
+
+  @override
+  void onReady() {
+    super.onReady();
+    // إعادة تهيئة عند العودة للـ splash
+    if (Get.currentRoute == AppRouter.splash) {
+      _resetState();
+      _initialize();
+    }
+  }
+
+  /// إعادة تعيين حالة التطبيق
+  void _resetState() {
+    progress.value = 0.0;
+    currentStatus.value = 'splash_initializing';
+    currentModel.value = '';
+    modelProgress.value = 0.0;
+    isLoading.value = true;
+    isReady.value = false;
+    errorMessage.value = null;
+    retryCount.value = 0;
   }
 
   Future<void> _initialize() async {
@@ -267,7 +291,12 @@ class SplashController extends GetxController {
       // تحديد الشاشة المناسبة
       String route;
       if (userController.isLoggedIn && userController.user != null) {
-        route = AppRouter.dashboardV2;
+        // قراءة تفضيل Dashboard المحفوظ
+        final selectedDashboard =
+            _storageService.getString('selected_dashboard') ?? 'classic';
+        route = selectedDashboard == 'v2'
+            ? AppRouter.dashboardV2
+            : AppRouter.dashboard;
         appLogger.navigation(route, from: AppRouter.splash);
       } else {
         route = AppRouter.login;

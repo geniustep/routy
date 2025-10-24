@@ -397,7 +397,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get no_results => 'لا توجد نتائج للبحث';
 
   @override
-  String get try_different_search => 'جرب كلمات بحث أخرى';
+  String get try_different_search => 'جرب بحثاً مختلفاً';
 
   @override
   String get start_adding => 'ابدأ بإضافة شركاء جدد';
@@ -545,4 +545,94 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get refresh_dashboard => 'تحديث لوحة التحكم';
+
+  @override
+  String get filter => 'تصفية';
+
+  @override
+  String get apply => 'تطبيق';
+
+  @override
+  String get sort_by => 'ترتيب حسب';
+
+  @override
+  String get error_occurred => 'حدث خطأ';
+
+  @override
+  String get error_loading_data => 'خطأ في تحميل البيانات';
+
+  @override
+  String get no_data_found => 'لا توجد بيانات';
+
+  @override
+  String get no_items_found => 'لا توجد عناصر';
+
+  @override
+  String get search => 'بحث';
+
+  @override
+  String get draft => 'مسودة';
+
+  @override
+  String get pending => 'معلق';
+
+  @override
+  String get confirmed => 'مؤكد';
+
+  @override
+  String get in_progress => 'قيد التنفيذ';
+
+  @override
+  String get completed => 'مكتمل';
+
+  @override
+  String get delivered => 'تم التسليم';
+
+  @override
+  String get cancelled => 'ملغي';
+
+  @override
+  String get paid => 'مدفوع';
+
+  @override
+  String get unpaid => 'غير مدفوع';
+
+  @override
+  String get add => 'إضافة';
+
+  @override
+  String get delete => 'حذف';
+
+  @override
+  String get sales_orders => 'طلبات المبيعات';
+
+  @override
+  String get search_sales_orders => 'البحث في طلبات المبيعات';
+
+  @override
+  String get status => 'الحالة';
+
+  @override
+  String get new_sale => 'بيع جديد';
+
+  @override
+  String get items => 'العناصر';
+
+  @override
+  String get view => 'عرض';
+
+  @override
+  String get sale_order => 'طلب البيع';
+
+  @override
+  String get order_info => 'معلومات الطلب';
+
+  @override
+  String get total_amount => 'المبلغ الإجمالي';
+
+  @override
+  String get notes => 'ملاحظات';
+
+  @override
+  String get print => 'طباعة';
 }
