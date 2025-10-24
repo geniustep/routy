@@ -68,7 +68,7 @@ class SalesOrdersScreen extends StatelessWidget {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: _getStatusColor(order.stateLabel).withOpacity(0.1),
+              color: _getStatusColor(order.stateLabel).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(

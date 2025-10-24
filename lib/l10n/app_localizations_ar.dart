@@ -99,6 +99,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get target => 'الهدف';
 
   @override
+  String get sales => 'المبيعات';
+
+  @override
   String get progress => 'التقدم';
 
   @override
@@ -109,9 +112,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get customers => 'العملاء';
-
-  @override
-  String get sales => 'المبيعات';
 
   @override
   String get reports => 'التقارير';
@@ -635,4 +635,217 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get print => 'طباعة';
+
+  @override
+  String get save_draft => 'حفظ المسودة';
+
+  @override
+  String get add_product => 'إضافة منتج';
+
+  @override
+  String get scan_barcode => 'مسح الباركود';
+
+  @override
+  String get order_summary => 'ملخص الطلب';
+
+  @override
+  String get subtotal => 'المجموع الفرعي';
+
+  @override
+  String get discount => 'الخصم';
+
+  @override
+  String get savings => 'التوفير';
+
+  @override
+  String get total => 'المجموع';
+
+  @override
+  String get create_order => 'إنشاء الطلب';
+
+  @override
+  String get order_details => 'تفاصيل الطلب';
+
+  @override
+  String get select_customer => 'اختر العميل';
+
+  @override
+  String get please_select_customer => 'يرجى اختيار العميل';
+
+  @override
+  String get price_list => 'قائمة الأسعار';
+
+  @override
+  String get select_price_list => 'اختر قائمة الأسعار';
+
+  @override
+  String get please_select_price_list => 'يرجى اختيار قائمة الأسعار';
+
+  @override
+  String get payment_terms => 'شروط الدفع';
+
+  @override
+  String get select_payment_terms => 'اختر شروط الدفع';
+
+  @override
+  String get please_select_payment_terms => 'يرجى اختيار شروط الدفع';
+
+  @override
+  String get set_delivery_date => 'تحديد تاريخ التسليم';
+
+  @override
+  String get delivery_date => 'تاريخ التسليم';
+
+  @override
+  String get select_delivery_date => 'اختر تاريخ التسليم';
+
+  @override
+  String get please_select_delivery_date => 'يرجى اختيار تاريخ التسليم';
+
+  @override
+  String get quantity => 'الكمية';
+
+  @override
+  String get price => 'السعر';
+
+  @override
+  String get please_enter_quantity => 'يرجى إدخال الكمية';
+
+  @override
+  String get please_enter_valid_quantity => 'يرجى إدخال كمية صحيحة';
+
+  @override
+  String get please_enter_price => 'يرجى إدخال السعر';
+
+  @override
+  String get please_enter_valid_price => 'يرجى إدخال سعر صحيح';
+
+  @override
+  String get please_enter_discount => 'يرجى إدخال الخصم';
+
+  @override
+  String get please_enter_valid_discount => 'يرجى إدخال خصم صحيح';
+
+  @override
+  String get no_products_added => 'لم يتم إضافة منتجات';
+
+  @override
+  String get add_products_to_order => 'إضافة منتجات للطلب';
+
+  @override
+  String get tips => 'نصائح';
+
+  @override
+  String get add_products_tips => 'نصائح لإضافة المنتجات';
+
+  @override
+  String get draft_has_changes => 'المسودة تحتوي على تغييرات';
+
+  @override
+  String get draft_saved => 'تم حفظ المسودة';
+
+  @override
+  String get delete_draft => 'حذف المسودة';
+
+  @override
+  String get select_product => 'اختر المنتج';
+
+  @override
+  String get search_products => 'البحث في المنتجات';
+
+  @override
+  String get category => 'الفئة';
+
+  @override
+  String get all_categories => 'جميع الفئات';
+
+  @override
+  String get type => 'النوع';
+
+  @override
+  String get all_types => 'جميع الأنواع';
+
+  @override
+  String get no_products_found => 'لم يتم العثور على منتجات';
+
+  @override
+  String get select => 'اختر';
+
+  @override
+  String get add_to_order => 'إضافة للطلب';
+
+  @override
+  String get enter_quantity => 'أدخل الكمية';
+
+  @override
+  String get enter_price => 'أدخل السعر';
+
+  @override
+  String get enter_discount => 'أدخل الخصم';
+
+  @override
+  String get update_order => 'تحديث الطلب';
+
+  @override
+  String get unsaved_changes => 'تغييرات غير محفوظة';
+
+  @override
+  String get order_number => 'رقم الطلب';
+
+  @override
+  String get no_products => 'لا توجد منتجات';
+
+  @override
+  String get save_changes => 'حفظ التغييرات';
+
+  @override
+  String get customer_info => 'معلومات العميل';
+
+  @override
+  String get customer_name => 'اسم العميل';
+
+  @override
+  String get tax => 'الضريبة';
+
+  @override
+  String get actions => 'الإجراءات';
+
+  @override
+  String get duplicate => 'نسخ';
+
+  @override
+  String get share => 'مشاركة';
+
+  @override
+  String get sent => 'مرسل';
+
+  @override
+  String get draft_sales => 'مسودات المبيعات';
+
+  @override
+  String get clear_all => 'مسح الكل';
+
+  @override
+  String get search_drafts => 'البحث في المسودات';
+
+  @override
+  String get no_drafts_found => 'لم يتم العثور على مسودات';
+
+  @override
+  String get no_drafts => 'لا توجد مسودات';
+
+  @override
+  String get create_new_order => 'إنشاء طلب جديد';
+
+  @override
+  String get continue_editing => 'متابعة التحرير';
+
+  @override
+  String get date => 'التاريخ';
+
+  @override
+  String get salesperson => 'مندوب المبيعات';
+
+  @override
+  String get team => 'الفريق';
 }

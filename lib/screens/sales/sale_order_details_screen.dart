@@ -105,9 +105,9 @@ class SaleOrderDetailsScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: statusInfo['color'].withOpacity(0.1),
+        color: statusInfo['color'].withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: statusInfo['color'].withOpacity(0.3)),
+        border: Border.all(color: statusInfo['color'].withValues(alpha: 0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -319,7 +319,7 @@ class SaleOrderDetailsScreen extends StatelessWidget {
         color: theme.colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 4,
             offset: const Offset(0, -2),
           ),

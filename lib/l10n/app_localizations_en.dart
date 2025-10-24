@@ -99,6 +99,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get target => 'Target';
 
   @override
+  String get sales => 'Sales';
+
+  @override
   String get progress => 'Progress';
 
   @override
@@ -109,9 +112,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get customers => 'Customers';
-
-  @override
-  String get sales => 'Sales';
 
   @override
   String get reports => 'Reports';
@@ -637,4 +637,217 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get print => 'Print';
+
+  @override
+  String get save_draft => 'Save Draft';
+
+  @override
+  String get add_product => 'Add Product';
+
+  @override
+  String get scan_barcode => 'Scan Barcode';
+
+  @override
+  String get order_summary => 'Order Summary';
+
+  @override
+  String get subtotal => 'Subtotal';
+
+  @override
+  String get discount => 'Discount';
+
+  @override
+  String get savings => 'Savings';
+
+  @override
+  String get total => 'Total';
+
+  @override
+  String get create_order => 'Create Order';
+
+  @override
+  String get order_details => 'Order Details';
+
+  @override
+  String get select_customer => 'Select Customer';
+
+  @override
+  String get please_select_customer => 'Please select a customer';
+
+  @override
+  String get price_list => 'Price List';
+
+  @override
+  String get select_price_list => 'Select Price List';
+
+  @override
+  String get please_select_price_list => 'Please select a price list';
+
+  @override
+  String get payment_terms => 'Payment Terms';
+
+  @override
+  String get select_payment_terms => 'Select Payment Terms';
+
+  @override
+  String get please_select_payment_terms => 'Please select payment terms';
+
+  @override
+  String get set_delivery_date => 'Set Delivery Date';
+
+  @override
+  String get delivery_date => 'Delivery Date';
+
+  @override
+  String get select_delivery_date => 'Select Delivery Date';
+
+  @override
+  String get please_select_delivery_date => 'Please select delivery date';
+
+  @override
+  String get quantity => 'Quantity';
+
+  @override
+  String get price => 'Price';
+
+  @override
+  String get please_enter_quantity => 'Please enter quantity';
+
+  @override
+  String get please_enter_valid_quantity => 'Please enter valid quantity';
+
+  @override
+  String get please_enter_price => 'Please enter price';
+
+  @override
+  String get please_enter_valid_price => 'Please enter valid price';
+
+  @override
+  String get please_enter_discount => 'Please enter discount';
+
+  @override
+  String get please_enter_valid_discount => 'Please enter valid discount';
+
+  @override
+  String get no_products_added => 'No products added';
+
+  @override
+  String get add_products_to_order => 'Add products to order';
+
+  @override
+  String get tips => 'Tips';
+
+  @override
+  String get add_products_tips => 'Tips for adding products';
+
+  @override
+  String get draft_has_changes => 'Draft has changes';
+
+  @override
+  String get draft_saved => 'Draft saved';
+
+  @override
+  String get delete_draft => 'Delete Draft';
+
+  @override
+  String get select_product => 'Select Product';
+
+  @override
+  String get search_products => 'Search Products';
+
+  @override
+  String get category => 'Category';
+
+  @override
+  String get all_categories => 'All Categories';
+
+  @override
+  String get type => 'Type';
+
+  @override
+  String get all_types => 'All Types';
+
+  @override
+  String get no_products_found => 'No products found';
+
+  @override
+  String get select => 'Select';
+
+  @override
+  String get add_to_order => 'Add to Order';
+
+  @override
+  String get enter_quantity => 'Enter Quantity';
+
+  @override
+  String get enter_price => 'Enter Price';
+
+  @override
+  String get enter_discount => 'Enter Discount';
+
+  @override
+  String get update_order => 'Update Order';
+
+  @override
+  String get unsaved_changes => 'Unsaved Changes';
+
+  @override
+  String get order_number => 'Order Number';
+
+  @override
+  String get no_products => 'No Products';
+
+  @override
+  String get save_changes => 'Save Changes';
+
+  @override
+  String get customer_info => 'Customer Info';
+
+  @override
+  String get customer_name => 'Customer Name';
+
+  @override
+  String get tax => 'Tax';
+
+  @override
+  String get actions => 'Actions';
+
+  @override
+  String get duplicate => 'Duplicate';
+
+  @override
+  String get share => 'Share';
+
+  @override
+  String get sent => 'Sent';
+
+  @override
+  String get draft_sales => 'Draft Sales';
+
+  @override
+  String get clear_all => 'Clear All';
+
+  @override
+  String get search_drafts => 'Search Drafts';
+
+  @override
+  String get no_drafts_found => 'No drafts found';
+
+  @override
+  String get no_drafts => 'No drafts';
+
+  @override
+  String get create_new_order => 'Create New Order';
+
+  @override
+  String get continue_editing => 'Continue Editing';
+
+  @override
+  String get date => 'Date';
+
+  @override
+  String get salesperson => 'Salesperson';
+
+  @override
+  String get team => 'Team';
 }

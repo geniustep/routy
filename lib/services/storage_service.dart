@@ -3,6 +3,17 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/app_logger.dart';
 
+/// أنواع التخزين المؤقت
+enum CacheType {
+  session, // بيانات الجلسة (30 دقيقة)
+  partners, // بيانات العملاء (24 ساعة)
+  products, // بيانات المنتجات (12 ساعة)
+  pricelists, // قوائم الأسعار (6 ساعات)
+  sales, // بيانات المبيعات (30 دقيقة)
+  dashboard, // لوحة التحكم (1 ساعة)
+  analytics, // البيانات التحليلية (2 ساعة)
+}
+
 /// 💾 StorageService المحسّن - نظام تخزين ثلاثي الطبقات
 ///
 /// الطبقات الثلاث:
@@ -249,6 +260,37 @@ class StorageService {
     }
   }
 
+  /// حفظ في Cache مع TTL ذكي حسب نوع البيانات
+  Future<void> setSmartCache(String key, dynamic value, CacheType type) async {
+    int ttlSeconds = _getTTLForType(type);
+    await setCache(key, value, ttlSeconds);
+  }
+
+  /// جلب من Cache مع TTL ذكي
+  dynamic getSmartCache(String key, CacheType type) {
+    return getCache(key);
+  }
+
+  /// تحديد TTL حسب نوع البيانات
+  int _getTTLForType(CacheType type) {
+    switch (type) {
+      case CacheType.session:
+        return 30 * 60; // 30 دقيقة
+      case CacheType.partners:
+        return 24 * 60 * 60; // 24 ساعة
+      case CacheType.products:
+        return 12 * 60 * 60; // 12 ساعة
+      case CacheType.pricelists:
+        return 6 * 60 * 60; // 6 ساعات
+      case CacheType.sales:
+        return 30 * 60; // 30 دقيقة
+      case CacheType.dashboard:
+        return 60 * 60; // 1 ساعة
+      case CacheType.analytics:
+        return 2 * 60 * 60; // 2 ساعة
+    }
+  }
+
   /// جلب من Cache مع التحقق من الانتهاء
   dynamic getCache(String key) {
     try {
@@ -293,6 +335,71 @@ class StorageService {
       appLogger.warning('🗑️ Cache cleared');
     } catch (e) {
       appLogger.error('Error clearing cache', error: e);
+    }
+  }
+
+  /// مسح Cache منتهي الصلاحية
+  Future<void> clearExpiredCache() async {
+    try {
+      final now = DateTime.now().millisecondsSinceEpoch;
+      final keysToDelete = <String>[];
+
+      for (var key in _cacheBox.keys) {
+        final data = _cacheBox.get(key);
+        if (data != null && data['ttl'] != null) {
+          final timestamp = data['timestamp'] as int;
+          final ttl = data['ttl'] as int;
+
+          if (now - timestamp > ttl * 1000) {
+            keysToDelete.add(key.toString());
+          }
+        }
+      }
+
+      for (var key in keysToDelete) {
+        await _cacheBox.delete(key);
+      }
+
+      appLogger.info('🧹 Cleared ${keysToDelete.length} expired cache entries');
+    } catch (e) {
+      appLogger.error('Error clearing expired cache', error: e);
+    }
+  }
+
+  /// تحديث TTL لـ Cache موجود
+  Future<void> updateCacheTTL(String key, int newTTL) async {
+    try {
+      final data = _cacheBox.get(key);
+      if (data != null) {
+        data['ttl'] = newTTL;
+        await _cacheBox.put(key, data);
+        appLogger.storage('Cache TTL Updated', key: key);
+      }
+    } catch (e) {
+      appLogger.error('Error updating cache TTL', error: e);
+    }
+  }
+
+  /// إبطال Cache حسب النوع
+  Future<void> invalidateCacheByType(CacheType type) async {
+    try {
+      final keysToDelete = <String>[];
+
+      for (var key in _cacheBox.keys) {
+        if (key.toString().contains(type.name)) {
+          keysToDelete.add(key.toString());
+        }
+      }
+
+      for (var key in keysToDelete) {
+        await _cacheBox.delete(key);
+      }
+
+      appLogger.info(
+        '🗑️ Invalidated ${keysToDelete.length} ${type.name} cache entries',
+      );
+    } catch (e) {
+      appLogger.error('Error invalidating cache by type', error: e);
     }
   }
 

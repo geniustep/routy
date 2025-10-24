@@ -27,6 +27,11 @@ class PartnerController extends GetxController {
   final _apiService = ApiService.instance;
   final _storageService = StorageService.instance;
 
+  // ==================== Cache Management ====================
+
+  /// Cache Keys
+  static const String _partnersCacheKey = 'partners_cache';
+
   // ==================== Observable State ====================
 
   /// قائمة الشركاء
@@ -131,9 +136,9 @@ class PartnerController extends GetxController {
       // تحميل من Database المحلي
       await loadFromLocal();
 
-      // جلب من API إذا كان فارغاً
+      // جلب من API إذا كان فارغاً (بذكاء)
       if (partners.isEmpty) {
-        await fetchPartners();
+        await loadPartnersSmart();
       }
 
       // تحديث الإحصائيات
@@ -149,6 +154,74 @@ class PartnerController extends GetxController {
   void onClose() {
     appLogger.info('🔴 Closing PartnerController');
     super.onClose();
+  }
+
+  // ==================== Cache Management ====================
+
+  /// جلب الشركاء من Cache
+  Future<List<PartnerModel>?> loadPartnersFromCache() async {
+    try {
+      final cachedData = _storageService.getSmartCache(
+        _partnersCacheKey,
+        CacheType.partners,
+      );
+      if (cachedData != null && cachedData is List) {
+        appLogger.info(
+          '📦 Partners loaded from cache: ${cachedData.length} partners',
+        );
+        return cachedData.map((json) => PartnerModel.fromJson(json)).toList();
+      }
+      return null;
+    } catch (e) {
+      appLogger.error('Error loading partners from cache: $e');
+      return null;
+    }
+  }
+
+  /// حفظ الشركاء في Cache
+  Future<void> savePartnersToCache(List<PartnerModel> partners) async {
+    try {
+      final jsonData = partners.map((partner) => partner.toJson()).toList();
+      await _storageService.setSmartCache(
+        _partnersCacheKey,
+        jsonData,
+        CacheType.partners,
+      );
+      appLogger.info('💾 Partners saved to cache: ${partners.length} partners');
+    } catch (e) {
+      appLogger.error('Error saving partners to cache: $e');
+    }
+  }
+
+  /// إبطال Cache الشركاء
+  Future<void> invalidatePartnersCache() async {
+    try {
+      await _storageService.invalidateCacheByType(CacheType.partners);
+      appLogger.info('🗑️ Partners cache invalidated');
+    } catch (e) {
+      appLogger.error('Error invalidating partners cache: $e');
+    }
+  }
+
+  /// جلب الشركاء بذكاء (Cache أولاً، ثم API)
+  Future<void> loadPartnersSmart({bool forceRefresh = false}) async {
+    try {
+      // إذا لم يكن هناك تحديث إجباري، جرب Cache أولاً
+      if (!forceRefresh) {
+        final cachedPartners = await loadPartnersFromCache();
+        if (cachedPartners != null && cachedPartners.isNotEmpty) {
+          partners.value = cachedPartners;
+          filteredPartners.value = cachedPartners;
+          appLogger.info('✅ Partners loaded from cache');
+          return;
+        }
+      }
+
+      // إذا لم يكن هناك Cache أو كان فارغاً، جلب من API
+      await fetchPartners(showLoading: true, refresh: forceRefresh);
+    } catch (e) {
+      appLogger.error('Error in smart partners loading: $e');
+    }
   }
 
   // ==================== Data Loading ====================
@@ -175,29 +248,26 @@ class PartnerController extends GetxController {
 
       errorMessage.value = null;
 
-      // فحص الكاش أولاً
-      final cacheKey = 'partners_page_${currentPage.value}';
-      final cached = _storageService.getCache(cacheKey);
-      if (cached != null && cached is List && !refresh) {
-        appLogger.info('📦 Cache hit: $cacheKey');
-        final cachedPartners = cached
-            .map(
-              (json) =>
-                  PartnerModel.fromJson(Map<String, dynamic>.from(json as Map)),
-            )
-            .toList();
+      // فحص الكاش أولاً (إذا لم يكن هناك تحديث إجباري)
+      if (!refresh) {
+        final cachedPartners = await loadPartnersFromCache();
+        if (cachedPartners != null && cachedPartners.isNotEmpty) {
+          appLogger.info('📦 Cache hit: partners');
 
-        if (refresh) {
-          partners.value = cachedPartners;
-        } else {
-          partners.addAll(cachedPartners);
+          if (refresh) {
+            partners.value = cachedPartners;
+          } else {
+            partners.addAll(cachedPartners);
+          }
+
+          _applyFilters();
+          _updateStats();
+
+          appLogger.info(
+            '✅ Loaded ${cachedPartners.length} partners from cache',
+          );
+          return;
         }
-
-        _applyFilters();
-        _updateStats();
-
-        appLogger.info('✅ Loaded ${cachedPartners.length} partners from cache');
-        return;
       }
 
       appLogger.info('📡 Fetching partners from Odoo...');
@@ -283,11 +353,8 @@ class PartnerController extends GetxController {
           // حفظ في Database المحلي
           await _saveToLocal(newPartners);
 
-          // حفظ في الكاش
-          final cacheKey = 'partners_page_${currentPage.value}';
-          final partnersJson = newPartners.map((p) => p.toJson()).toList();
-          await _storageService.setCache(cacheKey, partnersJson);
-          appLogger.info('💾 Saved ${newPartners.length} partners to cache');
+          // حفظ في الكاش الذكي
+          await savePartnersToCache(newPartners);
 
           // تحديث hasMore
           hasMore.value = newPartners.length >= pageSize.value;

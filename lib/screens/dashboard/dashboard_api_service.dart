@@ -10,20 +10,13 @@ class DashboardApiService {
   // Get dashboard summary
   Future<BaseResponse<DashboardSummary>> getDashboardSummary() async {
     try {
-      // This would typically call a real API endpoint
-      // For now, we'll return mock data
-      final summary = DashboardSummary(
-        totalSales: '24',
-        totalDeliveries: '18',
-        totalCustomers: '156',
-        totalRevenue: '2,450€',
-        todayTarget: '1,000,000 Dhs',
-        todaySales: '700,000 Dhs',
-        todayProgress: '70%',
-        recentActivityCount: 4,
-      );
+      // TODO: تنفيذ استدعاء API حقيقي هنا
+      // يجب استبدال هذا ببيانات حقيقية من السيرفر
 
-      return BaseResponse.success(data: summary, statusCode: 200);
+      return BaseResponse.error(
+        error: 'API not implemented yet',
+        statusCode: 501,
+      );
     } catch (e) {
       return BaseResponse.error(
         error: 'Failed to load dashboard summary: $e',
@@ -35,18 +28,13 @@ class DashboardApiService {
   // Get today's reports
   Future<BaseResponse<TodayReport>> getTodayReports() async {
     try {
-      // This would typically call a real API endpoint
-      // For now, we'll return mock data
-      final report = TodayReport(
-        target: 1000000,
-        sales: 700000,
-        progress: 0.7,
-        targetFormatted: '1,000,000 Dhs',
-        salesFormatted: '700,000 Dhs',
-        progressFormatted: '70%',
-      );
+      // TODO: تنفيذ استدعاء API حقيقي هنا
+      // يجب استبدال هذا ببيانات حقيقية من السيرفر
 
-      return BaseResponse.success(data: report, statusCode: 200);
+      return BaseResponse.error(
+        error: 'API not implemented yet',
+        statusCode: 501,
+      );
     } catch (e) {
       return BaseResponse.error(
         error: 'Failed to load today reports: $e',
@@ -58,48 +46,13 @@ class DashboardApiService {
   // Get recent activity
   Future<BaseResponse<List<RecentActivity>>> getRecentActivity() async {
     try {
-      // This would typically call a real API endpoint
-      // For now, we'll return mock data
-      final activities = [
-        RecentActivity(
-          id: 1,
-          type: 'sale',
-          title: 'New Sale Created',
-          description: 'Sale #SO001 - 2,500 Dhs',
-          time: '2 hours ago',
-          icon: 'shopping_cart',
-          color: 'success',
-        ),
-        RecentActivity(
-          id: 2,
-          type: 'customer',
-          title: 'New Customer Added',
-          description: 'Ahmed Alami - Rabat',
-          time: '4 hours ago',
-          icon: 'person_add',
-          color: 'info',
-        ),
-        RecentActivity(
-          id: 3,
-          type: 'product',
-          title: 'Product Updated',
-          description: 'iPhone 15 Pro - Stock: 25',
-          time: '6 hours ago',
-          icon: 'inventory',
-          color: 'warning',
-        ),
-        RecentActivity(
-          id: 4,
-          type: 'delivery',
-          title: 'Delivery Completed',
-          description: 'Delivery #DL001 - Casablanca',
-          time: '8 hours ago',
-          icon: 'local_shipping',
-          color: 'primary',
-        ),
-      ];
+      // TODO: تنفيذ استدعاء API حقيقي هنا
+      // يجب استبدال هذا ببيانات حقيقية من السيرفر
 
-      return BaseResponse.success(data: activities, statusCode: 200);
+      return BaseResponse.error(
+        error: 'API not implemented yet',
+        statusCode: 501,
+      );
     } catch (e) {
       return BaseResponse.error(
         error: 'Failed to load recent activity: $e',
@@ -111,44 +64,13 @@ class DashboardApiService {
   // Get quick stats
   Future<BaseResponse<List<QuickStat>>> getQuickStats() async {
     try {
-      // This would typically call a real API endpoint
-      // For now, we'll return mock data
-      final stats = [
-        QuickStat(
-          title: 'Total Sales',
-          value: '24',
-          icon: 'trending_up',
-          color: 'success',
-          change: '+12%',
-          changeType: 'positive',
-        ),
-        QuickStat(
-          title: 'Deliveries',
-          value: '18',
-          icon: 'local_shipping',
-          color: 'primary',
-          change: '+5%',
-          changeType: 'positive',
-        ),
-        QuickStat(
-          title: 'Customers',
-          value: '156',
-          icon: 'people',
-          color: 'info',
-          change: '+3%',
-          changeType: 'positive',
-        ),
-        QuickStat(
-          title: 'Revenue',
-          value: '2,450€',
-          icon: 'euro',
-          color: 'success',
-          change: '+8%',
-          changeType: 'positive',
-        ),
-      ];
+      // TODO: تنفيذ استدعاء API حقيقي هنا
+      // يجب استبدال هذا ببيانات حقيقية من السيرفر
 
-      return BaseResponse.success(data: stats, statusCode: 200);
+      return BaseResponse.error(
+        error: 'API not implemented yet',
+        statusCode: 501,
+      );
     } catch (e) {
       return BaseResponse.error(
         error: 'Failed to load quick stats: $e',

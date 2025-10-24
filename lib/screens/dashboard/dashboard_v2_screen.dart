@@ -196,12 +196,15 @@ class DashboardV2Screen extends StatelessWidget {
             end: Alignment.bottomRight,
             colors: theme.isDarkMode
                 ? [const Color(0xFF1F2937), const Color(0xFF111827)]
-                : [theme.primaryColor, theme.primaryColor.withOpacity(0.8)],
+                : [
+                    theme.primaryColor,
+                    theme.primaryColor.withValues(alpha: 0.8),
+                  ],
           ),
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: theme.primaryColor.withOpacity(0.3),
+              color: theme.primaryColor.withValues(alpha: 0.3),
               blurRadius: 20,
               offset: const Offset(0, 10),
             ),
@@ -333,7 +336,7 @@ class DashboardV2Screen extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -399,8 +402,8 @@ class DashboardV2Screen extends StatelessWidget {
           getDrawingHorizontalLine: (value) {
             return FlLine(
               color: theme.isDarkMode
-                  ? Colors.white.withOpacity(0.1)
-                  : Colors.grey.withOpacity(0.2),
+                  ? Colors.white.withValues(alpha: 0.1)
+                  : Colors.grey.withValues(alpha: 0.2),
               strokeWidth: 1,
             );
           },
@@ -458,8 +461,8 @@ class DashboardV2Screen extends StatelessWidget {
           show: true,
           border: Border.all(
             color: theme.isDarkMode
-                ? Colors.white.withOpacity(0.1)
-                : Colors.grey.withOpacity(0.2),
+                ? Colors.white.withValues(alpha: 0.1)
+                : Colors.grey.withValues(alpha: 0.2),
           ),
         ),
         minX: 0,
@@ -476,7 +479,10 @@ class DashboardV2Screen extends StatelessWidget {
                 .toList(),
             isCurved: true,
             gradient: LinearGradient(
-              colors: [theme.primaryColor, theme.primaryColor.withOpacity(0.6)],
+              colors: [
+                theme.primaryColor,
+                theme.primaryColor.withValues(alpha: 0.6),
+              ],
             ),
             barWidth: 4,
             isStrokeCapRound: true,
@@ -497,8 +503,8 @@ class DashboardV2Screen extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  theme.primaryColor.withOpacity(0.3),
-                  theme.primaryColor.withOpacity(0.0),
+                  theme.primaryColor.withValues(alpha: 0.3),
+                  theme.primaryColor.withValues(alpha: 0.0),
                 ],
               ),
             ),
@@ -544,7 +550,7 @@ class DashboardV2Screen extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -626,7 +632,7 @@ class DashboardV2Screen extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),

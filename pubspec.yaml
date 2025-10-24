@@ -27,6 +27,8 @@ dependencies:
   # UI & Navigation
   go_router: ^14.6.2
   flutter_svg: ^2.0.10+1
+  flutter_form_builder: ^10.2.0
+  form_builder_validators: ^11.0.0
 
   # Charts & Animations
   fl_chart: ^0.69.0
@@ -38,6 +40,7 @@ dependencies:
   path: ^1.9.0
   wakelock_plus: ^1.4.0
   logger: ^2.5.0
+  collection: ^1.18.0
   
   # JSON Serialization
   json_annotation: ^4.9.0

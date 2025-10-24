@@ -27,7 +27,7 @@ class GlassCard extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(borderRadius),
         border: Border.all(
-          color: Colors.white.withOpacity(0.2),
+          color: Colors.white.withValues(alpha: 0.2),
           width: 1.5,
         ),
       ),
@@ -42,8 +42,8 @@ class GlassCard extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  (color ?? Colors.white).withOpacity(0.1),
-                  (color ?? Colors.white).withOpacity(0.05),
+                  (color ?? Colors.white).withValues(alpha: 0.1),
+                  (color ?? Colors.white).withValues(alpha: 0.05),
                 ],
               ),
             ),
@@ -79,10 +79,7 @@ class AnimatedCounter extends StatelessWidget {
       duration: duration,
       curve: Curves.easeOut,
       builder: (context, value, child) {
-        return Text(
-          formatter(value),
-          style: style,
-        );
+        return Text(formatter(value), style: style);
       },
     );
   }
@@ -137,16 +134,13 @@ class EnhancedKpiCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: isDarkMode
-            ? data.color.withOpacity(0.15)
-            : data.color.withOpacity(0.1),
+            ? data.color.withValues(alpha: 0.15)
+            : data.color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: data.color.withOpacity(0.3),
-          width: 2,
-        ),
+        border: Border.all(color: data.color.withValues(alpha: 0.3), width: 2),
         boxShadow: [
           BoxShadow(
-            color: data.color.withOpacity(0.2),
+            color: data.color.withValues(alpha: 0.2),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -161,7 +155,7 @@ class EnhancedKpiCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: data.color.withOpacity(0.2),
+                  color: data.color.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(data.icon, color: data.color, size: 24),
@@ -175,8 +169,8 @@ class EnhancedKpiCard extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: data.isPositiveTrend
-                        ? Colors.green.withOpacity(0.2)
-                        : Colors.red.withOpacity(0.2),
+                        ? Colors.green.withValues(alpha: 0.2)
+                        : Colors.red.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
@@ -195,8 +189,9 @@ class EnhancedKpiCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
-                          color:
-                              data.isPositiveTrend ? Colors.green : Colors.red,
+                          color: data.isPositiveTrend
+                              ? Colors.green
+                              : Colors.red,
                         ),
                       ),
                     ],
@@ -215,8 +210,10 @@ class EnhancedKpiCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           AnimatedCounter(
-            value: double.tryParse(
-                    data.value.replaceAll(RegExp(r'[^0-9.]'), '')) ??
+            value:
+                double.tryParse(
+                  data.value.replaceAll(RegExp(r'[^0-9.]'), ''),
+                ) ??
                 0,
             formatter: (v) => data.value,
             style: TextStyle(
@@ -240,7 +237,7 @@ class EnhancedKpiCard extends StatelessWidget {
               child: LinearProgressIndicator(
                 value: data.progress,
                 minHeight: 6,
-                backgroundColor: data.color.withOpacity(0.2),
+                backgroundColor: data.color.withValues(alpha: 0.2),
                 valueColor: AlwaysStoppedAnimation<Color>(data.color),
               ),
             ),
@@ -281,9 +278,10 @@ class _EnhancedQuickActionCardState extends State<EnhancedQuickActionCard>
       duration: const Duration(milliseconds: 150),
       vsync: this,
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 0.95,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -307,11 +305,11 @@ class _EnhancedQuickActionCardState extends State<EnhancedQuickActionCard>
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: widget.isDarkMode
-                    ? widget.data.color.withOpacity(0.15)
-                    : widget.data.color.withOpacity(0.1),
+                    ? widget.data.color.withValues(alpha: 0.15)
+                    : widget.data.color.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: widget.data.color.withOpacity(0.3),
+                  color: widget.data.color.withValues(alpha: 0.3),
                   width: 1.5,
                 ),
               ),
@@ -321,7 +319,7 @@ class _EnhancedQuickActionCardState extends State<EnhancedQuickActionCard>
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: widget.data.color.withOpacity(0.2),
+                      color: widget.data.color.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
@@ -400,17 +398,13 @@ class EnhancedActivityItem extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: activity.color.withOpacity(0.15),
+                color: activity.color.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: activity.color.withOpacity(0.3),
+                  color: activity.color.withValues(alpha: 0.3),
                 ),
               ),
-              child: Icon(
-                activity.icon,
-                color: activity.color,
-                size: 20,
-              ),
+              child: Icon(activity.icon, color: activity.color, size: 20),
             ),
             const SizedBox(width: 12),
             Expanded(

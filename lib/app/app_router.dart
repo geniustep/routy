@@ -4,8 +4,13 @@ import '../screens/auth/login_screen.dart';
 import '../screens/dashboard/home_screen.dart';
 import '../screens/dashboard/dashboard_screen.dart';
 import '../screens/dashboard/dashboard_v2_screen.dart';
-import '../screens/sales/sales_list_screen.dart';
+import '../screens/sales/sales_orders_screen.dart';
 import '../screens/sales/sales_create_screen.dart';
+import '../screens/sales/saleorder/create/create_new_order_screen.dart';
+import '../screens/sales/saleorder/update/update_order_screen.dart';
+import '../screens/sales/saleorder/view/sale_order_detail_screen.dart';
+import '../screens/sales/saleorder/drafts/draft_sales_screen.dart';
+import '../bindings/sales_binding.dart';
 import '../screens/delivery/delivery_list_screen.dart';
 import '../screens/delivery/delivery_create_screen.dart';
 import '../screens/customers/customers_list_screen.dart';
@@ -15,8 +20,12 @@ import '../screens/partners/partners_map_screen.dart';
 import '../screens/partners/partner_details_screen.dart';
 import '../models/partners/partner_type.dart';
 import '../models/partners/partners_model.dart';
+import '../models/products/product_model.dart';
 import '../screens/products/products_list_screen.dart';
 import '../screens/products/products_create_screen.dart';
+import '../screens/products/products_screen.dart';
+import '../screens/products/product_detail_screen.dart';
+import '../controllers/product_controller.dart';
 import '../screens/reports/reports_screen.dart';
 import '../screens/settings/settings_screen.dart';
 import '../bindings/partner_binding.dart';
@@ -31,6 +40,10 @@ class AppRouter {
   static const String dashboardV2 = '/dashboard/v2';
   static const String salesList = '/sales';
   static const String salesCreate = '/sales/create';
+  static const String salesCreateNew = '/sales/create/new';
+  static const String salesUpdate = '/sales/update';
+  static const String salesDetail = '/sales/detail';
+  static const String salesDrafts = '/sales/drafts';
   static const String deliveryList = '/delivery';
   static const String deliveryCreate = '/delivery/create';
   static const String customersList = '/customers';
@@ -42,6 +55,8 @@ class AppRouter {
   static const String partnerDetails = '/partners/details';
   static const String productsList = '/products';
   static const String productsCreate = '/products/create';
+  static const String productsGrid = '/products/grid';
+  static const String productDetail = '/products/detail';
   static const String reports = '/reports';
   static const String settings = '/settings';
 
@@ -56,8 +71,38 @@ class AppRouter {
       page: () => const DashboardV2Screen(),
       binding: DashboardBinding(),
     ),
-    GetPage(name: salesList, page: () => const SalesListScreen()),
+    GetPage(
+      name: salesList,
+      page: () => const SalesOrdersScreen(),
+      binding: SalesBinding(),
+    ),
     GetPage(name: salesCreate, page: () => const SalesCreateScreen()),
+    GetPage(
+      name: salesCreateNew,
+      page: () => const CreateNewOrderScreen(),
+      binding: SalesBinding(),
+    ),
+    GetPage(
+      name: salesUpdate,
+      page: () {
+        final order = Get.arguments as Map<String, dynamic>;
+        return UpdateOrderScreen(order: order);
+      },
+      binding: SalesBinding(),
+    ),
+    GetPage(
+      name: salesDetail,
+      page: () {
+        final order = Get.arguments as Map<String, dynamic>;
+        return SaleOrderDetailScreen(order: order);
+      },
+      binding: SalesBinding(),
+    ),
+    GetPage(
+      name: salesDrafts,
+      page: () => const DraftSalesScreen(),
+      binding: SalesBinding(),
+    ),
     GetPage(name: deliveryList, page: () => const DeliveryListScreen()),
     GetPage(name: deliveryCreate, page: () => const DeliveryCreateScreen()),
     GetPage(name: customersList, page: () => const CustomersListScreen()),
@@ -90,8 +135,24 @@ class AppRouter {
       },
       binding: PartnerBinding(),
     ),
-    GetPage(name: productsList, page: () => const ProductsListScreen()),
+    GetPage(
+      name: productsGrid,
+      page: () => const ProductsScreen(),
+      binding: BindingsBuilder(() {
+        if (!Get.isRegistered<ProductController>()) {
+          Get.put(ProductController());
+        }
+      }),
+    ),
     GetPage(name: productsCreate, page: () => const ProductsCreateScreen()),
+    GetPage(name: productsList, page: () => const ProductsListScreen()),
+    GetPage(
+      name: productDetail,
+      page: () {
+        final product = Get.arguments as ProductModel;
+        return ProductDetailScreen(product: product);
+      },
+    ),
     GetPage(name: reports, page: () => const ReportsScreen()),
     GetPage(name: settings, page: () => const SettingsScreen()),
   ];

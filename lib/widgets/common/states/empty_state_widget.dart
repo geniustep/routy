@@ -36,7 +36,7 @@ class EmptyStateWidget extends StatelessWidget {
             Icon(
               icon ?? Icons.inbox_outlined,
               size: iconSize,
-              color: theme.colorScheme.outline.withOpacity(0.3),
+              color: theme.colorScheme.outline.withValues(alpha: 0.3),
             ),
 
             const SizedBox(height: 24),

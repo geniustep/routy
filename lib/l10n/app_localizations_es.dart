@@ -100,6 +100,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get target => 'Objetivo';
 
   @override
+  String get sales => 'Ventas';
+
+  @override
   String get progress => 'Progreso';
 
   @override
@@ -110,9 +113,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get customers => 'Clientes';
-
-  @override
-  String get sales => 'Ventas';
 
   @override
   String get reports => 'Informes';
@@ -639,4 +639,222 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get print => 'Imprimir';
+
+  @override
+  String get save_draft => 'Guardar Borrador';
+
+  @override
+  String get add_product => 'Agregar Producto';
+
+  @override
+  String get scan_barcode => 'Escanear Código de Barras';
+
+  @override
+  String get order_summary => 'Resumen del Pedido';
+
+  @override
+  String get subtotal => 'Subtotal';
+
+  @override
+  String get discount => 'Descuento';
+
+  @override
+  String get savings => 'Ahorros';
+
+  @override
+  String get total => 'Total';
+
+  @override
+  String get create_order => 'Crear Pedido';
+
+  @override
+  String get order_details => 'Detalles del Pedido';
+
+  @override
+  String get select_customer => 'Seleccionar Cliente';
+
+  @override
+  String get please_select_customer => 'Por favor seleccione un cliente';
+
+  @override
+  String get price_list => 'Lista de Precios';
+
+  @override
+  String get select_price_list => 'Seleccionar Lista de Precios';
+
+  @override
+  String get please_select_price_list =>
+      'Por favor seleccione una lista de precios';
+
+  @override
+  String get payment_terms => 'Términos de Pago';
+
+  @override
+  String get select_payment_terms => 'Seleccionar Términos';
+
+  @override
+  String get please_select_payment_terms =>
+      'Por favor seleccione los términos de pago';
+
+  @override
+  String get set_delivery_date => 'Establecer Fecha de Entrega';
+
+  @override
+  String get delivery_date => 'Fecha de Entrega';
+
+  @override
+  String get select_delivery_date => 'Seleccionar Fecha de Entrega';
+
+  @override
+  String get please_select_delivery_date =>
+      'Por favor seleccione la fecha de entrega';
+
+  @override
+  String get quantity => 'Cantidad';
+
+  @override
+  String get price => 'Precio';
+
+  @override
+  String get please_enter_quantity => 'Por favor ingrese la cantidad';
+
+  @override
+  String get please_enter_valid_quantity =>
+      'Por favor ingrese una cantidad válida';
+
+  @override
+  String get please_enter_price => 'Por favor ingrese el precio';
+
+  @override
+  String get please_enter_valid_price => 'Por favor ingrese un precio válido';
+
+  @override
+  String get please_enter_discount => 'Por favor ingrese el descuento';
+
+  @override
+  String get please_enter_valid_discount =>
+      'Por favor ingrese un descuento válido';
+
+  @override
+  String get no_products_added => 'No se agregaron productos';
+
+  @override
+  String get add_products_to_order => 'Agregar productos al pedido';
+
+  @override
+  String get tips => 'Consejos';
+
+  @override
+  String get add_products_tips => 'Consejos para agregar productos';
+
+  @override
+  String get draft_has_changes => 'El borrador tiene cambios';
+
+  @override
+  String get draft_saved => 'Borrador guardado';
+
+  @override
+  String get delete_draft => 'Eliminar Borrador';
+
+  @override
+  String get select_product => 'Seleccionar Producto';
+
+  @override
+  String get search_products => 'Buscar Productos';
+
+  @override
+  String get category => 'Categoría';
+
+  @override
+  String get all_categories => 'Todas las Categorías';
+
+  @override
+  String get type => 'Tipo';
+
+  @override
+  String get all_types => 'Todos los Tipos';
+
+  @override
+  String get no_products_found => 'No se encontraron productos';
+
+  @override
+  String get select => 'Seleccionar';
+
+  @override
+  String get add_to_order => 'Agregar al Pedido';
+
+  @override
+  String get enter_quantity => 'Ingresar Cantidad';
+
+  @override
+  String get enter_price => 'Ingresar Precio';
+
+  @override
+  String get enter_discount => 'Ingresar Descuento';
+
+  @override
+  String get update_order => 'Actualizar Pedido';
+
+  @override
+  String get unsaved_changes => 'Cambios no guardados';
+
+  @override
+  String get order_number => 'Número de Pedido';
+
+  @override
+  String get no_products => 'Sin Productos';
+
+  @override
+  String get save_changes => 'Guardar Cambios';
+
+  @override
+  String get customer_info => 'Info del Cliente';
+
+  @override
+  String get customer_name => 'Nombre del Cliente';
+
+  @override
+  String get tax => 'Impuesto';
+
+  @override
+  String get actions => 'Acciones';
+
+  @override
+  String get duplicate => 'Duplicar';
+
+  @override
+  String get share => 'Compartir';
+
+  @override
+  String get sent => 'Enviado';
+
+  @override
+  String get draft_sales => 'Ventas Borrador';
+
+  @override
+  String get clear_all => 'Limpiar Todo';
+
+  @override
+  String get search_drafts => 'Buscar Borradores';
+
+  @override
+  String get no_drafts_found => 'No se encontraron borradores';
+
+  @override
+  String get no_drafts => 'Sin borradores';
+
+  @override
+  String get create_new_order => 'Crear Nuevo Pedido';
+
+  @override
+  String get continue_editing => 'Continuar Editando';
+
+  @override
+  String get date => 'Fecha';
+
+  @override
+  String get salesperson => 'Vendedor';
+
+  @override
+  String get team => 'Equipo';
 }
