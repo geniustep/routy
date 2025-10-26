@@ -1,16 +1,10 @@
-// lib/screens/sales/saleorder/create/services/price_management_service.dart
+// lib/src/presentation/screens/sales/saleorder/create/services/price_management_service.dart
 
+import 'package:flutter/foundation.dart';
 import 'package:routy/models/products/product_list/pricelist_model.dart';
 import 'package:routy/screens/sales/saleorder/create/widgets/product_line.dart';
-import 'package:routy/utils/app_logger.dart';
 
-/// 💰 Price Management Service - خدمة إدارة الأسعار
-///
-/// يدير:
-/// - تطبيق قوائم الأسعار
-/// - حساب الخصومات
-/// - البحث عن القواعد المناسبة
-/// - تطبيق الأسعار النهائية
+/// خدمة إدارة الأسعار - فصل منطق حساب الأسعار
 class PriceManagementService {
   // ============= Singleton =============
 
@@ -21,238 +15,203 @@ class PriceManagementService {
 
   // ============= Price Calculation =============
 
-  /// البحث عن القاعدة المناسبة للمنتج
-  PricelistItemModel? findMatchingRule({
-    required ProductLine line,
-    required List<PricelistItemModel> rules,
-  }) {
-    if (line.productModel == null) {
-      appLogger.warning('⚠️ Product model is null, cannot find matching rule');
-      return null;
-    }
-
-    appLogger.info('\n🔍 ========== FINDING MATCHING RULE ==========');
-    appLogger.info('Product: ${line.productName} (ID: ${line.productId})');
-    appLogger.info('Available rules: ${rules.length}');
-
-    // البحث عن قاعدة مطابقة للمنتج
-    for (var rule in rules) {
-      appLogger.info('\n📋 Checking rule: ${rule.id}');
-      appLogger.info('   Product ID: ${rule.productId}');
-      appLogger.info('   Product Name: ${rule.productName}');
-      appLogger.info('   Fixed Price: ${rule.fixedPrice}');
-      appLogger.info('   Min Quantity: ${rule.minQuantity}');
-      appLogger.info('   Price: ${rule.price}');
-      appLogger.info('   Discount: ${rule.discount}%');
-
-      // التحقق من تطابق المنتج
-      if (rule.productId == line.productId) {
-        appLogger.info('   ✅ Product ID matches!');
-
-        // التحقق من الحد الأدنى للكمية
-        if (rule.minQuantity != null && line.quantity < rule.minQuantity!) {
-          appLogger.info(
-            '   ⚠️ Quantity ${line.quantity} < min ${rule.minQuantity}',
-          );
-          continue;
-        }
-
-        appLogger.info('   ✅ Rule found and applicable!');
-        appLogger.info('==========================================\n');
-        return rule;
-      } else {
-        appLogger.info('   ❌ Product ID does not match');
-      }
-    }
-
-    appLogger.info('❌ No matching rule found');
-    appLogger.info('==========================================\n');
-    return null;
-  }
-
-  /// حساب السعر النهائي بناءً على القاعدة
+  /// حساب السعر النهائي بناءً على نوع القاعدة
   PriceCalculationResult calculatePrice({
     required ProductLine line,
-    required PricelistItemModel rule,
+    required PricelistItem rule,
   }) {
-    appLogger.info('\n💰 ========== CALCULATING PRICE ==========');
-    appLogger.info('Product: ${line.productName}');
-    appLogger.info('Rule: ${rule.id}');
-    appLogger.info('Original list price: ${line.listPrice}');
-    appLogger.info('Rule fixed price: ${rule.fixedPrice}');
-    appLogger.info('Rule price: ${rule.price}');
-    appLogger.info('Rule discount: ${rule.discount}%');
+    final basePrice = line.listPrice;
+    final ruleValue = _extractNumericValue(rule.price);
+    final isNegative = _isNegativeValue(rule.price);
 
-    double finalPrice = line.listPrice;
+    if (ruleValue == null) {
+      return PriceCalculationResult(
+        finalPrice: basePrice,
+        discount: 0.0,
+        isMarkup: false,
+        appliedRule: null,
+      );
+    }
+
+    double finalPrice = basePrice;
     double discount = 0.0;
-    bool hasAppliedRule = false;
+    bool isMarkup = false;
 
-    // تطبيق السعر الثابت إذا كان متوفراً
-    if (rule.fixedPrice != null && rule.fixedPrice! > 0) {
-      finalPrice = rule.fixedPrice!;
-      discount = ((line.listPrice - finalPrice) / line.listPrice * 100).clamp(
-        0.0,
-        100.0,
-      );
-      hasAppliedRule = true;
+    switch (rule.computePrice) {
+      case 'fixed':
+        // سعر ثابت
+        finalPrice = ruleValue;
+        discount = _calculateDiscountPercentage(basePrice, finalPrice);
+        break;
 
-      appLogger.info('✅ Applied fixed price: $finalPrice');
-      appLogger.info('   Calculated discount: ${discount.toStringAsFixed(1)}%');
+      case 'percentage':
+        if (isNegative) {
+          // زيادة على السعر (markup)
+          finalPrice = basePrice * (1 + ruleValue / 100);
+          isMarkup = true;
+        } else {
+          // خصم
+          discount = ruleValue;
+          finalPrice = basePrice * (1 - ruleValue / 100);
+        }
+        break;
+
+      case 'formula':
+        // صيغة حسابية (نفس منطق النسبة)
+        if (isNegative) {
+          finalPrice = basePrice * (1 + ruleValue / 100);
+          isMarkup = true;
+        } else {
+          discount = ruleValue;
+          finalPrice = basePrice * (1 - ruleValue / 100);
+        }
+        break;
+
+      default:
+        return PriceCalculationResult(
+          finalPrice: basePrice,
+          discount: 0.0,
+          isMarkup: false,
+          appliedRule: null,
+        );
     }
-    // تطبيق السعر المخصص إذا كان متوفراً
-    else if (rule.price != null && rule.price! > 0) {
-      finalPrice = rule.price!;
-      discount = ((line.listPrice - finalPrice) / line.listPrice * 100).clamp(
-        0.0,
-        100.0,
-      );
-      hasAppliedRule = true;
-
-      appLogger.info('✅ Applied custom price: $finalPrice');
-      appLogger.info('   Calculated discount: ${discount.toStringAsFixed(1)}%');
-    }
-    // تطبيق الخصم إذا كان متوفراً
-    else if (rule.discount != null && rule.discount! > 0) {
-      discount = rule.discount!.clamp(0.0, 100.0);
-      finalPrice = line.listPrice * (1 - discount / 100);
-      hasAppliedRule = true;
-
-      appLogger.info('✅ Applied discount: ${discount.toStringAsFixed(1)}%');
-      appLogger.info('   Calculated price: $finalPrice');
-    }
-
-    if (hasAppliedRule) {
-      appLogger.info('✅ Price calculation completed:');
-      appLogger.info('   Final price: $finalPrice');
-      appLogger.info('   Discount: ${discount.toStringAsFixed(1)}%');
-      appLogger.info(
-        '   Savings per unit: ${(line.listPrice - finalPrice).toStringAsFixed(2)}',
-      );
-      appLogger.info(
-        '   Total savings: ${((line.listPrice - finalPrice) * line.quantity).toStringAsFixed(2)}',
-      );
-    } else {
-      appLogger.info('ℹ️ No price rule applied, keeping original price');
-    }
-
-    appLogger.info('==========================================\n');
 
     return PriceCalculationResult(
       finalPrice: finalPrice,
       discount: discount,
-      hasAppliedRule: hasAppliedRule,
+      isMarkup: isMarkup,
       appliedRule: rule,
     );
   }
 
-  // ============= Bulk Price Updates =============
+  /// البحث عن القاعدة المناسبة للمنتج
+  PricelistItem? findMatchingRule({
+    required ProductLine line,
+    required List<PricelistItem> rules,
+  }) {
+    if (kDebugMode) {
+      print('\n🔍 ========== FINDING MATCHING RULE ==========');
+      print('Product: ${line.productName}');
+      print('Product ID: ${line.productModel?.id}');
+      print('Quantity: ${line.quantity}');
+      print('Available rules: ${rules.length}');
+    }
 
-  /// تطبيق قائمة أسعار على جميع المنتجات
-  Future<List<PriceUpdateResult>> applyPriceListToAllProducts({
-    required List<ProductLine> productLines,
-    required List<PricelistItemModel> rules,
-  }) async {
-    appLogger.info(
-      '\n🔄 ========== APPLYING PRICE LIST TO ALL PRODUCTS ==========',
-    );
-    appLogger.info('Products count: ${productLines.length}');
-    appLogger.info('Rules count: ${rules.length}');
+    PricelistItem? bestMatch;
 
-    final results = <PriceUpdateResult>[];
+    for (var rule in rules) {
+      // التحقق من مطابقة المنتج
+      final productMatch = _matchesProduct(line, rule);
 
-    for (var line in productLines) {
-      if (line.productModel == null) {
-        appLogger.warning('⚠️ Skipping line with null product model');
-        continue;
+      // التحقق من مطابقة الكمية
+      final quantityMatch = _matchesQuantity(line, rule);
+
+      if (kDebugMode) {
+        print('   Rule: ${rule.name}');
+        print('     Product Match: $productMatch');
+        print('     Quantity Match: $quantityMatch');
+        print('     Min Quantity: ${rule.minQuantity}');
       }
 
-      final rule = findMatchingRule(line: line, rules: rules);
-
-      if (rule != null) {
-        final calculation = calculatePrice(line: line, rule: rule);
-
-        if (calculation.hasAppliedRule) {
-          results.add(
-            PriceUpdateResult(
-              productLine: line,
-              oldPrice: line.priceUnit,
-              newPrice: calculation.finalPrice,
-              oldDiscount: line.discountPercentage,
-              newDiscount: calculation.discount,
-              appliedRule: rule,
-            ),
-          );
+      if (productMatch && quantityMatch) {
+        // اختيار القاعدة الأفضل (أعلى كمية مطلوبة)
+        if (bestMatch == null ||
+            (rule.minQuantity ?? 0) > (bestMatch.minQuantity ?? 0)) {
+          bestMatch = rule;
         }
       }
     }
 
-    appLogger.info('✅ Price list application completed');
-    appLogger.info('   Updated products: ${results.length}');
-    appLogger.info(
-      '========================================================\n',
-    );
-
-    return results;
-  }
-
-  // ============= Validation =============
-
-  /// التحقق من صحة قائمة الأسعار
-  bool validatePriceList(List<PricelistItemModel> rules) {
-    if (rules.isEmpty) {
-      appLogger.warning('⚠️ Price list is empty');
-      return false;
+    if (kDebugMode) {
+      if (bestMatch != null) {
+        print('✅ Best match found: ${bestMatch.name}');
+      } else {
+        print('❌ No matching rule found');
+      }
+      print('==========================================\n');
     }
 
-    for (var rule in rules) {
-      if (rule.productId == null) {
-        appLogger.warning('⚠️ Rule ${rule.id} has null product ID');
-        return false;
+    return bestMatch;
+  }
+
+  // ============= Helper Methods =============
+
+  /// استخراج القيمة الرقمية من النص
+  double? _extractNumericValue(dynamic value) {
+    if (value is num) {
+      return value.toDouble();
+    }
+
+    if (value is String && value.isNotEmpty) {
+      final match = RegExp(r'-?(\d+\.?\d*)').firstMatch(value);
+      if (match != null) {
+        return double.tryParse(match.group(1)!);
       }
     }
 
-    appLogger.info('✅ Price list validation passed');
-    return true;
+    return null;
+  }
+
+  /// التحقق من كون القيمة سالبة
+  bool _isNegativeValue(dynamic value) {
+    if (value is num) {
+      return value < 0;
+    }
+
+    if (value is String) {
+      return value.contains('-');
+    }
+
+    return false;
+  }
+
+  /// حساب نسبة الخصم
+  double _calculateDiscountPercentage(double originalPrice, double finalPrice) {
+    if (originalPrice == 0) return 0.0;
+    return ((originalPrice - finalPrice) / originalPrice * 100).clamp(0, 100);
+  }
+
+  /// التحقق من مطابقة المنتج
+  bool _matchesProduct(ProductLine line, PricelistItem rule) {
+    // إذا لم يكن هناك product_tmpl_id محدد، فهي قاعدة عامة
+    if (rule.productTmplId == null ||
+        rule.productTmplId == false ||
+        rule.productTmplId == 0) {
+      return true;
+    }
+
+    // مطابقة product ID
+    return line.productModel?.id == rule.productTmplId;
+  }
+
+  /// التحقق من مطابقة الكمية
+  bool _matchesQuantity(ProductLine line, PricelistItem rule) {
+    final minQuantity = rule.minQuantity ?? 0;
+    return line.quantity >= minQuantity;
   }
 }
-
-// ============= Result Classes =============
 
 /// نتيجة حساب السعر
 class PriceCalculationResult {
   final double finalPrice;
   final double discount;
-  final bool hasAppliedRule;
-  final PricelistItemModel? appliedRule;
+  final bool isMarkup;
+  final PricelistItem? appliedRule;
 
   PriceCalculationResult({
     required this.finalPrice,
     required this.discount,
-    required this.hasAppliedRule,
+    required this.isMarkup,
     this.appliedRule,
   });
-}
 
-/// نتيجة تحديث السعر
-class PriceUpdateResult {
-  final ProductLine productLine;
-  final double oldPrice;
-  final double newPrice;
-  final double oldDiscount;
-  final double newDiscount;
-  final PricelistItemModel appliedRule;
+  /// هل تم تطبيق قاعدة؟
+  bool get hasAppliedRule => appliedRule != null;
 
-  PriceUpdateResult({
-    required this.productLine,
-    required this.oldPrice,
-    required this.newPrice,
-    required this.oldDiscount,
-    required this.newDiscount,
-    required this.appliedRule,
-  });
+  /// المبلغ الموفر (إذا كان خصم)
+  double get savings => isMarkup ? 0.0 : (finalPrice * discount / 100);
 
-  bool get hasPriceChanged => oldPrice != newPrice;
-  bool get hasDiscountChanged => oldDiscount != newDiscount;
-  double get priceDifference => newPrice - oldPrice;
-  double get discountDifference => newDiscount - oldDiscount;
+  /// المبلغ الإضافي (إذا كان markup)
+  double get markup =>
+      isMarkup ? (finalPrice - (finalPrice / (1 + discount / 100))) : 0.0;
 }

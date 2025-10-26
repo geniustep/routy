@@ -39,6 +39,7 @@ class AppRouter {
   static const String dashboard = '/dashboard';
   static const String dashboardV2 = '/dashboard/v2';
   static const String salesList = '/sales';
+  static const String draftSales = '/sales/drafts';
   static const String salesCreate = '/sales/create';
   static const String salesCreateNew = '/sales/create/new';
   static const String salesUpdate = '/sales/update';
@@ -76,10 +77,15 @@ class AppRouter {
       page: () => const SalesOrdersScreen(),
       binding: SalesBinding(),
     ),
+    GetPage(
+      name: draftSales,
+      page: () => const DraftSalesScreen(),
+      binding: SalesBinding(),
+    ),
     GetPage(name: salesCreate, page: () => const SalesCreateScreen()),
     GetPage(
       name: salesCreateNew,
-      page: () => const CreateNewOrderScreen(),
+      page: () => const CreateNewOrder(),
       binding: SalesBinding(),
     ),
     GetPage(

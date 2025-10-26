@@ -2,6 +2,7 @@
 
 import 'package:get/get.dart';
 import 'dart:async';
+import 'package:flutter/material.dart';
 import '../models/products/product_model.dart';
 import '../common/api/api.dart';
 import '../services/storage_service.dart';
@@ -48,6 +49,23 @@ class ProductController extends GetxController {
 
   // الحقول المتاحة (يتم تحديثها ديناميكياً)
   late List<String> _availableFields;
+
+  // إضافة الـ properties المفقودة
+  final RxBool showAllProducts = false.obs;
+  final RxBool showOnlyAvailable = true.obs;
+  final RxBool isGridView = true.obs;
+  final RxInt gridColumns = 2.obs;
+  final RxString searchText = ''.obs;
+  final RxBool shouldShowTabs = true.obs;
+  final RxList<String> visibleCategories = <String>[].obs;
+  final RxInt allCount = 0.obs;
+  final RxInt availableCount = 0.obs;
+
+  // Search Controller
+  late TextEditingController searchController;
+
+  // Tab Controller
+  late TabController tabController;
 
   // ============= Lifecycle =============
 
@@ -510,5 +528,41 @@ class ProductController extends GetxController {
       types.add(product.productType);
     }
     return types.toList()..sort();
+  }
+
+  // إضافة الـ methods المفقودة
+  void toggleShowAllProducts() {
+    showAllProducts.value = !showAllProducts.value;
+  }
+
+  void toggleShowOnlyAvailable() {
+    showOnlyAvailable.value = !showOnlyAvailable.value;
+  }
+
+  void toggleViewMode() {
+    isGridView.value = !isGridView.value;
+  }
+
+  void updateGridColumns(int columns) {
+    gridColumns.value = columns;
+  }
+
+  void onSearchChanged(String value) {
+    searchText.value = value;
+    searchQuery.value = value;
+  }
+
+  void clearSearch() {
+    searchText.value = '';
+    searchQuery.value = '';
+    searchController.clear();
+  }
+
+  void scanBarcode() {
+    // TODO: تنفيذ مسح الباركود
+  }
+
+  int getCategoryCount(String category) {
+    return products.where((p) => p.categoryName == category).length;
   }
 }

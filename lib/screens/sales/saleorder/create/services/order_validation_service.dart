@@ -35,7 +35,7 @@ class OrderValidationService {
     appLogger.info('\n✅ ========== VALIDATING ORDER ==========');
     appLogger.info('Partner: ${partner?.name ?? 'None'}');
     appLogger.info('Product lines: ${productLines.length}');
-    appLogger.info('Price list: ${priceList?.pricelistName ?? 'None'}');
+    appLogger.info('Price list: ${priceList?.name ?? 'None'}');
     appLogger.info('Payment term: ${paymentTerm?.paymentTermName ?? 'None'}');
 
     final errors = <String>[];
@@ -228,24 +228,24 @@ class OrderValidationService {
     }
 
     // التحقق من نشاط قائمة الأسعار
-    if (!priceList.isActive) {
+    if (!priceList.active) {
       errors.add('قائمة الأسعار المختارة غير نشطة');
     }
 
     // التحقق من وجود قواعد
-    if (!priceList.hasRules) {
+    if (priceList.items == null || priceList.items!.isEmpty) {
       warnings.add('قائمة الأسعار المختارة لا تحتوي على قواعد');
     }
 
     // التحقق من العملة
-    if (priceList.currencyName == null) {
+    if (priceList.currencyId == null) {
       warnings.add('عملة قائمة الأسعار غير محددة');
     }
 
     appLogger.info('✅ Price list validation completed');
-    appLogger.info('   Price list: ${priceList.pricelistName}');
-    appLogger.info('   Active: ${priceList.isActive}');
-    appLogger.info('   Rules: ${priceList.rulesCount}');
+    appLogger.info('   Price list: ${priceList.name ?? priceList.displayName}');
+    appLogger.info('   Active: ${priceList.active}');
+    appLogger.info('   Rules: ${priceList.items?.length ?? 0}');
     appLogger.info('   Errors: ${errors.length}');
     appLogger.info('   Warnings: ${warnings.length}');
 

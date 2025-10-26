@@ -7,7 +7,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:routy/controllers/partner_controller.dart';
 import 'package:routy/controllers/theme_controller.dart';
 import 'package:routy/models/partners/partners_model.dart';
-import 'package:routy/models/partners/partner_type.dart';
 import 'package:routy/services/translation_service.dart';
 import 'package:routy/app/app_router.dart';
 
@@ -38,9 +37,9 @@ class _PartnersMapScreenState extends State<PartnersMapScreen> {
     super.initState();
     _getCurrentLocation();
 
-    // الاستماع لتغييرات الشركاء المفلترين
-    ever(_partnerController.filteredPartners, (_) {
-      // إعادة تعيين initial load عند تغيير الفلتر لعرض الشركاء الجدد
+    // الاستماع لتغييرات الشركاء
+    ever(_partnerController.partners, (_) {
+      // إعادة تعيين initial load عند تغيير الشركاء
       _isInitialLoad = true;
       _loadPartners();
     });
@@ -100,8 +99,8 @@ class _PartnersMapScreenState extends State<PartnersMapScreen> {
 
   /// Load partners and create markers
   void _loadPartners() {
-    // استخدام الشركاء المفلترين بدلاً من جميع الشركاء
-    final partnersWithLocation = _partnerController.filteredPartners
+    // استخدام الشركاء مع الموقع
+    final partnersWithLocation = _partnerController.partners
         .where((p) => p.hasLocation)
         .toList();
 
@@ -120,7 +119,7 @@ class _PartnersMapScreenState extends State<PartnersMapScreen> {
 
   /// Update markers only without zoom change
   void _updateMarkersOnly() {
-    final partnersWithLocation = _partnerController.filteredPartners
+    final partnersWithLocation = _partnerController.partners
         .where((p) => p.hasLocation)
         .toList();
 
@@ -370,22 +369,9 @@ class _PartnersMapScreenState extends State<PartnersMapScreen> {
             ? const Color(0xFF0F172A)
             : Colors.grey[50],
         appBar: AppBar(
-          title: Obx(() {
-            String filterText = '';
-            final currentFilter = _partnerController.currentTypeFilter.value;
-
-            if (currentFilter == PartnerType.customer) {
-              filterText = TranslationService.instance.translate('customers');
-            } else if (currentFilter == PartnerType.supplier) {
-              filterText = TranslationService.instance.translate('suppliers');
-            } else {
-              filterText = TranslationService.instance.translate('partners');
-            }
-
-            return Text(
-              '$filterText - ${TranslationService.instance.translate('map')}',
-            );
-          }),
+          title: Text(
+            '${TranslationService.instance.translate('partners')} - ${TranslationService.instance.translate('map')}',
+          ),
           backgroundColor: _themeController.isProfessional
               ? _themeController.primaryColor
               : _themeController.isDarkMode
@@ -518,8 +504,8 @@ class _PartnersMapScreenState extends State<PartnersMapScreen> {
   /// Build partners count badge
   Widget _buildPartnersCountBadge() {
     return Obx(() {
-      // استخدام الشركاء المفلترين
-      final count = _partnerController.filteredPartners
+      // استخدام الشركاء مع الموقع
+      final count = _partnerController.partners
           .where((p) => p.hasLocation)
           .length;
 

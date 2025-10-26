@@ -1,250 +1,336 @@
-// lib/screens/sales/saleorder/create/controllers/draft_controller.dart
+// lib/src/presentation/screens/sales/saleorder/create/controllers/draft_controller.dart
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:routy/app/app_router.dart';
+import 'package:routy/screens/sales/saleorder/create/controllers/order_controller.dart';
 import 'package:routy/screens/sales/saleorder/drafts/services/draft_sale_service.dart';
-import 'package:routy/utils/app_logger.dart';
 
-/// 📝 Draft Controller - تحكم في المسودات
-///
-/// يدير:
-/// - حفظ المسودات تلقائياً
-/// - استعادة المسودات
-/// - إدارة حالة الحفظ
-/// - تتبع التغييرات
 class DraftController extends GetxController {
   // ============= State =============
 
-  final RxString currentDraftId = ''.obs;
-  final Rx<DateTime?> lastSavedAt = Rx<DateTime?>(null);
-  final RxString lastSavedText = ''.obs;
-  final RxBool isAutoSaving = false.obs;
-  final RxBool hasUnsavedChanges = false.obs;
+  /// معرف المسودة الحالية
+  final Rxn<String> currentDraftId = Rxn<String>();
+
+  /// هل يوجد مسودة نشطة؟
+  final RxBool hasActiveDraft = false.obs;
+
+  /// عدد المسودات المحفوظة
+  final RxInt draftsCount = 0.obs;
+
+  /// تاريخ آخر حفظ
+  final Rxn<DateTime> lastSavedAt = Rxn<DateTime>();
 
   // ============= Services =============
-  final DraftSaleService _draftService = DraftSaleService.instance();
+
+  final DraftSaleService _draftService = DraftSaleService.instance;
+
+  // ============= Dependencies =============
+
+  OrderController get orderController => Get.find<OrderController>();
 
   // ============= Lifecycle =============
 
   @override
   void onInit() {
     super.onInit();
-    appLogger.info('✅ DraftController initialized');
+
+    // تحديث عدد المسودات
+    _updateDraftsCount();
   }
 
-  @override
-  void onClose() {
-    appLogger.info('🗑️ DraftController disposed');
-    super.onClose();
-  }
+  // ============= Draft Loading =============
 
-  // ============= Draft Management =============
-
-  /// التحقق من وجود مسودة وتحميلها
-  Future<bool> checkAndLoadDraft({
+  /// فحص وتحميل المسودة النشطة
+  Future<void> checkAndLoadDraft({
     required String customerName,
-    required int? partnerId,
-    required int? priceListId,
+    dynamic partnerId,
+    dynamic priceListId,
   }) async {
-    try {
-      appLogger.info('\n🔍 ========== CHECKING FOR DRAFT ==========');
-      appLogger.info('Customer: $customerName');
-      appLogger.info('Partner ID: $partnerId');
-      appLogger.info('Price List ID: $priceListId');
+    if (kDebugMode) {
+      print('\n📋 Checking for active draft...');
+    }
 
-      final drafts = await _draftService.getAllDrafts();
+    final draft = await _draftService.getActiveDraft();
 
-      // البحث عن مسودة مطابقة
-      final matchingDraft = drafts.firstWhereOrNull((draft) {
-        final draftCustomer = draft['customer']?.toString() ?? '';
-        final draftPartnerId = draft['partnerId'];
-        final draftPriceListId = draft['priceListId'];
+    if (draft != null) {
+      hasActiveDraft.value = true;
+      final productsCount = (draft['products'] as List?)?.length ?? 0;
 
-        return draftCustomer.toLowerCase() == customerName.toLowerCase() &&
-            draftPartnerId == partnerId &&
-            draftPriceListId == priceListId;
-      });
-
-      if (matchingDraft != null) {
-        appLogger.info('✅ Found matching draft: ${matchingDraft['id']}');
-        appLogger.info('   Last modified: ${matchingDraft['lastModified']}');
-
-        currentDraftId.value = matchingDraft['id']?.toString() ?? '';
-
-        if (matchingDraft['lastModified'] != null) {
-          lastSavedAt.value = DateTime.parse(matchingDraft['lastModified']);
-          lastSavedText.value =
-              'آخر حفظ: ${_formatLastSaved(lastSavedAt.value!)}';
-        }
-
-        return true;
-      } else {
-        appLogger.info('ℹ️ No matching draft found');
-        return false;
+      if (kDebugMode) {
+        print('   Found draft:');
+        print('   ID: ${draft['id']}');
+        print('   Customer: ${draft['customer']}');
+        print('   Products: $productsCount');
+        print('   Total: ${draft['totalAmount']} Dh');
       }
-    } catch (e) {
-      appLogger.error('❌ Error checking for draft: $e');
-      return false;
+
+      // عرض حوار للمستخدم
+      final result = await Get.dialog<bool>(
+        AlertDialog(
+          title: const Row(
+            children: [
+              Icon(Icons.drafts, color: Colors.blue),
+              SizedBox(width: 8),
+              Text('مسودة محفوظة'),
+            ],
+          ),
+          content: Text(
+            'لديك مسودة محفوظة تحتوي على $productsCount منتج.\nهل تريد استكمالها؟',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Get.back(result: false),
+              child: const Text('بداية جديدة'),
+            ),
+            ElevatedButton(
+              onPressed: () => Get.back(result: true),
+              child: const Text('استكمال'),
+            ),
+          ],
+        ),
+      );
+
+      if (result == true) {
+        await loadAndApplyDraft(draft);
+      } else {
+        await clearActiveDraft();
+      }
+    } else {
+      hasActiveDraft.value = false;
+
+      if (kDebugMode) {
+        print('   No active draft found');
+      }
     }
   }
+
+  /// تحميل وتطبيق المسودة
+  Future<void> loadAndApplyDraft(Map<String, dynamic> draft) async {
+    try {
+      if (kDebugMode) {
+        print('\n📥 ========== LOADING DRAFT ==========');
+        print('Draft ID: ${draft['id']}');
+      }
+
+      currentDraftId.value = draft['id'];
+
+      // تحميل المنتجات
+      final products = draft['products'] as List? ?? [];
+      await orderController.loadFromDraft(products);
+
+      // تحديث تاريخ آخر حفظ
+      if (draft['lastModified'] != null) {
+        lastSavedAt.value = DateTime.parse(draft['lastModified']);
+      }
+
+      if (kDebugMode) {
+        print('✅ Draft loaded successfully');
+        print('   Products: ${orderController.productsCount}');
+        print('   Total: ${orderController.getOrderTotal()} Dh');
+        print('=====================================\n');
+      }
+
+      // ✅ إزالة الرسالة المزعجة عند تحميل المسودة
+      // Get.snackbar(
+      //   'تم التحميل',
+      //   'تم تحميل ${orderController.productsCount} منتج من المسودة',
+      //   snackPosition: SnackPosition.BOTTOM,
+      //   backgroundColor: Colors.green.withOpacity(0.8),
+      //   colorText: Colors.white,
+      //   duration: const Duration(seconds: 2),
+      //   icon: const Icon(Icons.check_circle, color: Colors.white),
+      // );
+    } catch (e, stackTrace) {
+      if (kDebugMode) {
+        print('\n❌ ========== ERROR LOADING DRAFT ==========');
+        print('Error: $e');
+        print('Stack trace: $stackTrace');
+        print('=========================================\n');
+      }
+
+      Get.snackbar(
+        'خطأ',
+        'حدث خطأ أثناء تحميل المسودة: $e',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red.withOpacity(0.8),
+        colorText: Colors.white,
+        duration: const Duration(seconds: 3),
+        icon: const Icon(Icons.error, color: Colors.white),
+      );
+    }
+  }
+
+  // ============= Draft Saving =============
 
   /// حفظ المسودة تلقائياً
   Future<void> autoSaveDraft({
     required String customerName,
-    required int? partnerId,
-    required int? priceListId,
-    List<Map<String, dynamic>>? products,
+    required int partnerId,
+    dynamic priceListId,
   }) async {
-    if (isAutoSaving.value) {
-      appLogger.info('⏳ Auto-save already in progress, skipping...');
+    // التحقق من وجود منتجات
+    if (!orderController.hasProducts) {
+      if (kDebugMode) {
+        print('⚠️ No products to save in draft');
+      }
       return;
     }
 
     try {
-      isAutoSaving.value = true;
-
-      appLogger.info('\n💾 ========== AUTO-SAVING DRAFT ==========');
-      appLogger.info('Customer: $customerName');
-      appLogger.info('Partner ID: $partnerId');
-      appLogger.info('Price List ID: $priceListId');
-      appLogger.info('Products: ${products?.length ?? 0}');
+      if (kDebugMode) {
+        print('\n💾 ========== AUTO SAVING DRAFT ==========');
+        print('Customer: $customerName (ID: $partnerId)');
+        print('Pricelist ID: $priceListId');
+        print('Products count: ${orderController.productsCount}');
+      }
 
       final draftData = {
-        'customer': customerName,
+        'id': currentDraftId.value,
         'partnerId': partnerId,
+        'customer': customerName,
         'priceListId': priceListId,
-        'products': products ?? [],
+        'products': orderController.getProductLinesData(),
+        'totalAmount': orderController.getOrderTotal(),
         'lastModified': DateTime.now().toIso8601String(),
       };
 
-      String draftId;
-      if (currentDraftId.value.isNotEmpty) {
-        // تحديث مسودة موجودة
-        draftId = currentDraftId.value;
-        await _draftService.updateDraft(draftId, draftData);
-        appLogger.info('✅ Draft updated: $draftId');
-      } else {
-        // إنشاء مسودة جديدة
-        draftId = await _draftService.createDraft(draftData);
-        currentDraftId.value = draftId;
-        appLogger.info('✅ New draft created: $draftId');
-      }
-
+      currentDraftId.value = await _draftService.saveDraft(draftData);
       lastSavedAt.value = DateTime.now();
-      lastSavedText.value = 'آخر حفظ: ${_formatLastSaved(lastSavedAt.value!)}';
-      hasUnsavedChanges.value = false;
+      hasActiveDraft.value = true;
 
-      appLogger.info('✅ Auto-save completed successfully');
-      appLogger.info('=========================================\n');
-    } catch (e) {
-      appLogger.error('❌ Error auto-saving draft: $e');
-      appLogger.error('   Stack trace: ${StackTrace.current}');
-    } finally {
-      isAutoSaving.value = false;
+      await _updateDraftsCount();
+
+      if (kDebugMode) {
+        print('✅ Draft saved successfully: ${currentDraftId.value}');
+        print('   Total: ${draftData['totalAmount']} Dh');
+        print('=========================================\n');
+      }
+    } catch (e, stackTrace) {
+      if (kDebugMode) {
+        print('❌ Error saving draft: $e');
+        print('Stack trace: $stackTrace');
+      }
+    }
+  }
+
+  // ============= Draft Management =============
+
+  /// فتح صفحة المسودات
+  Future<void> openDraftsScreen() async {
+    if (kDebugMode) {
+      print('\n📋 Opening drafts screen...');
+    }
+
+    final result = await Get.toNamed(AppRouter.draftSales);
+
+    if (result != null && result is Map<String, dynamic>) {
+      if (kDebugMode) {
+        print('📥 Draft selected from screen');
+      }
+      await loadAndApplyDraft(result);
     }
   }
 
   /// حذف المسودة الحالية
   Future<void> deleteCurrentDraft() async {
-    if (currentDraftId.value.isEmpty) {
-      appLogger.info('ℹ️ No draft to delete');
-      return;
-    }
+    if (currentDraftId.value == null) return;
 
     try {
-      appLogger.info('\n🗑️ ========== DELETING DRAFT ==========');
-      appLogger.info('Draft ID: ${currentDraftId.value}');
+      if (kDebugMode) {
+        print('\n🗑️ Deleting draft: ${currentDraftId.value}');
+      }
 
-      await _draftService.deleteDraft(currentDraftId.value);
+      await _draftService.deleteDraft(currentDraftId.value!);
+      await clearActiveDraft();
 
-      currentDraftId.value = '';
-      lastSavedAt.value = null;
-      lastSavedText.value = '';
-      hasUnsavedChanges.value = false;
-
-      appLogger.info('✅ Draft deleted successfully');
-      appLogger.info('=====================================\n');
-    } catch (e) {
-      appLogger.error('❌ Error deleting draft: $e');
-    }
-  }
-
-  /// تحميل مسودة محددة
-  Future<Map<String, dynamic>?> loadDraft(String draftId) async {
-    try {
-      appLogger.info('\n📥 ========== LOADING DRAFT ==========');
-      appLogger.info('Draft ID: $draftId');
-
-      final draft = await _draftService.getDraft(draftId);
-
-      if (draft != null) {
-        currentDraftId.value = draftId;
-
-        if (draft['lastModified'] != null) {
-          lastSavedAt.value = DateTime.parse(draft['lastModified']);
-          lastSavedText.value =
-              'آخر حفظ: ${_formatLastSaved(lastSavedAt.value!)}';
-        }
-
-        appLogger.info('✅ Draft loaded successfully');
-        appLogger.info('   Customer: ${draft['customer']}');
-        appLogger.info(
-          '   Products: ${(draft['products'] as List?)?.length ?? 0}',
-        );
-        appLogger.info('   Last modified: ${draft['lastModified']}');
-
-        return draft;
-      } else {
-        appLogger.warning('⚠️ Draft not found: $draftId');
-        return null;
+      if (kDebugMode) {
+        print('✅ Draft deleted successfully');
       }
     } catch (e) {
-      appLogger.error('❌ Error loading draft: $e');
-      return null;
+      if (kDebugMode) {
+        print('❌ Error deleting draft: $e');
+      }
     }
   }
 
-  // ============= Helper Methods =============
+  /// مسح المسودة النشطة
+  Future<void> clearActiveDraft() async {
+    if (kDebugMode) {
+      print('\n🗑️ Clearing active draft...');
+    }
+
+    await _draftService.clearActiveDraft();
+    currentDraftId.value = null;
+    hasActiveDraft.value = false;
+    lastSavedAt.value = null;
+
+    await _updateDraftsCount();
+
+    if (kDebugMode) {
+      print('✅ Active draft cleared');
+    }
+  }
+
+  /// تحديث عدد المسودات
+  Future<void> _updateDraftsCount() async {
+    try {
+      final drafts = await _draftService.getAllDrafts();
+      draftsCount.value = drafts.length;
+
+      if (kDebugMode) {
+        print('📊 Drafts count updated: ${draftsCount.value}');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('❌ Error updating drafts count: $e');
+      }
+    }
+  }
+
+  // ============= Formatting =============
+
+  /// تنسيق تاريخ المسودة
+  String formatDraftDate(String? dateStr) {
+    if (dateStr == null) return '';
+
+    try {
+      final date = DateTime.parse(dateStr);
+      final now = DateTime.now();
+      final difference = now.difference(date);
+
+      if (difference.inMinutes < 1) {
+        return 'الآن';
+      } else if (difference.inMinutes < 60) {
+        return 'منذ ${difference.inMinutes} دقيقة';
+      } else if (difference.inHours < 24) {
+        return 'منذ ${difference.inHours} ساعة';
+      } else if (difference.inDays < 7) {
+        return 'منذ ${difference.inDays} يوم';
+      } else {
+        return DateFormat('dd/MM/yyyy').format(date);
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('❌ Error formatting date: $e');
+      }
+      return '';
+    }
+  }
 
   /// تنسيق وقت آخر حفظ
-  String _formatLastSaved(DateTime dateTime) {
-    final now = DateTime.now();
-    final difference = now.difference(dateTime);
-
-    if (difference.inMinutes < 1) {
-      return 'الآن';
-    } else if (difference.inMinutes < 60) {
-      return 'منذ ${difference.inMinutes} دقيقة';
-    } else if (difference.inHours < 24) {
-      return 'منذ ${difference.inHours} ساعة';
-    } else {
-      return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
-    }
+  String get lastSavedText {
+    if (lastSavedAt.value == null) return '';
+    return 'آخر حفظ: ${formatDraftDate(lastSavedAt.value!.toIso8601String())}';
   }
 
   // ============= Getters =============
 
-  bool get hasDraft => currentDraftId.value.isNotEmpty;
-  bool get isDraftSaved => lastSavedAt.value != null;
-  String get draftId => currentDraftId.value;
-  DateTime? get lastSaved => lastSavedAt.value;
-  String get lastSavedFormatted => lastSavedText.value;
+  /// هل يوجد مسودة حالية؟
+  bool get hasDraft => currentDraftId.value != null;
 
-  // ============= Clear Data =============
-
-  void clearDraft() {
-    currentDraftId.value = '';
-    lastSavedAt.value = null;
-    lastSavedText.value = '';
-    hasUnsavedChanges.value = false;
-
-    appLogger.info('🗑️ Draft data cleared');
-  }
-
-  void markAsChanged() {
-    hasUnsavedChanges.value = true;
-  }
-
-  void markAsSaved() {
-    hasUnsavedChanges.value = false;
-  }
+  /// معرف المسودة الحالية
+  String? get draftId => currentDraftId.value;
 }

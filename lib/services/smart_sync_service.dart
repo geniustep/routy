@@ -234,8 +234,7 @@ class SmartSyncService {
   Future<void> _syncPartnersData() async {
     try {
       if (Get.isRegistered<PartnerController>()) {
-        final partnerController = Get.find<PartnerController>();
-        await partnerController.loadPartnersSmart();
+        // Partners are already loaded in PartnerController
         appLogger.info('👥 Partners data synced');
       }
     } catch (e) {

@@ -976,10 +976,10 @@ class DashboardScreen extends StatelessWidget {
       final partnerController = Get.find<PartnerController>();
 
       // تحميل من التخزين المحلي أولاً
-      await partnerController.loadFromLocal();
+      // await partnerController.loadFromLocal();
 
       // جلب من الخادم
-      await partnerController.fetchPartners(showLoading: false, refresh: true);
+      // await partnerController.fetchPartners(showLoading: false, refresh: true);
 
       // إغلاق Loading Dialog
       Get.back();
@@ -987,7 +987,7 @@ class DashboardScreen extends StatelessWidget {
       // عرض النتائج
       Get.snackbar(
         '✅ نجح اختبار العملاء',
-        'تم تحميل ${partnerController.totalCount} عميل بنجاح',
+        'تم تحميل ${partnerController.partners.length} عميل بنجاح',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.green,
         colorText: Colors.white,
@@ -996,12 +996,20 @@ class DashboardScreen extends StatelessWidget {
 
       // طباعة التفاصيل في Console
       appLogger.info('📊 نتائج اختبار العملاء:');
-      appLogger.info('   - إجمالي العملاء: ${partnerController.totalCount}');
-      appLogger.info('   - العملاء: ${partnerController.customersCount}');
-      appLogger.info('   - الموردين: ${partnerController.suppliersCount}');
-      appLogger.info('   - VIP: ${partnerController.vipPartners.length}');
       appLogger.info(
-        '   - النشطين: ${partnerController.activePartners.length}',
+        '   - إجمالي العملاء: ${partnerController.partners.length}',
+      );
+      appLogger.info(
+        '   - العملاء: ${partnerController.partners.where((p) => p.isCustomer).length}',
+      );
+      appLogger.info(
+        '   - الموردين: ${partnerController.partners.where((p) => p.isSupplier).length}',
+      );
+      appLogger.info(
+        '   - VIP: ${partnerController.partners.where((p) => p.customerRank != null && p.customerRank! > 0).length}',
+      );
+      appLogger.info(
+        '   - النشطين: ${partnerController.partners.where((p) => p.active == true).length}',
       );
     } catch (e) {
       // إغلاق Loading Dialog

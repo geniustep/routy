@@ -23,7 +23,7 @@ class DraftSalesScreen extends StatefulWidget {
 class _DraftSalesScreenState extends State<DraftSalesScreen> {
   // ============= Services =============
 
-  final DraftSaleService _draftService = DraftSaleService.instance();
+  final DraftSaleService _draftService = DraftSaleService.instance;
 
   // ============= State =============
 

@@ -6,6 +6,7 @@ import 'package:routy/models/products/product_list/pricelist_model.dart';
 import 'package:routy/models/common/payment_term_model.dart';
 import 'package:routy/utils/app_logger.dart';
 import 'package:routy/controllers/partner_controller.dart';
+import 'package:routy/common/api/api.dart';
 
 /// 👤 Sales Partner Controller - تحكم في العملاء والشركاء للمبيعات
 ///
@@ -64,9 +65,8 @@ class SalesPartnerController extends GetxController {
     try {
       appLogger.info('📋 Loading partners from server...');
 
-      // استخدام PartnerController الموجود لتحميل العملاء
+      // استخدام PartnerController الموجود للحصول على العملاء
       final partnerController = Get.find<PartnerController>();
-      await partnerController.fetchPartners(showLoading: false);
 
       // نسخ العملاء من PartnerController
       partners.value = partnerController.partners.toList();
@@ -100,13 +100,87 @@ class SalesPartnerController extends GetxController {
   }
 
   void _updatePartnerPriceLists(PartnerModel partner) {
-    // في التطبيق الحقيقي، ستحتاج لجلب قوائم الأسعار الخاصة بالشريك
-    // من API أو قاعدة البيانات
-    partnerPriceLists.value = allPriceLists.toList();
+    try {
+      appLogger.info('📋 Loading price lists for partner: ${partner.name}');
 
-    appLogger.info(
-      '📋 Updated partner price lists: ${partnerPriceLists.length}',
-    );
+      // جلب قوائم الأسعار الخاصة بالشريك من API
+      _loadPartnerPriceListsFromAPI(partner);
+    } catch (e) {
+      appLogger.error('❌ Error loading partner price lists: $e');
+      // في حالة الخطأ، استخدام قوائم الأسعار العامة
+      partnerPriceLists.value = allPriceLists.toList();
+    }
+  }
+
+  /// جلب قوائم الأسعار الخاصة بالشريك من API
+  Future<void> _loadPartnerPriceListsFromAPI(PartnerModel partner) async {
+    try {
+      // جلب قوائم الأسعار الخاصة بالشريك
+      await Api.searchRead(
+        model: 'product.pricelist',
+        fields: [
+          'id',
+          'name',
+          'display_name',
+          'active',
+          'currency_id',
+          'country_group_ids',
+          'item_ids',
+        ],
+        domain: [
+          ['active', '=', true],
+          '|',
+          ['partner_ids', '=', partner.id],
+          ['partner_ids', '=', false], // قوائم الأسعار العامة
+        ],
+        limit: 100,
+        order: 'name ASC',
+        onResponse: (data) {
+          if (data != null) {
+            final List<dynamic> priceListsData = data;
+            partnerPriceLists.value = priceListsData
+                .map((json) => PricelistModel.fromJson(json))
+                .toList();
+
+            // تحديد قائمة الأسعار الافتراضية للشريك
+            _setDefaultPriceList(partner);
+
+            appLogger.info(
+              '✅ Partner price lists loaded: ${partnerPriceLists.length}',
+            );
+          }
+        },
+        onError: (message, data) {
+          appLogger.error('❌ Error loading partner price lists: $message');
+          // في حالة الخطأ، استخدام قوائم الأسعار العامة
+          partnerPriceLists.value = allPriceLists.toList();
+        },
+      );
+    } catch (e) {
+      appLogger.error('❌ Error loading partner price lists: $e');
+      // في حالة الخطأ، استخدام قوائم الأسعار العامة
+      partnerPriceLists.value = allPriceLists.toList();
+    }
+  }
+
+  /// تحديد قائمة الأسعار الافتراضية للشريك
+  void _setDefaultPriceList(PartnerModel partner) {
+    try {
+      // استخدام أول قائمة أسعار متاحة للشريك
+      if (partnerPriceLists.isNotEmpty) {
+        selectedPriceList.value = partnerPriceLists.first;
+        appLogger.info(
+          '✅ Default price list set: ${partnerPriceLists.first.name}',
+        );
+        appLogger.info('   Available price lists: ${partnerPriceLists.length}');
+      } else {
+        appLogger.warning(
+          '⚠️ No price lists available for partner: ${partner.name}',
+        );
+      }
+    } catch (e) {
+      appLogger.error('❌ Error setting default price list: $e');
+    }
   }
 
   // ============= Price List Management =============

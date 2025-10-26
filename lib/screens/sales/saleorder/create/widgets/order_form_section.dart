@@ -136,7 +136,7 @@ class OrderFormSection extends StatelessWidget {
         items: partnerController.partnerPriceLists.map((priceList) {
           return DropdownMenuItem<int>(
             value: priceList.id,
-            child: Text(priceList.pricelistName),
+            child: Text(priceList.name),
           );
         }).toList(),
         onChanged: (value) {

@@ -26,6 +26,9 @@ class ProductModel extends BaseModel {
   @JsonKey(name: 'default_code')
   final dynamic defaultCode; // كود المنتج
 
+  @JsonKey(name: 'default_code', includeFromJson: false, includeToJson: false)
+  final dynamic default_code; // كود المنتج (للتوافق مع الكود القديم)
+
   @JsonKey(name: 'barcode')
   final dynamic barcode; // الباركود
 
@@ -53,6 +56,9 @@ class ProductModel extends BaseModel {
 
   @JsonKey(name: 'categ_id')
   final dynamic categId; // فئة المنتج [id, name]
+
+  @JsonKey(name: 'categ_id', includeFromJson: false, includeToJson: false)
+  final dynamic categ_id; // فئة المنتج (للتوافق مع الكود القديم)
 
   @JsonKey(name: 'uom_id')
   final dynamic uomId; // وحدة القياس [id, name]
@@ -106,6 +112,9 @@ class ProductModel extends BaseModel {
   @JsonKey(name: 'qty_available')
   final dynamic qtyAvailable; // الكمية المتاحة
 
+  @JsonKey(name: 'qty_available', includeFromJson: false, includeToJson: false)
+  final dynamic qty_available; // الكمية المتاحة (للتوافق مع الكود القديم)
+
   @JsonKey(name: 'virtual_available')
   final dynamic virtualAvailable; // الكمية المتوقعة
 
@@ -146,6 +155,7 @@ class ProductModel extends BaseModel {
     this.name,
     this.displayName,
     this.defaultCode,
+    this.default_code,
     this.barcode,
     this.active,
     this.listPrice,
@@ -154,6 +164,7 @@ class ProductModel extends BaseModel {
     this.purchaseOk,
     this.type,
     this.categId,
+    this.categ_id,
     this.uomId,
     this.uomPoId,
     this.description,
@@ -170,6 +181,7 @@ class ProductModel extends BaseModel {
     this.isFavorite,
     this.sellerIds,
     this.qtyAvailable,
+    this.qty_available,
     this.virtualAvailable,
     this.uomNameField,
     this.invoicePolicy,

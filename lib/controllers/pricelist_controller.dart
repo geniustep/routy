@@ -249,14 +249,18 @@ class PricelistController extends GetxController {
     if (searchQuery.value.isNotEmpty) {
       final query = searchQuery.value.toLowerCase();
       filtered = filtered.where((pricelist) {
-        return pricelist.pricelistName.toLowerCase().contains(query) ||
-            (pricelist.pricelistCode?.toLowerCase().contains(query) ?? false);
+        return (pricelist.name?.toString().toLowerCase().contains(query) ??
+                false) ||
+            (pricelist.displayName?.toString().toLowerCase().contains(query) ??
+                false);
       }).toList();
     }
 
     // فلتر النشاط
     if (showOnlyActive.value) {
-      filtered = filtered.where((pricelist) => pricelist.isActive).toList();
+      filtered = filtered
+          .where((pricelist) => pricelist.active == true)
+          .toList();
     }
 
     // فلتر العملة
@@ -264,7 +268,7 @@ class PricelistController extends GetxController {
       final currencyId = int.tryParse(selectedCurrency.value);
       if (currencyId != null) {
         filtered = filtered
-            .where((pricelist) => pricelist.currencyIdInt == currencyId)
+            .where((pricelist) => pricelist.currencyId?.id == currencyId)
             .toList();
       }
     }
@@ -277,7 +281,9 @@ class PricelistController extends GetxController {
   /// تحديد قائمة أسعار
   void selectPriceList(PricelistModel priceList) {
     selectedPriceList.value = priceList;
-    appLogger.info('✅ Price list selected: ${priceList.pricelistName}');
+    appLogger.info(
+      '✅ Price list selected: ${priceList.name ?? priceList.displayName}',
+    );
   }
 
   /// تحديد قائمة أسعار بالـ ID
@@ -306,11 +312,13 @@ class PricelistController extends GetxController {
       final priceLists = await fetchPriceLists(search: name, activeOnly: true);
 
       final priceList = priceLists.firstWhereOrNull(
-        (p) => p.pricelistName.toLowerCase() == name.toLowerCase(),
+        (p) => (p.name?.toString().toLowerCase() ?? '') == name.toLowerCase(),
       );
 
       if (priceList != null) {
-        appLogger.info('✅ Price list found: ${priceList.pricelistName}');
+        appLogger.info(
+          '✅ Price list found: ${priceList.name ?? priceList.displayName}',
+        );
         return priceList;
       } else {
         appLogger.warning('⚠️ Price list not found with name: $name');
@@ -330,11 +338,13 @@ class PricelistController extends GetxController {
       final priceLists = await fetchPriceLists(search: code, activeOnly: true);
 
       final priceList = priceLists.firstWhereOrNull(
-        (p) => p.pricelistCode == code,
+        (p) => p.name?.toString() == code,
       );
 
       if (priceList != null) {
-        appLogger.info('✅ Price list found: ${priceList.pricelistName}');
+        appLogger.info(
+          '✅ Price list found: ${priceList.name ?? priceList.displayName}',
+        );
         return priceList;
       } else {
         appLogger.warning('⚠️ Price list not found with code: $code');
@@ -349,11 +359,11 @@ class PricelistController extends GetxController {
   // ============= Price List Rules =============
 
   /// جلب قواعد قائمة أسعار محددة
-  Future<List<PricelistItemModel>> fetchPriceListRules(int priceListId) async {
+  Future<List<PricelistItem>> fetchPriceListRules(int priceListId) async {
     try {
       appLogger.info('📋 Fetching price list rules for ID: $priceListId');
 
-      final completer = Completer<List<PricelistItemModel>>();
+      final completer = Completer<List<PricelistItem>>();
 
       Api.searchRead(
         model: 'product.pricelist.item',
@@ -386,22 +396,21 @@ class PricelistController extends GetxController {
           appLogger.info('✅ Price list rules fetched successfully');
           final rules = (response as List<dynamic>)
               .map(
-                (json) =>
-                    PricelistItemModel.fromJson(json as Map<String, dynamic>),
+                (json) => PricelistItem.fromJson(json as Map<String, dynamic>),
               )
               .toList();
           completer.complete(rules);
         },
         onError: (message, data) {
           appLogger.error('❌ Error fetching price list rules: $message');
-          completer.complete(<PricelistItemModel>[]);
+          completer.complete(<PricelistItem>[]);
         },
       );
 
       return completer.future;
     } catch (e) {
       appLogger.error('❌ Error fetching price list rules: $e');
-      return <PricelistItemModel>[];
+      return <PricelistItem>[];
     }
   }
 
@@ -439,17 +448,17 @@ class PricelistController extends GetxController {
   int get filteredPriceListsCount => filteredPriceLists.length;
 
   List<PricelistModel> get activePriceLists =>
-      priceLists.where((p) => p.isActive).toList();
+      priceLists.where((p) => p.active == true).toList();
   List<PricelistModel> get selectablePriceLists =>
-      priceLists.where((p) => p.isActive).toList();
+      priceLists.where((p) => p.active == true).toList();
 
   // ============= Currencies =============
 
   List<String> get availableCurrencies {
     final currencies = <String>{};
     for (var priceList in priceLists) {
-      if (priceList.currencyName != null) {
-        currencies.add(priceList.currencyName!);
+      if (priceList.currencyId?.displayName != null) {
+        currencies.add(priceList.currencyId!.displayName.toString());
       }
     }
     return currencies.toList()..sort();
@@ -460,9 +469,14 @@ class PricelistController extends GetxController {
   /// الحصول على إحصائيات قوائم الأسعار
   Map<String, dynamic> getPriceListStatistics() {
     final total = priceLists.length;
-    final active = priceLists.where((p) => p.isActive).length;
-    final withRules = priceLists.where((p) => p.hasRules).length;
-    final totalRules = priceLists.fold(0, (sum, p) => sum + p.rulesCount);
+    final active = priceLists.where((p) => p.active == true).length;
+    final withRules = priceLists
+        .where((p) => p.items != null && p.items!.isNotEmpty)
+        .length;
+    final totalRules = priceLists.fold(
+      0,
+      (sum, p) => sum + (p.items?.length ?? 0),
+    );
 
     return {
       'total': total,
